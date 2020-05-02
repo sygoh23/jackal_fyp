@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/ws/jackal_fyp/devel
+
+Name: jackal_viz
+Description: Description of jackal_viz
+Version: 0.3.2
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

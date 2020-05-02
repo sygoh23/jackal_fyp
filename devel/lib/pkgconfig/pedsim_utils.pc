@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/ws/jackal_fyp/devel
+
+Name: pedsim_utils
+Description: Description of pedsim_utils
+Version: 0.1.0
+Cflags: -I/home/ubuntu/ws/jackal_fyp/src/pedsim/pedsim_utils/include
+Libs: -L${prefix}/lib -lpedsim_utils
+Requires: cmake_modules geometry_msgs pedsim_msgs roscpp rospy

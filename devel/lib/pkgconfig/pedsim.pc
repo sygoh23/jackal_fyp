@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/ws/jackal_fyp/devel
+
+Name: pedsim
+Description: Description of pedsim
+Version: 0.2.0
+Cflags: -I/home/ubuntu/ws/jackal_fyp/src/pedsim/3rdparty/libpedsim/include/
+Libs: -L${prefix}/lib -lpedsim
+Requires: roscpp

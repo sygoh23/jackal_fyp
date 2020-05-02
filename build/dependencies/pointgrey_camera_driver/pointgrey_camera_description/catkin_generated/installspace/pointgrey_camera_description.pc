@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/ws/jackal_fyp/install
+
+Name: pointgrey_camera_description
+Description: Description of pointgrey_camera_description
+Version: 0.14.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

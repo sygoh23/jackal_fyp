@@ -1,0 +1,2 @@
+set(image_exposure_msgs_MESSAGE_FILES "/home/ubuntu/ws/jackal_fyp/src/dependencies/pointgrey_camera_driver/image_exposure_msgs/msg/ExposureSequence.msg;/home/ubuntu/ws/jackal_fyp/src/dependencies/pointgrey_camera_driver/image_exposure_msgs/msg/ImageExposureStatistics.msg;/home/ubuntu/ws/jackal_fyp/src/dependencies/pointgrey_camera_driver/image_exposure_msgs/msg/SequenceExposureStatistics.msg")
+set(image_exposure_msgs_SERVICE_FILES "")

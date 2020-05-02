@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=FlyCapture2 Documentation
+Exec=evince /usr/share/doc/flycapture-doc/FlyCapture2\ API\ Reference.pdf
+Icon=/usr/share/pixmaps/FlyCapture.png
+Terminal=false
+Type=Application
+StartupNotify=false

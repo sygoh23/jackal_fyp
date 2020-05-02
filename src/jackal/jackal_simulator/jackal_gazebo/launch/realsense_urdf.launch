@@ -1,0 +1,13 @@
+<launch>
+
+    <param
+        name="RS200_description"
+        command="$(find xacro)/xacro '$(find jackal_description)/urdf/accessories/rs200.urdf.xacro'"
+    />
+    <node
+        name="spawn_RS_200"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-urdf -model RS_200 -param RS200_description ">
+    </node>
+</launch>

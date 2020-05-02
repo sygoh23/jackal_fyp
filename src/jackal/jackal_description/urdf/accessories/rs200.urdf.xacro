@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<robot name="realsense-rs200" xmlns:xacro="http://ros.org/wiki/xacro">
+    <!-- Import macro for realsense-RS200 camera-->
+    <xacro:include filename="$(find realsense_gazebo_plugin)/urdf/realsense-RS200.macro.xacro"/>
+</robot>

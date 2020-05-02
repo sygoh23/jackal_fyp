@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/ws/jackal_fyp/install
+
+Name: jackal_tutorials
+Description: Description of jackal_tutorials
+Version: 0.6.4
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
