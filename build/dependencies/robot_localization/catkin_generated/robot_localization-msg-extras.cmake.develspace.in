@@ -1,2 +1,0 @@
-set(robot_localization_MESSAGE_FILES "")
-set(robot_localization_SERVICE_FILES "/home/ubuntu/ws/jackal_fyp/src/dependencies/robot_localization/srv/GetState.srv;/home/ubuntu/ws/jackal_fyp/src/dependencies/robot_localization/srv/SetDatum.srv;/home/ubuntu/ws/jackal_fyp/src/dependencies/robot_localization/srv/SetPose.srv;/home/ubuntu/ws/jackal_fyp/src/dependencies/robot_localization/srv/ToggleFilterProcessing.srv;/home/ubuntu/ws/jackal_fyp/src/dependencies/robot_localization/srv/FromLL.srv;/home/ubuntu/ws/jackal_fyp/src/dependencies/robot_localization/srv/ToLL.srv")

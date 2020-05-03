@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/ws/jackal_fyp/devel
-
-Name: jackal_cartographer_navigation
-Description: Description of jackal_cartographer_navigation
-Version: 0.0.1
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

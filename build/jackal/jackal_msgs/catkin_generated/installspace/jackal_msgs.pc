@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/ws/jackal_fyp/install
-
-Name: jackal_msgs
-Description: Description of jackal_msgs
-Version: 0.6.4
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib 
-Requires: std_msgs message_runtime

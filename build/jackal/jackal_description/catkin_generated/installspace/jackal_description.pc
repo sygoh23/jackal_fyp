@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/ws/jackal_fyp/install
-
-Name: jackal_description
-Description: Description of jackal_description
-Version: 0.6.4
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

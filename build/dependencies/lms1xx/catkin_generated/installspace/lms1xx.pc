@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/ws/jackal_fyp/install
-
-Name: lms1xx
-Description: Description of lms1xx
-Version: 0.2.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: roscpp

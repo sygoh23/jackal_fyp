@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/ws/jackal_fyp/devel
-
-Name: ddynamic_reconfigure
-Description: Description of ddynamic_reconfigure
-Version: 0.2.3
-Cflags: -I/home/ubuntu/ws/jackal_fyp/src/dependencies/ddynamic_reconfigure/include
-Libs: -L${prefix}/lib -lddynamic_reconfigure
-Requires: roscpp dynamic_reconfigure

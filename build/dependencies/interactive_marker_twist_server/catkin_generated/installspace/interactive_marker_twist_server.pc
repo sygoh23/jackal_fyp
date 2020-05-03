@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/ws/jackal_fyp/install
-
-Name: interactive_marker_twist_server
-Description: Description of interactive_marker_twist_server
-Version: 1.2.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

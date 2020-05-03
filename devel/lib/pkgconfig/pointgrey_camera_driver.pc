@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/ws/jackal_fyp/devel
-
-Name: pointgrey_camera_driver
-Description: Description of pointgrey_camera_driver
-Version: 0.14.0
-Cflags: -I/home/ubuntu/ws/jackal_fyp/devel/include
-Libs: -L${prefix}/lib 
-Requires: image_exposure_msgs nodelet roscpp sensor_msgs wfov_camera_msgs
