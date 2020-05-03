@@ -29,4 +29,7 @@
 
   <!-- Rviz -->
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/vis2.rviz" if="$(arg visualize)"/>
+
+  <!-- Listener -->
+  <node pkg="development" type="listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
 </launch>
