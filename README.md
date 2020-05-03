@@ -23,6 +23,6 @@ jackal_fyp/start/...
 
 
 ### Other Dependencies:
-* The Jackal robot requires the Intel Realsense SDK. 
+* The Jackal robot requires the Intel Realsense SDK.
   * Installation: https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md
   * Make sure to install the developer and debug packages.
