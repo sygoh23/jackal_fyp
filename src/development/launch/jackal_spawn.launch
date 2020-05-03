@@ -2,7 +2,7 @@
   <!--  ******************** Gazebo ********************  -->
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="false" />
-  <arg name="headless" default="true" />
+  <arg name="headless" default="false" />
   <arg name="world_name" default="$(find development)/resources/default.world" />
 
   <!-- Launch Gazebo with the specified world -->
