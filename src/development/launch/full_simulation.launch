@@ -18,7 +18,7 @@
   <include file="$(find development)/resources/jackal.launch">
     <!-- base: Generates Jackal model only (faster) -->
     <!-- fyp: Generates Jackal model with sensors (slower) -->
-    <arg name="config" value="fyp"/>
+    <arg name="config" value="base"/>
   </include>
 
   <!-- Spawn Jackal -->
@@ -59,5 +59,5 @@
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/jackal_pedsim.rviz" if="$(arg visualize)"/>
 
   <!-- Listener -->
-  <node pkg="development" type="listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
+  <node pkg="development" type="ped_listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
 </launch>

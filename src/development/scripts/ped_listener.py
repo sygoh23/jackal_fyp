@@ -4,7 +4,7 @@ from pedsim_msgs.msg import AgentStates
 
 
 def callback(data):
-    
+
     print("\n*************************")
 
     # Number of simulated pedestrians
@@ -18,7 +18,6 @@ def callback(data):
         
 
 def listener():
-
     # Create a new node 'listener'
     rospy.init_node('listener', anonymous=True)
 
@@ -30,6 +29,6 @@ def listener():
 
 
 if __name__ == '__main__':
-    
+
     print("******************************LISTENER RUNNING**************************************")
     listener()
