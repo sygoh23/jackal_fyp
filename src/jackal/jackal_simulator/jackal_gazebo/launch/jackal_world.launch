@@ -1,8 +1,8 @@
 <launch>
   <!--  ******************** Gazebo ********************  -->
   <arg name="use_sim_time" default="true" />
-  <arg name="gui" default="true" />
-  <arg name="headless" default="false" />
+  <arg name="gui" default="false" />
+  <arg name="headless" default="true" />
   <arg name="world_name" default="$(find jackal_gazebo)/worlds/jackal_race.world" />
 
   <!-- Launch Gazebo with the specified world -->

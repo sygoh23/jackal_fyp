@@ -1,3 +1,3 @@
 source /opt/ros/melodic/setup.bash
 source ../devel/setup.bash
-roslaunch jackal_viz view_robot.launch
+roslaunch development full_simulation.launch
