@@ -1,6 +1,6 @@
 # ECSE Final Year Project
 
-#### Last Major Update: 30th April 2020
+#### Last Major Update: 6th May 2020
 <img src="https://github.com/sygoh23/jackal_fyp/blob/master/.images/00-pedsim-demo.png" height="400"><img src="https://github.com/sygoh23/jackal_fyp/blob/master/.images/01-rviz.png" height="400">
 
 ### Source Code Structure:
@@ -16,9 +16,9 @@ jackal_fyp/src/...
 ```
 jackal_fyp/start/...
 ```
-- jackal_gazebo.sh: Launches the Jackal robot with all sensors enabled in a sample world.
-- jackal_rviz.sh: Launches RViz with appropriate Jackal configuration. Used with `jackal_gazebo.sh`.
-- pedsim_demo.sh: Launches a sample Pedsim demonstration visualised in RViz.
+- full_simulation.sh: Launches Gazebo (with Jackal robot), Pedsim, RViz and a listener for pedestrian positions.
+- pedsim_jackal_1.sh: Launches Gazebo with the Jackal robot.
+- pedsim_jackal_2.sh: Launches Pedsim and Rviz to visualise the Jackal and pedestrians together.
 - setup.sh: Sources the ROS installation
 
 
