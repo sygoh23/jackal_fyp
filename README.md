@@ -26,3 +26,6 @@ jackal_fyp/start/...
 * The Jackal robot requires the Intel Realsense SDK.
   * Installation: https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md
   * Make sure to install the developer and debug packages.
+* The ROS Navigation package requires the following package:
+  * libsdl1-dev: `sudo apt-get install libsdl-dev`
+  * libsdl-image1.2-dev: `sudo apt-get install libsdl-image1.2-dev`
