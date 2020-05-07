@@ -9,6 +9,9 @@ jackal_fyp/src/...
 ```
 - dependencies: Contains all of the miscellaneous ROS packages required to build the workspace.
 - development: Main working folder for algorithm development and programming.
+  - launch: Contains launch files for simulations.
+  - resources: Contains resources for simulations with folders for `gazebo`, `pedsim` and `rviz`.
+  - scripts: Contains scripts for listener and publisher nodes.
 - jackal: Contains the modified Jackal robot (with additional sensors) for use in Gazebo and RViz.
 - pedsim: Contains the 'pedsim_ros' library for simulating groups of pedestrians.
 
@@ -16,9 +19,8 @@ jackal_fyp/src/...
 ```
 jackal_fyp/start/...
 ```
-- full_simulation.sh: Launches Gazebo (with Jackal robot), Pedsim, RViz and a listener for pedestrian positions.
-- pedsim_jackal_1.sh: Launches Gazebo with the Jackal robot.
-- pedsim_jackal_2.sh: Launches Pedsim and Rviz to visualise the Jackal and pedestrians together.
+- jackal_pedsim.sh: Launches Gazebo (with Jackal robot), Pedsim, RViz and a listener for pedestrian positions.
+- jackal_pedsim_nav.sh: Launches Gazebo (with Jackal robot), Pedsim, Rviz, 'move_base' and a listener for pedestrian positions. Navigation goals can be set in RViz to demonstrate path planning.
 - setup.sh: Sources the ROS installation
 
 
