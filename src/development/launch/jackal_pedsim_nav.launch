@@ -3,7 +3,7 @@
   <arg name="use_sim_time" default="true"/>
   <arg name="gui" default="false"/>
   <arg name="headless" default="false"/>
-  <arg name="world_name" default="$(find development)/resources/default.world"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/default.world"/>
 
   <!-- Launch Gazebo with the specified world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -15,10 +15,10 @@
   </include>
 
   <!-- ******************** JACKAL ******************** -->
-  <include file="$(find development)/resources/jackal.launch">
+  <include file="$(find development)/launch/jackal.launch">
     <!-- base: Generates Jackal model only (faster) -->
     <!-- fyp: Generates Jackal model with sensors (slower) -->
-    <arg name="config" value="base"/>
+    <arg name="config" value="fyp"/>
   </include>
 
   <!-- Spawn Jackal -->
@@ -39,7 +39,7 @@
   <include file="$(find pedsim_simulator)/launch/simulator.launch">
     <arg name="kbd_teleop" value="$(arg kbd_teleop)"/>
     <arg name="rqt_teleop" value="$(arg rqt_teleop)"/>
-    <arg name="scene_file" value="$(find development)resources/pedsim_scenario.xml"/>
+    <arg name="scene_file" value="$(find development)resources/pedsim/pedsim_scenario.xml"/>
     <arg name="with_robot" value="$(arg with_robot)"/>
     <arg name="simulation_factor" value="$(arg simulation_factor)"/>
     <arg name="update_rate" value="$(arg update_rate)"/>
@@ -55,9 +55,22 @@
   <!-- Visualizer -->
   <include file="$(find pedsim_visualizer)/launch/visualizer.launch"/>
 
-  <!-- Rviz -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/jackal_pedsim.rviz" if="$(arg visualize)"/>
-
   <!-- Listener -->
   <node pkg="development" type="ped_listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
+
+  <!-- Move Base Navigation -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find jackal_navigation)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find jackal_navigation)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find jackal_navigation)/params/odom_nav_params/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find jackal_navigation)/params/odom_nav_params/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find jackal_navigation)/params/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find jackal_navigation)/params/move_base_params.yaml" command="load" />
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <remap from="odom" to="odometry/filtered" />
+   </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find development)/resources/rviz/jackal_pedsim_nav.rviz" if="$(arg visualize)"/>
+
 </launch>

@@ -4,9 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Jackal-Velodyne1/Status1
         - /Jackal-Velodyne1/Autocompute Value Bounds1
-        - /Pedsim-Walls1/Status1
       Splitter Ratio: 0.5
     Tree Height: 711
   - Class: rviz/Selection
@@ -158,9 +156,9 @@ Visualization Manager:
         Jackal-Model: true
         Jackal-Velodyne: true
         MoveBase-Destination: true
+        MoveBase-Direction: true
         MoveBase-Map: true
-        MoveBase-Path-1: true
-        MoveBase-Path-2: true
+        MoveBase-Path: true
         MoveBase-Polygon: true
         Pedsim-Agents: true
         Pedsim-Walls: true
@@ -361,7 +359,7 @@ Visualization Manager:
     Background Color: 48; 48; 48
     Default Light: true
     Fixed Frame: odom
-    Frame Rate: 30
+    Frame Rate: 45
   Name: root
   Tools:
     - Class: rviz/Interact
