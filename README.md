@@ -32,6 +32,6 @@ jackal_fyp/start/...
   * libsdl1-dev: `sudo apt-get install libsdl-dev`
   * libsdl-image1.2-dev: `sudo apt-get install libsdl-image1.2-dev`
 * Gazebo requires the GAZEBO_MODEL_PATH environment variable to be set:
-  1. Terminal: source /usr/share/gazebo/setup.sh (in case of error, replace with your gazebo install path to the file setup.sh)
-  2. Terminal: sudo nano /usr/share/gazebo/setup.sh (in case of error, replace with your gazebo install path to the file setup.sh)
-  3. Modify the file to include the path to this repo's /Models/ directory, which should be "your-directory"/jackal_fyp/src/development/resources/gazebo/Models. Enter this path in the line with the GAZEBO_MODEL_PATH variable, after the colon. Finish the path with another colon.
+  1. Terminal: `source /usr/share/gazebo/setup.sh` (in case of error, replace with your gazebo install path to the file setup.sh)
+  2. Terminal: `sudo nano /usr/share/gazebo/setup.sh` (in case of error, replace with your gazebo install path to the file setup.sh)
+  3. Modify the file to include the path to this repo's /Models/ directory, which should be `"your-directory"/jackal_fyp/src/development/resources/gazebo/Models`. Enter this path in the line with the GAZEBO_MODEL_PATH variable, after the colon. Finish the path with another colon.
