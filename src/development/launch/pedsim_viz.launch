@@ -28,8 +28,8 @@
   <include file="$(find pedsim_visualizer)/launch/visualizer.launch"/>
 
   <!-- Rviz -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/jackal_pedsim.rviz" if="$(arg visualize)"/>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/rviz/jackal_pedsim.rviz" if="$(arg visualize)"/>
 
   <!-- Listener -->
-  <node pkg="development" type="listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
+  <node pkg="development" type="ped_listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
 </launch>

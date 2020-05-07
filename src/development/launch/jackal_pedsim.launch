@@ -1,9 +1,9 @@
 <launch>
   <!--  ******************** GAZEBO ********************  -->
   <arg name="use_sim_time" default="true"/>
-  <arg name="gui" default="false"/>
+  <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
-  <arg name="world_name" default="$(find development)/resources/gazebo/default.world"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/basic.world"/>
 
   <!-- Launch Gazebo with the specified world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -25,7 +25,7 @@
   <node name="urdf_spawner"
         pkg="gazebo_ros"
         type="spawn_model"
-	      args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0" />
+	      args="-urdf -model jackal -param robot_description -x 1 -y 1 -z 1.0" />
 
   <!-- ******************** RVIZ + PEDSIM ******************** -->
   <arg name="rqt_teleop" default="false"/>
