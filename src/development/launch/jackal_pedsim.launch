@@ -25,7 +25,7 @@
   <node name="urdf_spawner"
         pkg="gazebo_ros"
         type="spawn_model"
-	      args="-urdf -model jackal -param robot_description -x 1 -y 1 -z 1.0" />
+	      args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0" />
 
   <!-- ******************** RVIZ + PEDSIM ******************** -->
   <arg name="rqt_teleop" default="false"/>
@@ -47,9 +47,9 @@
     <arg name="max_robot_speed" value="1.5"/>
     <arg name="robot_mode" value="1"/>
     <arg name="enable_groups" value="false"/>
-    <arg name="pose_initial_x" value="5.0"/>
-    <arg name="pose_initial_y" value="5.0"/>
-    <arg name="pose_initial_theta" value="0.7"/>
+    <arg name="pose_initial_x" value="10"/>
+    <arg name="pose_initial_y" value="10"/>
+    <arg name="pose_initial_theta" value="0"/>
   </include>
 
   <!-- Visualizer -->
