@@ -60,4 +60,8 @@
 
   <!-- Listener -->
   <node pkg="development" type="ped_listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
+
+  <!-- Pedsim Spawner -->  
+  <node pkg="pedsim_gazebo_plugin" type="spawn_pedsim_agents.py" name="spawn_pedsim_agents"  output="screen"/>
+  
 </launch>
