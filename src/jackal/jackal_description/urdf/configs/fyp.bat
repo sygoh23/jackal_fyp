@@ -7,4 +7,5 @@ REM in the URDF suffice to define this config.
 set JACKAL_VELODYNE=1
 set JACKAL_D435=1
 set JACKAL_FLEA3=1
+set JACKAL_LASER=1
 set JACKAL_NAVSAT=0

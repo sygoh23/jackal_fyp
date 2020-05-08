@@ -6,7 +6,7 @@ Panels:
       Expanded:
         - /Jackal-Velodyne1/Status1
         - /Jackal-Velodyne1/Autocompute Value Bounds1
-        - /Pedsim-Walls1/Status1
+        - /Jackal-Laser1/Autocompute Value Bounds1
       Splitter Ratio: 0.5
     Tree Height: 711
   - Class: rviz/Selection
@@ -25,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Jackal-Camera
+    SyncSource: Jackal-Laser
   - Class: rviz_plugin_tutorials/Teleop
     Name: Teleop
     Topic: ""
@@ -175,11 +175,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        rear_bridge:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         rear_fender_link:
           Alpha: 1
           Show Axes: false
@@ -194,32 +189,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rear_navsat:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         rear_right_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rear_standoff0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rear_standoff1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rear_standoff2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rear_standoff3:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -272,8 +242,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -0.055410340428352356
-        Min Value: -0.08344770967960358
+        Max Value: 1.9099838733673096
+        Min Value: -0.0704813152551651
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -291,7 +261,7 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 2
+      Size (Pixels): 3
       Size (m): 0.009999999776482582
       Style: Points
       Topic: /velodyne_points2
@@ -302,14 +272,14 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -9999
-        Min Value: 9999
+        Max Value: 0.3644663393497467
+        Min Value: 0.33172592520713806
         Value: true
       Axis: Z
       Channel Name: intensity
       Class: rviz/LaserScan
       Color: 255; 255; 255
-      Color Transformer: AxisColor
+      Color Transformer: FlatColor
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
@@ -321,22 +291,22 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 5
-      Size (m): 0.009999999776482582
-      Style: Points
+      Size (Pixels): 3
+      Size (m): 0.20000000298023224
+      Style: Squares
       Topic: /front/scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
     - Class: rviz/Marker
-      Enabled: true
+      Enabled: false
       Marker Topic: /pedsim_visualizer/walls
       Name: Pedsim-Walls
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
-      Value: true
+      Value: false
     - Alpha: 1
       Class: spencer_tracking_rviz_plugin/TrackedPersons
       Color: 130; 130; 130
