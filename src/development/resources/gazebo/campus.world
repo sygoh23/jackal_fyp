@@ -109,5 +109,7 @@
       <pose>0 0 0 0 0 0</pose>
     </include>
 
+    <plugin name="ActorPosesPlugin" filename="libActorPosesPlugin.so"></plugin>
+
   </world>
 </sdf>

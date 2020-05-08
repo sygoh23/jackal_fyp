@@ -62,7 +62,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>100 100</size>
+              <size>200 200</size>
             </plane>
           </geometry>
           <surface>
@@ -87,7 +87,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>100 100</size>
+              <size>200 200</size>
             </plane>
           </geometry>
           <material>
@@ -109,6 +109,8 @@
         <pose>-1 -1 1 0 0 -1.5708</pose>
       </include>
     </model>
+
+    <plugin name="ActorPosesPlugin" filename="libActorPosesPlugin.so"></plugin>
 
   </world>
 </sdf>
