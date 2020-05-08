@@ -15,7 +15,7 @@
     <xacro:include filename="$(find jackal_description)/urdf/accessories/HDL-32E.urdf.xacro"/>
     <xacro:arg name="gpu" default="false"/>
     <xacro:property name="gpu" value="$(arg gpu)" />
-    <HDL-32E parent="base_link" name="velodyne2" topic="/velodyne_points2" hz="10" samples="110" gpu="${gpu}">
+    <HDL-32E parent="base_link" name="velodyne2" topic="/velodyne_points2" hz="20" samples="110" gpu="${gpu}">
       <origin xyz="0 0 0.15" rpy="0 0 0" />
     </HDL-32E>
   </xacro:if>
