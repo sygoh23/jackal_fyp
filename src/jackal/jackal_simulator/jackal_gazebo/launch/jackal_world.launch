@@ -1,8 +1,8 @@
 <launch>
   <!--  ******************** Gazebo ********************  -->
   <arg name="use_sim_time" default="true" />
-  <arg name="gui" default="false" />
-  <arg name="headless" default="true" />
+  <arg name="gui" default="true" />
+  <arg name="headless" default="false" />
   <arg name="world_name" default="$(find jackal_gazebo)/worlds/jackal_race.world" />
 
   <!-- Launch Gazebo with the specified world -->
@@ -15,11 +15,11 @@
   </include>
 
   <!-- JACKAL SPAWN -->
-  <include file="$(find jackal_gazebo)/launch/jackal.launch"></include> 
-    
+  <include file="$(find jackal_gazebo)/launch/jackal.launch"></include>
+
       <!-- Spawn Jackal -->
   <node name="urdf_spawner"
         pkg="gazebo_ros"
         type="spawn_model"
-	    args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0" />  
+	    args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0" />
 </launch>

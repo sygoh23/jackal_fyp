@@ -55,7 +55,7 @@ Visualization Manager:
       Value: true
     - Alpha: 1
       Class: rviz/RobotModel
-      Collision Enabled: false
+      Collision Enabled: true
       Enabled: true
       Links:
         All Links Enabled: true
@@ -209,45 +209,11 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
-    - Class: rviz/InteractiveMarkers
-      Enable Transparency: true
-      Enabled: true
-      Name: Jackal-Control
-      Show Axes: false
-      Show Descriptions: false
-      Show Visual Aids: false
-      Update Topic: /twist_marker_server/update
-      Value: true
-    - Class: rviz/Camera
-      Enabled: false
-      Image Rendering: overlay
-      Image Topic: /front/image_raw
-      Name: Jackal-Camera
-      Overlay Alpha: 1
-      Queue Size: 2
-      Transport Hint: raw
-      Unreliable: false
-      Value: false
-      Visibility:
-        Grid: true
-        Jackal-Control: true
-        Jackal-Laser: true
-        Jackal-Model: true
-        Jackal-Velodyne: true
-        MoveBase-Destination: true
-        MoveBase-Direction: true
-        MoveBase-Map: true
-        MoveBase-Path: true
-        MoveBase-Polygon: true
-        Pedsim-Agents: true
-        Pedsim-Walls: true
-        Value: false
-      Zoom Factor: 0.75
     - Alpha: 0.800000011920929
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.936745285987854
-        Min Value: -0.06886060535907745
+        Max Value: 1.9079046249389648
+        Min Value: -0.07004125416278839
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -273,7 +239,7 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Alpha: 0.800000011920929
+    - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
         Max Value: -9999
@@ -296,21 +262,38 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.20000000298023224
+      Size (m): 0.10000000149011612
       Style: Squares
       Topic: /front/scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Class: rviz/Marker
+    - Class: rviz/Camera
       Enabled: false
-      Marker Topic: /pedsim_visualizer/walls
-      Name: Pedsim-Walls
-      Namespaces:
-        {}
-      Queue Size: 100
+      Image Rendering: overlay
+      Image Topic: /front/image_raw
+      Name: Jackal-Camera
+      Overlay Alpha: 1
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
       Value: false
+      Visibility:
+        Grid: true
+        Jackal-Camera: true
+        Jackal-Laser: true
+        Jackal-Model: true
+        Jackal-Velodyne: true
+        MoveBase-Destination: true
+        MoveBase-Direction: true
+        MoveBase-Map: true
+        MoveBase-Path: true
+        MoveBase-Polygon: true
+        Pedsim-Agents: true
+        Pedsim-Walls: true
+        Value: false
+      Zoom Factor: 0.75
     - Alpha: 1
       Class: spencer_tracking_rviz_plugin/TrackedPersons
       Color: 130; 130; 130
@@ -354,6 +337,14 @@ Visualization Manager:
       Z offset:
         Use Z position from message: false
         Value: 0
+    - Class: rviz/Marker
+      Enabled: false
+      Marker Topic: /pedsim_visualizer/walls
+      Name: Pedsim-Walls
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: false
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path
@@ -454,25 +445,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 38.453086853027344
+      Distance: 43.57847595214844
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 8.343056678771973
-        Y: 5.627725601196289
-        Z: 5.241073131561279
+        X: 11.510897636413574
+        Y: 6.250542640686035
+        Z: 6.624914169311523
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.634797215461731
+      Pitch: 0.8747968673706055
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.833540439605713
+      Yaw: 3.6885385513305664
     Saved: ~
 Window Geometry:
   Displays:

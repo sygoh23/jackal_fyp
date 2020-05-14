@@ -1,8 +1,8 @@
 <launch>
   <!--  ******************** GAZEBO ********************  -->
   <arg name="use_sim_time" default="true"/>
-  <arg name="gui" default="true"/>
-  <arg name="headless" default="false"/>
+  <arg name="gui" default="false"/>
+  <arg name="headless" default="true"/>
   <arg name="world_name" default="$(find development)/resources/gazebo/basic.world"/>
 
   <!-- Launch Gazebo with the specified world -->
@@ -60,8 +60,4 @@
 
   <!-- Listener -->
   <node pkg="development" type="ped_listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
-
-  <!-- Pedsim Spawner -->
-  <node pkg="pedsim_gazebo_plugin" type="spawn_pedsim_agents.py" name="spawn_pedsim_agents"  output="screen"/>
-
 </launch>

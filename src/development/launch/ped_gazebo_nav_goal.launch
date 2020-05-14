@@ -1,7 +1,7 @@
 <launch>
   <!--  ******************** GAZEBO ********************  -->
   <arg name="use_sim_time" default="true"/>
-  <arg name="gui" default="true"/>
+  <arg name="gui" default="false"/>
   <arg name="headless" default="false"/>
   <arg name="world_name" default="$(find development)/resources/gazebo/basic.world"/>
 
@@ -27,19 +27,19 @@
         type="spawn_model"
 	      args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0" />
 
-  <!-- ******************** RVIZ + PEDSIM ******************** -->
+  <!-- ******************** PEDSIM ******************** -->
   <arg name="rqt_teleop" default="false"/>
   <arg name="visualize" default="true"/>
   <arg name="with_robot" default="false"/>
   <arg name="kbd_teleop" default="false"/>
-  <arg name="simulation_factor" default="3.0"/> <!-- Speed up -->
-  <arg name="update_rate" default="25.0"/> <!-- Hz -->
+  <arg name="simulation_factor" default="1.5"/> <!-- Speed up -->
+  <arg name="update_rate" default="30.0"/> <!-- Hz -->
 
   <!-- Simulator -->
   <include file="$(find pedsim_simulator)/launch/simulator.launch">
     <arg name="kbd_teleop" value="$(arg kbd_teleop)"/>
     <arg name="rqt_teleop" value="$(arg rqt_teleop)"/>
-    <arg name="scene_file" value="$(find development)resources/pedsim/pedsim_scenario.xml"/>
+    <arg name="scene_file" value="$(find development)resources/pedsim/pedsim_scenario_slow.xml"/>
     <arg name="with_robot" value="$(arg with_robot)"/>
     <arg name="simulation_factor" value="$(arg simulation_factor)"/>
     <arg name="update_rate" value="$(arg update_rate)"/>
@@ -47,21 +47,31 @@
     <arg name="max_robot_speed" value="1.5"/>
     <arg name="robot_mode" value="1"/>
     <arg name="enable_groups" value="false"/>
-    <arg name="pose_initial_x" value="10"/>
-    <arg name="pose_initial_y" value="10"/>
-    <arg name="pose_initial_theta" value="0"/>
+    <arg name="pose_initial_x" value="5.0"/>
+    <arg name="pose_initial_y" value="5.0"/>
+    <arg name="pose_initial_theta" value="0.7"/>
   </include>
 
   <!-- Visualizer -->
   <include file="$(find pedsim_visualizer)/launch/visualizer.launch"/>
 
-  <!-- Rviz -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/rviz/jackal_pedsim.rviz" if="$(arg visualize)"/>
+  <!-- Move Base Navigation -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find development)resources/move_base/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find development)resources/move_base/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find development)resources/move_base/params/odom_nav_params/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find development)resources/move_base/params/odom_nav_params/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find development)resources/move_base/params/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find development)resources/move_base/params/move_base_params.yaml" command="load" />
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <remap from="odom" to="odometry/filtered" />
+  </node>
 
-  <!-- Listener -->
-  <node pkg="development" type="ped_listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
-
-  <!-- Pedsim Spawner -->
+  <!-- ******************** PEDSIM-GAZEBO INTEGRATION ******************** -->
   <node pkg="pedsim_gazebo_plugin" type="spawn_pedsim_agents.py" name="spawn_pedsim_agents"  output="screen"/>
+
+  <!-- ******************** LAUNCH RVIZ ******************** -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find development)/resources/rviz/jackal_pedsim_nav_goal.rviz" if="$(arg visualize)"/>
 
 </launch>
