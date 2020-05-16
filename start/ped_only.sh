@@ -1,8 +1,7 @@
-# Launches Jackal simulation with the following features:
-## ped: Pedsim Simulator
+# Launches pedestrian simulator only...
 sudo killall rosmaster
 sudo killall gzserver
 sudo killall gzclient
 source /opt/ros/melodic/setup.bash
 source ../devel/setup.bash
-roslaunch development ped.launch
+roslaunch development ped_only.launch

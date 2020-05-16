@@ -20,6 +20,15 @@
     </HDL-32E>
   </xacro:if>
 
+  <xacro:if value="$(optenv JACKAL_VELODYNE_HD 0)">
+    <xacro:include filename="$(find jackal_description)/urdf/accessories/HDL-32E.urdf.xacro"/>
+    <xacro:arg name="gpu" default="false"/>
+    <xacro:property name="gpu" value="$(arg gpu)" />
+    <HDL-32E parent="base_link" name="velodyne2" topic="/velodyne_points2" hz="20" samples="220" gpu="${gpu}">
+      <origin xyz="0 0 0.15" rpy="0 0 0" />
+    </HDL-32E>
+  </xacro:if>
+
   <!-- Macros to generate standoffs for offset payload mounting. -->
   <xacro:include filename="$(find jackal_description)/urdf/accessories/standoffs.urdf.xacro" />
 
@@ -32,15 +41,12 @@
       <xacro:include filename="$(find jackal_description)/urdf/accessories/hokuyo_ust10.urdf.xacro" />
       <hokuyo_ust10_mount prefix="$(optenv JACKAL_LASER_MOUNT front)"
                           topic="$(optenv JACKAL_LASER_TOPIC front/scan)" />
-
       <joint name="$(optenv JACKAL_LASER_MOUNT front)_laser_mount_joint" type="fixed">
         <origin xyz="$(optenv JACKAL_LASER_OFFSET 0.11 0 0)"
                 rpy="$(optenv JACKAL_LASER_RPY 0 0 0)" />
         <parent link="$(optenv JACKAL_LASER_MOUNT front)_mount" />
         <child link="$(optenv JACKAL_LASER_MOUNT front)_laser_mount" />
       </joint>
-
-
     </xacro:if>
 
     <xacro:unless value="$(optenv JACKAL_LASER_HOKUYO 0)">
@@ -64,8 +70,6 @@
       </xacro:if>
     </xacro:unless>
   </xacro:if>
-
-
 
   <!-- If enabled, generate the upgraded Navsat payload (a Novatel Smart6). -->
   <xacro:if value="$(optenv JACKAL_NAVSAT 0)">
