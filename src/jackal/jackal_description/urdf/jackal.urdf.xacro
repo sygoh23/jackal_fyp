@@ -208,7 +208,7 @@
   <link name="imu_link">
     <inertial>
       <mass value="0.001"/>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="${orig_xyz}" rpy="0 0 0"/>
       <inertia ixx="${dummy_inertia}" ixy="0.0" ixz="0.0" iyy="${dummy_inertia}" iyz="0.0" izz="${dummy_inertia}"/>
     </inertial>
   </link>
@@ -223,7 +223,7 @@
       <geometry>
         <cylinder radius="0.026" length="0.016" />
       </geometry>
-      <origin xyz="0 0 0.008" />
+      <origin xyz="${orig_x} ${orig_y} 0.008" />
       <material name="black" />
     </visual>
   </link>
