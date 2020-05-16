@@ -2,9 +2,10 @@
 ## ped: Pedsim Simulator
 ## gazebo: Pedsim Gazebo Plugin
 ## nav: Navigation Stack (move_base)
+## goal: Pedestrian Goal Setting
 sudo killall rosmaster
 sudo killall gzserver
 sudo killall gzclient
 source /opt/ros/melodic/setup.bash
 source ../devel/setup.bash
-roslaunch development ped_gazebo_nav.launch
+roslaunch development gazebo_only.launch
