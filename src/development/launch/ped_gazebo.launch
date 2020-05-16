@@ -15,7 +15,7 @@
   </include>
 
   <!-- ******************** JACKAL ******************** -->
-  <include file="$(find development)/launch/jackal.launch">
+  <include file="$(find development)/resources/jackal/jackal.launch">
     <!-- base: Generates Jackal model only (faster) -->
     <!-- fyp: Generates Jackal model with sensors (slower) -->
     <arg name="config" value="fyp_hd"/>
@@ -27,7 +27,7 @@
         type="spawn_model"
 	      args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0" />
 
-  <!-- ******************** RVIZ + PEDSIM ******************** -->
+  <!-- ******************** PEDSIM ******************** -->
   <arg name="rqt_teleop" default="false"/>
   <arg name="visualize" default="true"/>
   <arg name="with_robot" default="false"/>

@@ -1,10 +1,5 @@
 <?xml version="1.0"?>
 <robot name="jackal" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:property name="orig_x" value="0" />
-  <xacro:property name="orig_y" value="0" />
-  <xacro:property name="orig_z" value="0" />
-  <xacro:property name="orig_xyz" value="${orig_x} ${orig_y} ${orig_z}" />
-
   <xacro:property name="PI" value="3.1415926535897931" />
 
   <xacro:property name="wheelbase" value="0.262" />
@@ -91,7 +86,7 @@
     <origin xyz="${wheelbase/2} ${-track/2} ${wheel_vertical_offset}" rpy="0 0 0" />
   </xacro:wheel>
   <xacro:wheel prefix="rear_left">
-    <origin xyz="${-wheelbase/20} ${track/2} ${wheel_vertical_offset}" rpy="0 0 0" />
+    <origin xyz="${-wheelbase/2} ${track/2} ${wheel_vertical_offset}" rpy="0 0 0" />
   </xacro:wheel>
   <xacro:wheel prefix="rear_right">
     <origin xyz="${-wheelbase/2} ${-track/2} ${wheel_vertical_offset}" rpy="0 0 0" />
@@ -100,7 +95,7 @@
   <link name="base_link"></link>
 
   <joint name="base_link_joint" type="fixed">
-    <origin xyz="${orig_xyz}" rpy="0 0 0" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
     <parent link="base_link"/>
     <child link="chassis_link" />
   </joint>

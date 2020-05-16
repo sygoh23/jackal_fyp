@@ -1,6 +1,4 @@
-# Launches Jackal simulation with the following features:
-## ped: Pedsim Simulator
-## gazebo: Pedsim Gazebo Plugin
+# Launches Jackal simulation with pedestrians and gazebo integration...
 sudo killall rosmaster
 sudo killall gzserver
 sudo killall gzclient
