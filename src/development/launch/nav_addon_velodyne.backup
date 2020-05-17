@@ -9,4 +9,8 @@
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
     <remap from="odom" to="odometry/filtered" />
   </node>
+
+  <!-- Pedestrian Following -->
+  <node pkg="development" type="ped_follow_v3.py" name="ped_follower" output="screen" launch-prefix="gnome-terminal --command"/>
+
 </launch>
