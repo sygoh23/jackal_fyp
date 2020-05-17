@@ -47,7 +47,7 @@ def movebase_client():
                 min_dist = dist_list[j]
                 closest_ped = j
             print("--Ped: %d | Pose: (%.2f, %.2f) | Dist to Target: %.2f" % (j+1, ped_x, ped_y, dist_list[j]))
-        print("Ped %d is closest to target, %.2fm away" % (closest_ped, min_dist))
+        print("Ped %d is closest to target, %.2fm away" % (closest_ped+1, min_dist))
 
         # Select pedestrian closest to target:
         ped_x = ped.agent_states[closest_ped].pose.position.x
