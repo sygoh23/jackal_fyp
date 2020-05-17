@@ -1,7 +1,7 @@
 <launch>
   <!--  ******************** GAZEBO ********************  -->
   <arg name="use_sim_time" default="true"/>
-  <arg name="gui" default="true"/>
+  <arg name="gui" default="false"/>
   <arg name="headless" default="false"/>
   <arg name="world_name" default="$(find development)/resources/gazebo/basic.world"/>
 
@@ -15,10 +15,12 @@
   </include>
 
   <!-- ******************** JACKAL ******************** -->
-  <include file="$(find development)/launch/jackal.launch">
+  <include file="$(find development)/resources/jackal/jackal.launch">
     <!-- base: Generates Jackal model only (faster) -->
-    <!-- fyp: Generates Jackal model with sensors (slower) -->
-    <arg name="config" value="fyp"/>
+    <!-- fyp_laser: Generates Jackal model with 2D laser scanner (fast) -->
+    <!-- fyp_velodyne: Generates Jackal model with 3D Velodyne at low resolution (slower) -->
+    <!-- fyp_velodyne_hd: Generates Jackal model with 3D Velodyne at high resolution (slowest) -->
+    <arg name="config" value="fyp_velodyne_hd"/>
   </include>
 
   <!-- Spawn Jackal -->
@@ -27,12 +29,12 @@
         type="spawn_model"
 	      args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0" />
 
-  <!-- ******************** RVIZ + PEDSIM ******************** -->
+  <!-- ******************** PEDSIM ******************** -->
   <arg name="rqt_teleop" default="false"/>
   <arg name="visualize" default="true"/>
   <arg name="with_robot" default="false"/>
   <arg name="kbd_teleop" default="false"/>
-  <arg name="simulation_factor" default="3.0"/> <!-- Speed up -->
+  <arg name="simulation_factor" default="2.0"/> <!-- Speed up -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
 
   <!-- Simulator -->
@@ -56,10 +58,7 @@
   <include file="$(find pedsim_visualizer)/launch/visualizer.launch"/>
 
   <!-- Rviz -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/rviz/jackal_pedsim.rviz" if="$(arg visualize)"/>
-
-  <!-- Listener -->
-  <node pkg="development" type="ped_listener.py" name="ped_location_listener" output="screen" launch-prefix="gnome-terminal --command"/>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/rviz/jackal_pedsim_nav_goal.rviz" if="$(arg visualize)"/>
 
   <!-- Pedsim Spawner -->
   <node pkg="pedsim_gazebo_plugin" type="spawn_pedsim_agents.py" name="spawn_pedsim_agents"  output="screen"/>
