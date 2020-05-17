@@ -24,18 +24,18 @@ def movebase_client():
     data = rospy.wait_for_message("/pedsim_simulator/simulated_agents", AgentStates)
     total_ped = len(data.agent_states)
     n_loop = 200
-    t_delay = 1
+    t_delay = 2
     print("Delay: %d | Iterations: %d | Target: (%d, %d)" % (t_delay, n_loop, target_x, target_y))
     
     # Follow pedestrian n_loop times:
     for i in range(n_loop):
-        print("\n--------------- i = %d ---------------" % i)
+        print("\n\n------------------------- i = %d -------------------------" % i)
 
         # Pedestrian position:
         ped = rospy.wait_for_message("/pedsim_simulator/simulated_agents", AgentStates)
         
         # Distance between each pedestrian and the target:
-        print("Pedestrians:")
+        print("PEDESTRIANS:")
         dist_list = []
         min_dist = 100000 # initialize to large value
         closest_ped = 0
@@ -46,8 +46,8 @@ def movebase_client():
             if dist_list[j] < min_dist:
                 min_dist = dist_list[j]
                 closest_ped = j
-            print("--Ped: %d | Pose: (%.2f, %.2f) | Dist to Target: %.2f" % (j+1, ped_x, ped_y, dist_list[j]))
-        print("Ped %d is closest to target, %.2fm away" % (closest_ped+1, min_dist))
+            print("--Ped: %d | Pose: (%.2f, %.2f) | Dist to Target: %.2f" % (j, ped_x, ped_y, dist_list[j]))
+        print("Ped %d is closest to target, %.2fm away" % (closest_ped, min_dist))
 
         # Select pedestrian closest to target:
         ped_x = ped.agent_states[closest_ped].pose.position.x
@@ -58,8 +58,9 @@ def movebase_client():
         odom_x = odom.pose.pose.position.x
         odom_y = odom.pose.pose.position.y
         dist = math.sqrt((odom_x-ped_x)**2+(odom_y-ped_y)**2)
-        print("\nRobot:")
-        print("--Follow: ped %d | Dist to ped: %.2fm" % (closest_ped+1, dist))
+        print("\nROBOT:")
+        print("--Follow: ped %d | Dist to ped: %.2fm" % (closest_ped, dist))
+        print("----------------------------------------------------------")
 
         if dist > 2:
            # Creates a new goal with the MoveBaseGoal constructor

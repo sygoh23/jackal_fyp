@@ -20,7 +20,7 @@
     <!-- fyp_laser: Generates Jackal model with 2D laser scanner (fast) -->
     <!-- fyp_velodyne: Generates Jackal model with 3D Velodyne at low resolution (slower) -->
     <!-- fyp_velodyne_hd: Generates Jackal model with 3D Velodyne at high resolution (slowest) -->
-    <arg name="config" value="fyp_velodyne_hd"/>
+    <arg name="config" value="fyp_velodyne"/>
   </include>
 
   <!-- Spawn Jackal -->
@@ -46,10 +46,10 @@
     <arg name="simulation_factor" value="$(arg simulation_factor)"/>
     <arg name="update_rate" value="$(arg update_rate)"/>
     <arg name="default_queue_size" value="10"/>
-    <arg name="max_robot_speed" value="1.5"/>
+    <arg name="max_robot_speed" value="20"/>
     <arg name="robot_mode" value="1"/>
     <arg name="enable_groups" value="false"/>
-    <arg name="pose_initial_x" value="10"/>
+    <arg name="pose_initial_x" value="40"/>
     <arg name="pose_initial_y" value="10"/>
     <arg name="pose_initial_theta" value="0"/>
   </include>
