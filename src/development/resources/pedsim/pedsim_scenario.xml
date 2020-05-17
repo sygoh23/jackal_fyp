@@ -1,54 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <!--Obstacles-->
-  <obstacle x1="-1" y1="39" x2="-1" y2="-1"/>
-  <obstacle x1="-1" y1="-1" x2="59" y2="-1"/>
-  <obstacle x1="59" y1="-1" x2="59" y2="39"/>
-  <obstacle x1="59" y1="39" x2="49" y2="39"/>
-
-  <obstacle x1="49" y1="39" x2="49" y2="19"/>
-  <obstacle x1="49" y1="19" x2="9" y2="19"/>
-  <obstacle x1="9" y1="19" x2="9" y2="39"/>
-  <obstacle x1="9" y1="39" x2="-1" y2="39"/>
 
   <!--Waypoints -->
-  <waypoint id="building_1" x="4" y="39" r="1"/>
-  <waypoint id="building_2" x="54" y="39" r="1"/>
-  <waypoint id="corner_1" x="4" y="7" r="1"/>
-  <waypoint id="corner_2" x="54" y="7" r="1"/>
+  <waypoint id="entry_1" x="54" y="39" r="1"/>
+  <waypoint id="entry_2" x="54" y="-21" r="1"/>
+  <waypoint id="corner_1_north" x="4" y="14" r="1"/>
+  <waypoint id="corner_1_south" x="4" y="6" r="1"/>
 
-  <!--
-  <obstacle x1="0" y1="40" x2="0" y2="0"/>
-  <obstacle x1="0" y1="0" x2="60" y2="0"/>
-  <obstacle x1="60" y1="0" x2="60" y2="40"/>
-  <obstacle x1="60" y1="40" x2="50" y2="40"/>
+  <waypoint id="corner_2_north" x="54" y="14" r="1"/>
+  <waypoint id="corner_2_south" x="54" y="6" r="1"/>
 
-  <obstacle x1="50" y1="40" x2="50" y2="20"/>
-  <obstacle x1="50" y1="20" x2="10" y2="20"/>
-  <obstacle x1="10" y1="20" x2="10" y2="40"/>
-  <obstacle x1="10" y1="40" x2="0" y2="40"/>
-
-  <waypoint id="building_1" x="5" y="40" r="1"/>
-  <waypoint id="building_2" x="55" y="40" r="1"/>
-  <waypoint id="corner_1" x="5" y="8" r="1"/>
-  <waypoint id="corner_2" x="55" y="8" r="1"/>
-  -->
-
-  <!--Agents-->
-  <!--
-  <agent x="17" y="11" n="1" dx="0" dy="0" type="2">
-      <addwaypoint id="robot_start"/>
-      <addwaypoint id="robot_goal"/>
+  <!--Peds 0 and 1 -->
+  <agent x="4" y="35" n="3" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="corner_1_north"/>
+    <addwaypoint id="corner_2_north"/>
+    <addwaypoint id="entry_1"/>
+    <addwaypoint id="corner_2_south"/>
+    <addwaypoint id="corner_1_south"/>
+    <addwaypoint id="corner_1_north"/>
   </agent>
-  -->
 
-  <agent x="4" y="29" n="5" dx="3" dy="3" type="0">
-    <addwaypoint id="corner_1"/>
-    <addwaypoint id="corner_2"/>
-    <addwaypoint id="building_2"/>
-    <addwaypoint id="corner_2"/>
-    <addwaypoint id="corner_1"/>
-    <addwaypoint id="building_1"/>
+  <!--Peds 2 and 3 -->
+  <agent x="4" y="35" n="3" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="corner_1_north"/>
+    <addwaypoint id="corner_2_north"/>
+    <addwaypoint id="entry_2"/>
+    <addwaypoint id="corner_2_south"/>
+    <addwaypoint id="corner_1_south"/>
+    <addwaypoint id="corner_1_north"/>
   </agent>
 
 </scenario>

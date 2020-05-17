@@ -20,7 +20,7 @@
     <!-- fyp_laser: Generates Jackal model with 2D laser scanner (fast) -->
     <!-- fyp_velodyne: Generates Jackal model with 3D Velodyne at low resolution (slower) -->
     <!-- fyp_velodyne_hd: Generates Jackal model with 3D Velodyne at high resolution (slowest) -->
-    <arg name="config" value="fyp_velodyne_hd"/>
+    <arg name="config" value="fyp_velodyne"/>
   </include>
 
   <!-- Spawn Jackal -->
@@ -46,10 +46,10 @@
     <arg name="simulation_factor" value="$(arg simulation_factor)"/>
     <arg name="update_rate" value="$(arg update_rate)"/>
     <arg name="default_queue_size" value="10"/>
-    <arg name="max_robot_speed" value="1.5"/>
+    <arg name="max_robot_speed" value="20"/>
     <arg name="robot_mode" value="1"/>
     <arg name="enable_groups" value="false"/>
-    <arg name="pose_initial_x" value="10"/>
+    <arg name="pose_initial_x" value="40"/>
     <arg name="pose_initial_y" value="10"/>
     <arg name="pose_initial_theta" value="0"/>
   </include>
@@ -58,7 +58,7 @@
   <include file="$(find pedsim_visualizer)/launch/visualizer.launch"/>
 
   <!-- Rviz -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/rviz/jackal_pedsim_nav_goal.rviz" if="$(arg visualize)"/>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find development)/resources/rviz/jackal_pedsim_nav.rviz" if="$(arg visualize)"/>
 
   <!-- Pedsim Spawner -->
   <node pkg="pedsim_gazebo_plugin" type="spawn_pedsim_agents.py" name="spawn_pedsim_agents"  output="screen"/>
