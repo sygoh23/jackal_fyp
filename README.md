@@ -1,6 +1,6 @@
 # ECSE Final Year Project
 
-#### Last Major Update: 7th May 2020
+#### Last Major Update: 17th May 2020
 <img src="https://github.com/sygoh23/jackal_fyp/blob/master/.images/02-jackal-pedsim.png" height="400">
 
 ### Source Code Structure:
@@ -10,18 +10,25 @@ jackal_fyp/src/...
 - dependencies: Contains all of the miscellaneous ROS packages required to build the workspace.
 - development: Main working folder for algorithm development and programming.
   - launch: Contains launch files for simulations.
-  - resources: Contains resources for simulations with folders for `gazebo`, `pedsim` and `rviz`.
+  - resources: Contains resources for simulations with folders for `gazebo`, `move_base`, `pedsim` and `rviz`.
   - scripts: Contains scripts for listener and publisher nodes.
 - jackal: Contains the modified Jackal robot (with additional sensors) for use in Gazebo and RViz.
 - pedsim: Contains the 'pedsim_ros' library for simulating groups of pedestrians.
 
-### Useful Start Commands:
+### Useful Scripts:
 ```
-jackal_fyp/start/...
+jackal_fyp/...
 ```
-- jackal_pedsim.sh: Launches Gazebo (with Jackal robot), Pedsim, RViz and a listener for pedestrian positions.
-- jackal_pedsim_nav.sh: Launches Gazebo (with Jackal robot), Pedsim, Rviz, 'move_base' and a listener for pedestrian positions. Navigation goals can be set in RViz to demonstrate path planning.
-- setup.sh: Sources the ROS installation
+- reset.sh: Kills all ROS processes.
+- setup.sh: Sources the ROS installation.
+
+### Simulation Instructions:
+1. Setup Source Files: Change directory to `jackal_fyp` and source the ROS installation by running `setup.sh`.
+2. Launch Simulation: Change directory to `jackal_fyp/start` and run one of the following scripts:
+ * `ped_gazebo.sh`: Launches the Pedsim simulator with Gazebo integration.
+ * `ped_only.sh`: Launches the Pedsim simulator only.
+
+Alternatively, the simulation can be launched directly using `roslaunch development ped_gazebo.launch` or `roslaunch development ped_only.launch`.
 
 
 ### Other Dependencies:
