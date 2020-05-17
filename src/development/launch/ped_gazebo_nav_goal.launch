@@ -18,7 +18,7 @@
   <include file="$(find development)/launch/jackal.launch">
     <!-- base: Generates Jackal model only (faster) -->
     <!-- fyp: Generates Jackal model with sensors (slower) -->
-    <arg name="config" value="base"/>
+    <arg name="config" value="fyp"/>
   </include>
 
   <!-- Spawn Jackal -->
