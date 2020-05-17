@@ -1,0 +1,10 @@
+# The base Jackal configuration has no accessories at all,
+# so nothing need be specified here; the defaults as given
+# in the URDF suffice to define this config.
+
+JACKAL_NAVSAT=0
+JACKAL_VELODYNE=0
+JACKAL_VELODYNE_HD=0
+JACKAL_D435=1
+JACKAL_FLEA3=1
+JACKAL_LASER=1
