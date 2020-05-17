@@ -21,8 +21,10 @@
 
   <include file="$(find development)/resources/jackal/jackal.launch">
     <!-- base: Generates Jackal model only (faster) -->
-    <!-- fyp: Generates Jackal model with sensors (slower) -->
-    <arg name="config" value="fyp"/>
+    <!-- fyp_laser: Generates Jackal model with 2D laser scanner (fast) -->
+    <!-- fyp_velodyne: Generates Jackal model with 3D Velodyne at low resolution (slower) -->
+    <!-- fyp_velodyne_hd: Generates Jackal model with 3D Velodyne at high resolution (slowest) -->
+    <arg name="config" value="fyp_velodyne_hd"/>
   </include>
 
   <node name="urdf_spawner"
