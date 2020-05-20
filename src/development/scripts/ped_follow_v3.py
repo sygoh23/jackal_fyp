@@ -5,7 +5,6 @@ import time
 import math
 import actionlib
 import numpy as np
-# Brings in the .action file and messages used by the move base action
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from pedsim_msgs.msg import AgentStates
 from nav_msgs.msg import Odometry
@@ -16,58 +15,56 @@ def movebase_client():
     # Waits until the action server has started up and started listening for goals.
     client.wait_for_server()
 
-    # First target:
+    # Set target as first building:
     #target_x = 54
     #target_y = 39
 
-    # Second target:
+    # Set target as second building:
     target_x = 54
     target_y = -21
 
     # Determine number of pedestrians:
     data = rospy.wait_for_message("/pedsim_simulator/simulated_agents", AgentStates)
     total_ped = len(data.agent_states)
-    n_loop = 200
-    t_delay = 2
+    n_loop = 200 # Number of following iterations
+    t_delay = 2 # Time between iterations
     print("Delay: %d | Iterations: %d | Target: (%d, %d)" % (t_delay, n_loop, target_x, target_y))
     dist_last = []
-    dist_delta_last = []
+    vel_last = []
     # Follow pedestrian n_loop times:
     for i in range(n_loop):
         print("\n\n------------------------- i = %d -------------------------" % i)
         # Pedestrian position:
         ped = rospy.wait_for_message("/pedsim_simulator/simulated_agents", AgentStates)
-
-        # Distance between each pedestrian and the target:
-        dist_list = [] # distances to target
-        dist_delta = [] # change in distances to target
-        min_dist_raw = 100000 # initialize to large value
-        max_dist_delta = -100000 # initialize to small value
+        dist = [] # distances to target
+        vel = [] # change in distances to target
+        min_dist = 100000 # initialize to large value
+        max_vel = -100000 # initialize to small value
         best_ped_raw = 0
-        best_ped_delta = 0
+        best_ped_vel = 0
         print("PEDESTRIANS:")
         for j in range(total_ped):
             ped_x = ped.agent_states[j].pose.position.x
             ped_y = ped.agent_states[j].pose.position.y
-            dist_list.append(math.sqrt((target_x-ped_x)**2+(target_y-ped_y)**2))
-            if dist_list[j] < min_dist_raw:
-                min_dist_raw = dist_list[j]
+            dist.append(math.sqrt((target_x-ped_x)**2+(target_y-ped_y)**2))
+            if dist[j] < min_dist:
+                min_dist = dist[j]
                 best_ped_raw = j
             if i > 0:
-                dist_delta.append(dist_last[j]-dist_list[j])
-                print("- Ped: %d | Pose: (%.1f, %.1f) | Distance (Target): %.1f | Velocity (Target): %.1f" % (j, ped_x, ped_y, dist_list[j], dist_delta[j]))
-                if dist_delta[j] > max_dist_delta:
-                    max_dist_delta = dist_delta[j]
-                    best_ped_delta = j
-        dist_last = dist_list
-        dist_delta_last = dist_delta
+                vel.append(dist_last[j]-dist[j])
+                print("- Ped: %d | Pose: (%.1f, %.1f) | Distance (Target): %.1f | Velocity (Target): %.1f" % (j, ped_x, ped_y, dist[j], vel[j]))
+                if vel[j] > max_vel:
+                    max_vel = vel[j]
+                    best_ped_vel = j
+        dist_last = dist
+        vel_last = vel
 
         best_ped = best_ped_raw # Select closest pedestrian first
         wait = 0;
         if i > 0:
-            print("Best Ped (Position): Ped %d @ %.1fm distance from target..." % (best_ped_raw, min_dist_raw))
-            print("Best Ped (Velocity): Ped %d @ %.1fm/s velocity towards target..." % (best_ped_delta, max_dist_delta))
-            if dist_last[best_ped]*dist_delta_last[best_ped] < 0:
+            print("Best Ped (Position): Ped %d @ %.1fm distance from target..." % (best_ped_raw, min_dist))
+            print("Best Ped (Velocity): Ped %d @ %.1fm/s velocity towards target..." % (best_ped_vel, max_vel))
+            if dist_last[best_ped]*vel_last[best_ped] < 0:
                 wait = 1; # If the pedestrian is moving away from target: wait...
                 print("NOTICE: Pedestrian is moving away from target, selecting new target...")
         else:
