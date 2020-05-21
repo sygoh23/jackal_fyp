@@ -241,7 +241,7 @@ Visualization Manager:
         Pedsim-Agents: true
         Pedsim-Walls: true
         Value: false
-      Zoom Factor: 0.75
+      Zoom Factor: 1
     - Alpha: 1
       Class: spencer_tracking_rviz_plugin/TrackedPersons
       Color: 130; 130; 130
