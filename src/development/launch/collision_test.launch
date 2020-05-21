@@ -1,13 +1,13 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!-- RVIZ CONFIG -->
-  <arg name="visualize" default="true"/>
+  <arg name="visualize" default="false"/>
   <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_pedsim_nav.rviz"/>
 
   <!--  GAZEBO CONFIG -->
-  <arg name="gui" default="false"/>
+  <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
-  <arg name="world_name" default="$(find development)/resources/gazebo/basic.world"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/empty.world"/>
 
   <!-- JACKAL CONFIG -->
   <!-- base: Generates Jackal model only (faster) -->
@@ -18,8 +18,8 @@
   <arg name="spawn_jackal" default="true"/>
 
   <!-- PEDSIM CONFIG -->
-  <arg name="scene_file" value="$(find development)resources/pedsim/pedsim_scenario.xml"/>
-  <arg name="simulation_factor" default="1.0"/> <!-- Simulation rate -->
+  <arg name="scene_file" value="$(find development)resources/pedsim/collision_test.xml"/>
+  <arg name="simulation_factor" default="3.0"/> <!-- Simulation rate -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
   <arg name="ped_gazebo_plugin" default="true"/>
 
@@ -41,7 +41,7 @@
   <node name="urdf_spawner"
         pkg="gazebo_ros"
         type="spawn_model"
-        args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0"
+	      args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0"
         if="$(arg spawn_jackal)" />
 
   <include file="$(find development)/resources/jackal/jackal.launch">

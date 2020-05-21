@@ -1,54 +1,37 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
 
-
 <model name="actor_model">
-  <pose>0 0 0.75 0 0 0</pose>
-  <link name="link">
-    <collision name="collision">
-      <geometry>
-        <box>
-          <size>.5 .5 1.5</size>
-        </box>
-      </geometry>
-    </collision>
-
-    <visual name="visual">
-      <geometry>
-        <box>
-          <size>.5 .5 1.5</size>
-        </box>
-      </geometry>
-    </visual>
-
-  </link>
-</model>
-
-
-<!--<model name="actor_model">
-  <link name="link">
-    <collision name="collision">
-      <pose>0 0 0 1.5708 0 0</pose>
-      <geometry>
-      <box>
-        <size>.5 .5 1.5</size>
-      </box>
-      </geometry>
-    </collision>
-    <visual name="visual">
-      <pose>0 0 0 1.5708 0 0</pose>
-      <geometry>
-        <mesh>
-          <scale>0.01 0.01 0.01</scale>
-          <uri>model://pedsim_gazebo_plugin/meshes/actor_model.obj</uri>
-        </mesh>
-      </geometry>
-    </visual>
-  </link>
-</model>-->
-
-
-
-
-
+  <pose>0 0 0.8 0 0 0</pose>
+    <link name="body">
+      <collision name="collision_body">
+        <geometry>
+          <cylinder>
+            <radius>0.25</radius>
+            <length>1.6</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.001</mass>
+        <inertia> <!-- http://gazebosim.org/tutorials?tut=inertia&cat=build_robot -->
+          <ixx>0.000083</ixx>       <!-- for a box: ixx = 0.083 * mass * (y*y + z*z) -->
+          <ixy>0.0</ixy>         <!-- for a box: ixy = 0 -->
+          <ixz>0.0</ixz>         <!-- for a box: ixz = 0 -->
+          <iyy>0.000083</iyy>       <!-- for a box: iyy = 0.083 * mass * (x*x + z*z) -->
+          <iyz>0.0</iyz>         <!-- for a box: iyz = 0 -->
+          <izz>0.000083</izz>       <!-- for a box: izz = 0.083 * mass * (x*x + y*y) -->
+        </inertia>
+      </inertial>
+      <visual name="visual_body">
+        <geometry>
+          <cylinder>
+            <radius>0.25</radius>
+            <length>1.5</length>
+          </cylinder>
+        </geometry>
+      </visual>
+      <gravity>0</gravity>
+    </link>
+  </model>
 </sdf>
