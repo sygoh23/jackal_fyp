@@ -18,14 +18,14 @@ def movebase_client():
     # Set final destination:
     # Building 1: (54,39)
     # Building 2: (54,-21)
-    target_xy = [54, 39]
+    target_xy = [165, 65]
 
     # Determine number of pedestrians:
     ped_init = rospy.wait_for_message("/pedsim_simulator/simulated_agents", AgentStates)
     total_ped = len(ped_init.agent_states)
 
     # Following parameters:
-    n_loop = 200 # Number of following iterations
+    n_loop = 10000 # Number of following iterations
     t_delay = 1 # Time between iterations (lower = more responsive)
     print("Delay: %d | Iterations: %d | Target: (%d, %d)" % (t_delay, n_loop, target_xy[0], target_xy[1]))
     dist_last = [] # Last reported distance

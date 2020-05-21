@@ -2,36 +2,45 @@
 <scenario>
 
   <!--Waypoints -->
-  <waypoint id="entry_1a" x="52" y="38" r="1"/>
-  <waypoint id="entry_1b" x="56" y="38" r="1"/>
-  <waypoint id="entry_2a" x="56" y="-20" r="1"/>
-  <waypoint id="entry_2b" x="52" y="-20" r="1"/>
-  <waypoint id="corner_1_north" x="4" y="14" r="1"/>
-  <waypoint id="corner_1_south" x="4" y="6" r="1"/>
+  <waypoint id="intersection1" x="75" y="10" r="1"/>
+  <waypoint id="intersection2" x="155" y="10" r="1"/>
 
-  <waypoint id="corner_2_north" x="54" y="14" r="1"/>
-  <waypoint id="corner_2_south" x="54" y="6" r="1"/>
+  <waypoint id="enclosure1" x="75" y="40" r="1"/>
+  <waypoint id="enclosure2" x="75" y="-20" r="1"/>
+  <waypoint id="enclosure3" x="155" y="40" r="1"/>
+  <waypoint id="enclosure4" x="155" y="-20" r="1"/>
 
-  <!--Peds 0 and 1 -->
-  <agent x="4" y="35" n="3" dx="0.1" dy="0.1" type="0">
-    <addwaypoint id="corner_1_north"/>
-    <addwaypoint id="corner_2_north"/>
-    <addwaypoint id="entry_1a"/>
-    <addwaypoint id="entry_1b"/>
-    <addwaypoint id="corner_2_south"/>
-    <addwaypoint id="corner_1_south"/>
-    <addwaypoint id="corner_1_north"/>
+  <waypoint id="building1" x="70" y="70" r="1"/>
+  <waypoint id="building2" x="85" y="-55" r="1"/>
+  <waypoint id="building3" x="165" y="65" r="1"/>
+  <waypoint id="building4" x="155" y="-55" r="1"/>
+
+  <!--Peds going to building 1 -->
+  <agent x="-5" y="10" n="2" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="intersection1"/>
+    <addwaypoint id="enclosure1"/>
+    <addwaypoint id="building1"/>
   </agent>
 
-  <!--Peds 2 and 3 -->
-  <agent x="4" y="35" n="3" dx="0.1" dy="0.1" type="0">
-    <addwaypoint id="corner_1_north"/>
-    <addwaypoint id="corner_2_north"/>
-    <addwaypoint id="entry_2a"/>
-    <addwaypoint id="entry_2b"/>
-    <addwaypoint id="corner_2_south"/>
-    <addwaypoint id="corner_1_south"/>
-    <addwaypoint id="corner_1_north"/>
+  <!--Peds going to building 2 -->
+  <agent x="-5" y="10" n="2" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="intersection1"/>
+    <addwaypoint id="enclosure2"/>
+    <addwaypoint id="building2"/>
+  </agent>
+
+  <!--Peds going to building 3 -->
+  <agent x="-5" y="10" n="2" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="intersection2"/>
+    <addwaypoint id="enclosure3"/>
+    <addwaypoint id="building3"/>
+  </agent>
+
+  <!--Peds going to building 4 -->
+  <agent x="-5" y="10" n="2" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="intersection2"/>
+    <addwaypoint id="enclosure4"/>
+    <addwaypoint id="building4"/>
   </agent>
 
 </scenario>

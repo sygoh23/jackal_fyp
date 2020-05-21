@@ -1,6 +1,6 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
-  <arg name="ped_follow" default="false"/>
+  <arg name="ped_follow" default="true"/>
 
   <!-- ******************** LAUNCH MOVE BASE NAVIGATION ******************** -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
