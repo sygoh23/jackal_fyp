@@ -213,6 +213,77 @@
       </include>
     </model>
 
+    <model name='Building_1'>
+      <include>
+        <uri>model://house_3</uri>
+        <pose>70 70 0 0 0 1.5708</pose>
+      </include>
+    </model>
+
+    <model name='Building_2'>
+      <include>
+        <uri>model://post_office</uri>
+        <pose>85 -55 0 0 0 3.1416</pose>
+      </include>
+    </model>
+
+    <model name='Building_3'>
+      <include>
+        <uri>model://thrift_shop</uri>
+        <pose>165 65 0 0 0 -1.5708</pose>
+      </include>
+    </model>
+
+    <model name='Building_4'>
+      <include>
+        <uri>model://grocery_store</uri>
+        <pose>155 -55 0 0 0 0</pose>
+      </include>
+    </model>
+
+    <model name='Roadworks'>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>70.5 -20 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>71.5 -20 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>72.5 -20 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>73.5 -20 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>74.5 -20 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>75.5 -20 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>76.5 -20 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>77.5 -20 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>78.5 -20 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://construction_cone</uri>
+        <pose>79.5 -20 0 0 0 0</pose>
+      </include>
+    </model>
+
     <plugin name="ActorPosesPlugin" filename="libActorPosesPlugin.so"></plugin>
 
   </world>
