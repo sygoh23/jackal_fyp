@@ -37,7 +37,7 @@ Alternatively, the simulation can be launched directly using `roslaunch developm
 
 3. Navigation & Pedestrian Following: To initiate the navigation stack with pedestrian following, run one of the followings scripts depending on your Jackal configuration:
  * `nav_addon_laser.sh`: Launches navigation stack using the 2D laser scanner.
- * `nav_addon_velodyne.sh`: Launches the navigation stack using the 3D Velodyne Lidar.
+ * `nav_addon.sh`: Launches the navigation stack using the 3D Velodyne Lidar.
  
  Alternatively, the navigation stack can be launched directly using `roslaunch development nav_addon_laser.launch` or `roslaunch development nav_addon_velodyne.launch`.
 
