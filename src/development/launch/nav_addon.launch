@@ -1,8 +1,8 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <arg name="ped_follow" default="false"/>
-  <arg name="use_velodyne" defaul="true"/>
-  <arg name="use_laser" defaul="false"/>
+  <arg name="use_velodyne" default="true"/>
+  <arg name="use_laser" default="false"/>
   <!-- Do not use both sensors at the same time! -->
 
   <!-- ******************** LAUNCH MOVE BASE NAVIGATION ******************** -->
