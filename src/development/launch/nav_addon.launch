@@ -1,9 +1,24 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <arg name="ped_follow" default="false"/>
+  <arg name="use_velodyne" default="true"/>
+  <arg name="use_laser" default="false"/>
+  <!-- Do not use both sensors at the same time! -->
 
   <!-- ******************** LAUNCH MOVE BASE NAVIGATION ******************** -->
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  <!-- VELODYNE SENSOR -->
+  <node pkg="move_base" type="move_base" if="$(arg use_velodyne)" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find development)resources/move_base/costmap_common_velodyne.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find development)resources/move_base/costmap_common_velodyne.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find development)resources/move_base/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find development)resources/move_base/move_base_params.yaml" command="load" />
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <remap from="odom" to="odometry/filtered" />
+  </node>
+
+  <!-- LASER SENSOR -->
+  <node pkg="move_base" type="move_base" if="$(arg use_laser)" respawn="false" name="move_base" output="screen">
     <rosparam file="$(find development)resources/move_base/costmap_common_laser.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find development)resources/move_base/costmap_common_laser.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find development)resources/move_base/base_local_planner_params.yaml" command="load" />
