@@ -6,7 +6,7 @@
 
   <!--  GAZEBO CONFIG -->
   <arg name="world_name" default="$(find development)/resources/gazebo/basic.world"/>
-  <arg name="gui" default="false"/>
+  <arg name="gui" default="true"/>
 
   <!-- JACKAL CONFIG -->
   <!-- base: Generates Jackal model only (faster) -->

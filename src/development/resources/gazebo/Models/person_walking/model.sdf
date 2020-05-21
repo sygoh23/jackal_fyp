@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="person_walking">
+    <link name="link">
+      <inertial>
+        <pose>0 0 0.95 0 0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.1</ixx>
+          <ixy>0.1</ixy>
+          <ixz>0.1</ixz>
+          <iyy>0.1</iyy>
+          <iyz>0.1</iyz>
+          <izz>0.1</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="bottom">
+        <pose>0 0 0.01 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.35 0.75 0.02</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <collision name="person">
+        <pose>0 0 -0.02 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://person_walking/meshes/walking.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <pose>0 0 -0.02 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://person_walking/meshes/walking.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
