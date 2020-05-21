@@ -30,8 +30,8 @@ global_costmap:
   robot_base_frame: base_link
   update_frequency: 5
   publish_frequency: 5
-  width: 120.0
-  height: 120.0
+  width: 600.0
+  height: 600.0
   resolution: 0.5
   origin_x: -20.0
   origin_y: -40.0

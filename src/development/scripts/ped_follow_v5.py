@@ -16,9 +16,11 @@ def movebase_client():
     client.wait_for_server() # Waits until the action server has started up:
 
     # Set final destination:
-    # Building 1: (54,39)
-    # Building 2: (54,-21)
-    target_xy = [165, 65]
+    # Building 1: (70,70)
+    # Building 2: (85,-55)
+    # Building 3: (165,65)
+    # Building 4: (155,-55)
+    target_xy = [70, 70]
 
     # Determine number of pedestrians:
     ped_init = rospy.wait_for_message("/pedsim_simulator/simulated_agents", AgentStates)
