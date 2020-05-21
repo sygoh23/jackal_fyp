@@ -2,10 +2,8 @@
 <scenario>
 
   <!--Waypoints -->
-  <waypoint id="entry_1a" x="52" y="38" r="1"/>
-  <waypoint id="entry_1b" x="56" y="38" r="1"/>
-  <waypoint id="entry_2a" x="56" y="-20" r="1"/>
-  <waypoint id="entry_2b" x="52" y="-20" r="1"/>
+  <waypoint id="entry_1" x="54" y="39" r="1"/>
+  <waypoint id="entry_2" x="54" y="-21" r="1"/>
   <waypoint id="corner_1_north" x="4" y="14" r="1"/>
   <waypoint id="corner_1_south" x="4" y="6" r="1"/>
 
@@ -16,8 +14,7 @@
   <agent x="4" y="35" n="3" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="corner_1_north"/>
     <addwaypoint id="corner_2_north"/>
-    <addwaypoint id="entry_1a"/>
-    <addwaypoint id="entry_1b"/>
+    <addwaypoint id="entry_1"/>
     <addwaypoint id="corner_2_south"/>
     <addwaypoint id="corner_1_south"/>
     <addwaypoint id="corner_1_north"/>
@@ -27,8 +24,7 @@
   <agent x="4" y="35" n="3" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="corner_1_north"/>
     <addwaypoint id="corner_2_north"/>
-    <addwaypoint id="entry_2a"/>
-    <addwaypoint id="entry_2b"/>
+    <addwaypoint id="entry_2"/>
     <addwaypoint id="corner_2_south"/>
     <addwaypoint id="corner_1_south"/>
     <addwaypoint id="corner_1_north"/>
