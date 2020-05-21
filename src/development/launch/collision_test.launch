@@ -1,11 +1,11 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!-- RVIZ CONFIG -->
-  <arg name="visualize" default="false"/>
+  <arg name="visualize" default="true"/>
   <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_pedsim_nav.rviz"/>
 
   <!--  GAZEBO CONFIG -->
-  <arg name="gui" default="true"/>
+  <arg name="gui" default="false"/>
   <arg name="headless" default="false"/>
   <arg name="world_name" default="$(find development)/resources/gazebo/empty.world"/>
 
@@ -14,7 +14,7 @@
   <!-- fyp_laser: Generates Jackal model with 2D laser scanner (fast) -->
   <!-- fyp_velodyne: Generates Jackal model with 3D Velodyne at low resolution (slower) -->
   <!-- fyp_velodyne_hd: Generates Jackal model with 3D Velodyne at high resolution (slowest) -->
-  <arg name="jackal_config" default="fyp_velodyne"/>
+  <arg name="jackal_config" default="fyp_velodyne_hd"/>
   <arg name="spawn_jackal" default="true"/>
 
   <!-- PEDSIM CONFIG -->
