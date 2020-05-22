@@ -24,7 +24,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Jackal-Velodyne
+    SyncSource: ""
   - Class: rviz_plugin_tutorials/Teleop
     Name: Teleop
     Topic: ""
@@ -36,7 +36,7 @@ Visualization Manager:
   Class: ""
   Displays:
     - Alpha: 0.75
-      Cell Size: 2
+      Cell Size: 5
       Class: rviz/Grid
       Color: 160; 160; 164
       Enabled: true
@@ -46,11 +46,11 @@ Visualization Manager:
       Name: Grid
       Normal Cell Count: 0
       Offset:
-        X: 30
+        X: 100
         Y: 9
         Z: 0
       Plane: XY
-      Plane Cell Count: 38
+      Plane Cell Count: 45
       Reference Frame: <Fixed Frame>
       Value: true
     - Alpha: 1
@@ -393,25 +393,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 76.8001708984375
+      Distance: 157.90350341796875
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 26.00227928161621
-        Y: 6.4980034828186035
-        Z: 8.638315200805664
+        X: 74.2928466796875
+        Y: -6.131684303283691
+        Z: 0.7650701999664307
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.214796543121338
+      Pitch: 0.7247971296310425
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.6385374069213867
+      Yaw: 4.008541107177734
     Saved: ~
 Window Geometry:
   Displays:

@@ -1,0 +1,29 @@
+material Gazebo/Brick
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture ../textures/brick.jpg
+        scale 2.0 2.0
+      }
+    }
+  }
+}
+
+material Gazebo/Grass
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture ../textures/grass.jpg
+        scale 2.0 2.0
+      }
+    }
+  }
+}

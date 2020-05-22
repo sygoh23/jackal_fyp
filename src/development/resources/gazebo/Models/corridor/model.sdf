@@ -22,8 +22,9 @@
         </geometry>
         <material>
           <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
+            <uri>model://corridor/materials/scripts</uri>
+            <uri>model://corridor/materials/textures</uri>
+            <name>Gazebo/Brick</name>
           </script>
           <ambient>1 1 1 1</ambient>
         </material>
@@ -52,8 +53,7 @@
         </geometry>
         <material>
           <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
+            <name>Gazebo/Brick</name>
           </script>
           <ambient>1 1 1 1</ambient>
         </material>
@@ -82,8 +82,7 @@
         </geometry>
         <material>
           <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
+            <name>Gazebo/Brick</name>
           </script>
           <ambient>1 1 1 1</ambient>
         </material>
@@ -112,8 +111,7 @@
         </geometry>
         <material>
           <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
+            <name>Gazebo/Brick</name>
           </script>
           <ambient>1 1 1 1</ambient>
         </material>
@@ -142,8 +140,7 @@
         </geometry>
         <material>
           <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
+            <name>Gazebo/Brick</name>
           </script>
           <ambient>1 1 1 1</ambient>
         </material>
@@ -172,8 +169,7 @@
         </geometry>
         <material>
           <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
+            <name>Gazebo/Brick</name>
           </script>
           <ambient>1 1 1 1</ambient>
         </material>

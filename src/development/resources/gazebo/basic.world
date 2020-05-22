@@ -56,13 +56,14 @@
 
     <!-- ********** Models ********** -->
     <model name='ground_plane'>
+      <pose>120 0 0 0 0 0</pose>    
       <static>1</static>
       <link name='link'>
         <collision name='collision'>
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>600 600</size>
+              <size>300 300</size>
             </plane>
           </geometry>
           <surface>
@@ -87,13 +88,14 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>600 600</size>
+              <size>300 300</size>
             </plane>
           </geometry>
           <material>
             <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
+            <uri>model://corridor/materials/scripts</uri>
+            <uri>model://corridor/materials/textures</uri>
+            <name>Gazebo/Grass</name>
             </script>
           </material>
         </visual>
@@ -137,8 +139,9 @@
           </geometry>
           <material>
             <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
+              <uri>model://corridor/materials/scripts</uri>
+              <uri>model://corridor/materials/textures</uri>
+              <name>Gazebo/Brick</name>
             </script>
             <ambient>1 1 1 1</ambient>
           </material>
@@ -171,8 +174,9 @@
           </geometry>
           <material>
             <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
+              <uri>model://corridor/materials/scripts</uri>
+              <uri>model://corridor/materials/textures</uri>
+              <name>Gazebo/Brick</name>
             </script>
             <ambient>1 1 1 1</ambient>
           </material>
