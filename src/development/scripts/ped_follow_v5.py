@@ -18,8 +18,9 @@ def movebase_client():
     # Set final destination:
     # Building 1: (70,70)
     # Building 2: (85,-55)
-    # Building 3: (165,65)
-    # Building 4: (155,-55)
+    # Building 3: (175,65)
+    # Building 4: (135,70)
+    # Building 5: (155,-55)
     target_xy = [70, 70]
 
     # Determine number of pedestrians:

@@ -230,11 +230,18 @@
     <model name='Building_3'>
       <include>
         <uri>model://thrift_shop</uri>
-        <pose>165 65 0 0 0 -1.5708</pose>
+        <pose>175 65 0 0 0 -1.5708</pose>
       </include>
     </model>
 
     <model name='Building_4'>
+      <include>
+        <uri>model://salon</uri>
+        <pose>135 70 0 0 0 1.5708</pose>
+      </include>
+    </model>
+
+    <model name='Building_5'>
       <include>
         <uri>model://grocery_store</uri>
         <pose>155 -55 0 0 0 0</pose>
@@ -281,6 +288,56 @@
       <include>
         <uri>model://construction_cone</uri>
         <pose>79.5 -20 0 0 0 0</pose>
+      </include>
+    </model>
+
+    <model name='Trees'>
+      <include>
+        <uri>model://oak_tree</uri>
+        <pose>90 1 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://oak_tree</uri>
+        <pose>100 1 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://oak_tree</uri>
+        <pose>110 1 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://oak_tree</uri>
+        <pose>120 1 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://oak_tree</uri>
+        <pose>130 1 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://oak_tree</uri>
+        <pose>140 1 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://oak_tree</uri>
+        <pose>150 1 0 0 0 0</pose>
+      </include>
+    </model>
+
+    <model name='People'>
+      <include>
+        <uri>model://person_standing</uri>
+        <pose>78 18 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://person_standing</uri>
+        <pose>79 18 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://person_standing</uri>
+        <pose>78 19 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://person_standing</uri>
+        <pose>79 19 0 0 0 0</pose>
       </include>
     </model>
 
