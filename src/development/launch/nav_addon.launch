@@ -29,5 +29,5 @@
   </node>
 
   <!-- ******************** LAUNCH PEDESTRIAN FOLLOWING  ******************** -->
-  <node pkg="development" if="$(arg ped_follow)" type="ped_follow_v5.py" name="ped_follower" output="screen" launch-prefix="gnome-terminal --command"/>
+  <!--<node pkg="development" if="$(arg ped_follow)" type="ped_follow_v5.py" name="ped_follower" output="screen"/>-->
 </launch>
