@@ -5,7 +5,7 @@
   <arg name="visualize" default="true"/>
 
   <!--  GAZEBO CONFIG -->
-  <arg name="world_name" default="$(find development)/resources/gazebo/basic.world"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/campus.world"/>
   <arg name="gui" default="true"/>
 
   <!-- JACKAL CONFIG -->
