@@ -3,14 +3,15 @@
   <arg name="ped_follow" default="false"/>
 
   <!-- ******************** LAUNCH GMAPPING ******************** -->
+  <include file="$(find development)/launch/extra/pointcloud_to_laserscan.launch" />  
   <include file="$(find development)/launch/extra/gmapping.launch" />
 
   <!-- ******************** LAUNCH MOVE BASE NAVIGATION ******************** -->
   <!-- VELODYNE SENSOR -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <!-- Odom navigation global and local costmap -->
-    <rosparam file="$(find development)resources/move_base/costmap_common_laser.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find development)resources/move_base/costmap_common_laser.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find development)resources/move_base/costmap_common_velodyne.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find development)resources/move_base/costmap_common_velodyne.yaml" command="load" ns="local_costmap" />
 
     <!-- Global and local planner -->
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
