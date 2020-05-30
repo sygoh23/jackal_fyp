@@ -2,11 +2,11 @@
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!-- RVIZ CONFIG -->
   <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_pedsim_nav.rviz"/>
-  <arg name="visualize" default="true"/>
+  <arg name="enable_rviz" default="true"/>
 
   <!--  GAZEBO CONFIG -->
-  <arg name="world_name" default="$(find development)/resources/gazebo/basic.world"/>
-  <arg name="gui" default="true"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/campus.world"/>
+  <arg name="enable_gazebo_gui" default="true"/>
 
   <!-- JACKAL CONFIG -->
   <!-- base: Generates Jackal model only (faster) -->
@@ -14,24 +14,25 @@
   <!-- fyp_velodyne: Generates Jackal model with 3D Velodyne at low resolution (slower) -->
   <!-- fyp_velodyne_hd: Generates Jackal model with 3D Velodyne at high resolution (slowest) -->
   <arg name="jackal_config" default="fyp_velodyne"/>
-  <arg name="spawn_jackal" default="true"/>
+  <arg name="enable_jackal_robot" default="true"/>
 
   <!-- PEDSIM CONFIG -->
   <arg name="scene_file" value="$(find development)resources/pedsim/pedsim_scenario.xml"/>
   <arg name="simulation_factor" default="2.5"/> <!-- Simulation rate -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
   <arg name="ped_gazebo_plugin" default="true"/>
+  <arg name="enable_pedsim" default="false"/>
 
+  <!--  **************************************************************  -->
+  <!--  **************************************************************  -->
   <!--  **************************************************************  -->
 
   <!--  ******************** LAUNCH GAZEBO WORLD  ********************  -->
-  <arg name="use_sim_time" default="true"/>
-  <arg name="headless" default="false"/>
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="debug" value="0"/>
-    <arg name="gui" value="$(arg gui)"/>
-    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
-    <arg name="headless" value="$(arg headless)"/>
+    <arg name="gui" value="$(arg enable_gazebo_gui)"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="headless" value="false"/>
     <arg name="world_name" value="$(arg world_name)"/>
   </include>
 
@@ -40,14 +41,14 @@
         pkg="gazebo_ros"
         type="spawn_model"
         args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0"
-        if="$(arg spawn_jackal)" />
+        if="$(arg enable_jackal_robot)" />
 
-  <include file="$(find development)/resources/jackal/jackal.launch">
+  <include file="$(find development)/resources/jackal/jackal.launch" if="$(arg enable_jackal_robot)">
       <arg name="config" value="$(arg jackal_config)"/>
   </include>
 
-  <!-- ******************** LAUNCH PEDSIM ******************** -->
-  <include file="$(find pedsim_simulator)/launch/simulator.launch">
+  <!-- ******************** LAUNCH PEDSIM SIMULATOR ******************** -->
+  <include file="$(find pedsim_simulator)/launch/simulator.launch" if="$(arg enable_pedsim)">
     <arg name="scene_file" value="$(arg scene_file)"/>
     <arg name="simulation_factor" value="$(arg simulation_factor)"/>
     <arg name="update_rate" value="$(arg update_rate)"/>
@@ -58,9 +59,9 @@
     <arg name="robot_mode" value="1"/>
     <arg name="enable_groups" value="false"/>
   </include>
-  <include file="$(find pedsim_visualizer)/launch/visualizer.launch"/>
+  <include file="$(find pedsim_visualizer)/launch/visualizer.launch" if="$(arg enable_pedsim)"/>
   <node pkg="pedsim_gazebo_plugin" type="spawn_pedsim_agents.py" name="spawn_pedsim_agents" output="screen" if="$(arg ped_gazebo_plugin)"/>
 
   <!-- ******************** LAUNCH RVIZ ******************** -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config)" if="$(arg visualize)"/>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config)" if="$(arg enable_rviz)"/>
 </launch>

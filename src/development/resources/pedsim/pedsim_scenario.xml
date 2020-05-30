@@ -11,60 +11,46 @@
   <waypoint id="enclosure3" x="155" y="40" r="1"/>
   <waypoint id="enclosure4" x="155" y="-20" r="1"/>
 
-  <waypoint id="building1" x="70" y="70" r="1"/>
-  <waypoint id="building2" x="85" y="-55" r="1"/>
-  <waypoint id="building3" x="175" y="65" r="1"/>
-  <waypoint id="building4" x="135" y="70" r="1"/>
-  <waypoint id="building5" x="155" y="-55" r="1"/>
+  <!--Sinks -->
+  <waypoint id="building1" x="70" y="70" r="1" b="2"/>
+  <waypoint id="building2" x="85" y="-55" r="1" b="2"/>
+  <waypoint id="building3" x="175" y="65" r="1" b="2"/>
+  <waypoint id="building4" x="135" y="70" r="1" b="2"/>
+  <waypoint id="building5" x="155" y="-55" r="1" b="2"/>
 
   <!--Peds going to building 1 -->
-  <agent x="2" y="9" n="3" dx="3" dy="3" type="0">
+  <source x="2" y="9" n="1" dx="3" dy="3" type="0">
     <addwaypoint id="intersection1"/>
     <addwaypoint id="enclosure1"/>
     <addwaypoint id="building1"/>
-    <addwaypoint id="enclosure1"/>
-    <addwaypoint id="intersection1"/>
-    <addwaypoint id="start"/>
-  </agent>
+  </source>
 
   <!--Peds going to building 2 -->
-  <agent x="2" y="9" n="3" dx="3" dy="3" type="0">
+  <source x="2" y="9" n="1" dx="3" dy="3" type="0">
     <addwaypoint id="intersection1"/>
     <addwaypoint id="enclosure2"/>
     <addwaypoint id="building2"/>
-    <addwaypoint id="enclosure2"/>
-    <addwaypoint id="intersection1"/>
-    <addwaypoint id="start"/>
-  </agent>
+  </source>
 
   <!--Peds going to building 3 -->
-  <agent x="2" y="9" n="3" dx="3" dy="3" type="0">
+  <source x="75" y="10" n="1" dx="3" dy="3" type="0">
     <addwaypoint id="intersection2"/>
     <addwaypoint id="enclosure3"/>
     <addwaypoint id="building3"/>
-    <addwaypoint id="enclosure3"/>
-    <addwaypoint id="intersection2"/>
-    <addwaypoint id="start"/>
-  </agent>
+  </source>
 
   <!--Peds going to building 4 -->
-  <agent x="2" y="9" n="3" dx="3" dy="3" type="0">
+  <source x="75" y="10" n="1" dx="3" dy="3" type="0">
     <addwaypoint id="intersection2"/>
     <addwaypoint id="enclosure3"/>
     <addwaypoint id="building4"/>
-    <addwaypoint id="enclosure3"/>
-    <addwaypoint id="intersection2"/>
-    <addwaypoint id="start"/>
-  </agent>
+  </source>
 
   <!--Peds going to building 5 -->
-  <agent x="2" y="9" n="3" dx="3" dy="3" type="0">
+  <source x="75" y="10" n="1" dx="3" dy="3" type="0">
     <addwaypoint id="intersection2"/>
     <addwaypoint id="enclosure4"/>
     <addwaypoint id="building5"/>
-    <addwaypoint id="enclosure4"/>
-    <addwaypoint id="intersection2"/>
-    <addwaypoint id="start"/>
-  </agent>
+  </source>
 
 </scenario>

@@ -56,6 +56,8 @@
 
     <!-- ********** Models ********** -->
     <model name='ground_plane'>
+      <!-- Keep ground plane completely underneath campus -->
+      <pose>-10 207 -16 0 0 0</pose>
       <static>1</static>
       <link name='link'>
         <collision name='collision'>
@@ -92,8 +94,9 @@
           </geometry>
           <material>
             <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
+            <uri>model://corridor/materials/scripts</uri>
+            <uri>model://corridor/materials/textures</uri>
+            <name>Gazebo/Grass</name>
             </script>
           </material>
         </visual>
@@ -103,11 +106,15 @@
       </link>
     </model>
 
-    <include>
-      <name>campus</name>
-      <uri>model://campus</uri>
-      <pose>0 0 0 0 0 0</pose>
-    </include>
+    <model name='Campus'>
+      <static>1</static>
+      <include>
+        <uri>model://campus</uri>
+        <!-- Want jackal at (10, -207, 6.0) -->
+        <!-- Campus spawns at z=20 -->
+        <pose>-10 207 -26 0 0 0</pose>
+      </include>
+    </model>
 
     <plugin name="ActorPosesPlugin" filename="libActorPosesPlugin.so"></plugin>
 

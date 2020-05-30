@@ -1,16 +1,32 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
-  <model name="my_mesh">
-      <pose>0 0 0  0 0 0</pose>
-      <static>true</static>
+  <model name="Campus">
       <link name="campus">
+
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://campus/meshes/campus.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+
         <visual name="visual">
           <geometry>
             <mesh>
               <uri>model://campus/meshes/campus.dae</uri>
             </mesh>
           </geometry>
+          <material>
+            <script>
+              <uri>model://corridor/materials/scripts</uri>
+              <uri>model://corridor/materials/textures</uri>
+              <name>Gazebo/Grass</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+          </material>
         </visual>
+
       </link>
   </model>
 </sdf>
