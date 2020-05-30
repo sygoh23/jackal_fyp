@@ -1,6 +1,6 @@
 # ECSE Final Year Project
 
-#### Last Major Update: 21st May 2020
+#### Last Major Update: 31st May 2020
 <img src="https://github.com/sygoh23/jackal_fyp/blob/master/.images/02-jackal-pedsim.png" height="250">
 
 ### Source Code Structure:
@@ -29,18 +29,9 @@ The Jackal sensor configuration can be adjusted by changing the configuration ar
 
 ### Simulation Instructions:
 1. Source Required Files: Change directory to `jackal_fyp` and source the ROS installation and package files by running `setup.sh`.
-2. Launch Simulation: Change directory to `jackal_fyp/start` and run one of the following scripts:
- * `ped_gazebo.sh`: Launches the Pedsim simulator with Gazebo integration.
- * `ped_only.sh`: Launches the Pedsim simulator only.
+2. Launch Simulation: Change directory to `jackal_fyp/start` and run the following script: `simulation.sh`. Alternatively, the simulation can be launched directly using `roslaunch development simulation.launch`.
 
-Alternatively, the simulation can be launched directly using `roslaunch development ped_gazebo.launch` or `roslaunch development ped_only.launch`.
-
-3. Navigation & Pedestrian Following: To initiate the navigation stack, run `nav_addon.sh`. Ensure that the following arguments inside of `nav_addon.launch` are set correctly:
- * `ped_follow`: If set to true, the script will automatically start the pedestrian following algorithm.
- * `use_velodyne`: Set to true if using the `fyp_velodyne` or `fyp_velodyne_hd` sensor configurations.
- * `use_laser`: Set to true if using the `fyp_laser` sensor configuration.
- 
-Alternatively, the navigation stack can be launched directly using `roslaunch development nav_addon.launch`.
+3. Navigation & Pedestrian Following: To initiate the navigation stack, run `navigation.sh`. If the argument `ped_follow` inside `navigation.launch` is set to true, the script will automatically start the pedestrian following algorithm. The navigation stack can also be launched directly using `roslaunch development navigation.launch`.
 
 ### Other Dependencies:
 * The Jackal robot requires the Intel Realsense SDK for the D435 Depth Cameras.
