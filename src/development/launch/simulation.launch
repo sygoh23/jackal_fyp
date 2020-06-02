@@ -2,7 +2,7 @@
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!-- RVIZ CONFIG -->
   <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_pedsim_nav.rviz"/>
-  <arg name="enable_rviz" default="false"/>
+  <arg name="enable_rviz" default="true"/>
 
   <!--  GAZEBO CONFIG -->
   <arg name="world_name" default="$(find development)/resources/gazebo/campus_hd.world"/>
@@ -14,7 +14,7 @@
   <!-- fyp_velodyne: Generates Jackal model with 3D Velodyne at low resolution (slower) -->
   <!-- fyp_velodyne_hd: Generates Jackal model with 3D Velodyne at high resolution (slowest) -->
   <arg name="jackal_config" default="fyp_velodyne"/>
-  <arg name="enable_jackal_robot" default="false"/>
+  <arg name="enable_jackal_robot" default="true"/>
 
   <!-- PEDSIM CONFIG -->
   <arg name="scene_file" value="$(find development)resources/pedsim/pedsim_scenario.xml"/>
