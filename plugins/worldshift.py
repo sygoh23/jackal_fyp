@@ -6,18 +6,21 @@ old_file = open(input("Please enter input file path: "), 'r+')
 new_file = open(input("Please enter output file path: "), 'a')
 x_shift = int(input("Please enter X shift value: "))
 y_shift = int(input("Please enter Y shift value: "))
-z_shift = int(input("Please enter Z shift value: "))
-
 n = 1
 modify_pose = False
 print("Processing file...")
 for line in old_file:
-	# Check for the campus model:
-	world_flag = line.find("<model name='Campus")
-	if world_flag > 0: 
-		modify_pose = True
+	# Check for the specific models:
+	ground_flag = line.find("<model name='ground")		
+	campus_flag = line.find("<model name='Campus")
+	bounding_flag = line.find("<model name='Bounding")	
+	if ground_flag > 0: print("\nFound ground plane!")
+	if campus_flag > 0: print("\nFound campus model!")
+	if bounding_flag > 0: print("\nFound bounding box!")
 
-	# If we are inside the campus model, look for the pose:
+	# If models are there, update pose:
+	if ground_flag > 0 or campus_flag > 0 or bounding_flag > 0: 
+		modify_pose = True
 	if modify_pose == True:
 		has_pose = line.find("<pose>")
 
@@ -46,21 +49,10 @@ for line in old_file:
 			y_new = y_old + y_shift
 			print("y: %d >>> z: %d" % (y_old, y_new))	
 
-			# Parse z value:
-			k = 0
-			stop = True
-			z_pos = y_pos+j+2
-			while stop == True:
-				stop = line[z_pos+k].isnumeric()
-				k += 1
-			z_old = int(line[z_pos-2: z_pos+k])
-			z_new = z_old + z_shift			
-			print("z: %d >>> z: %d" % (z_old, z_new))	
-
 			# Replace string:
-			old_str = str(x_old) + " " + str(y_old) + " " + str(z_old)
-			new_str = str(x_new) + " " + str(y_new) + " " + str(z_new)
-			line_new = line.replace(old_str, new_str)
+			old_str = str(x_old) + " " + str(y_old)
+			new_str = str(x_new) + " " + str(y_new)
+			line_new = line.replace(old_str, new_str, 1)
 			new_file.write(line_new)
 		else:
 			new_file.write(line)	
@@ -68,4 +60,4 @@ for line in old_file:
 		new_file.write(line)
 	n += 1
 
-print("Complete!")
+print("\nComplete!")
