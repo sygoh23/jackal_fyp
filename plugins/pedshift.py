@@ -15,10 +15,9 @@ for line in old_file:
 
 	# If there are coordinates in the line:
 	if x_pos > 0:
+		# Extract 'x' coordinate:
 		i = 4
 		x_stop = True
-
-		# Extract 'x' coordinate:
 		while x_stop == True:
 			x_stop = line[x_pos+i].isnumeric()
 			i += 1
@@ -35,7 +34,7 @@ for line in old_file:
 		y_old = int(line[y_pos+3:y_pos+j-1])
 		x_new = x_old + x_shift
 		y_new = y_old + y_shift
-		print("Line %d: x=%d, y=%d >>> x=%d, y=%d" % (n, x_old, y_old, x_new, y_new))
+		print("Line %d: (%d, %d) >>> (%d, %d)" % (n, x_old, y_old, x_new, y_new))
 
 		# Replace all strings:
 		x_old_str = 'x="' + str(x_old) + '"'
@@ -45,9 +44,7 @@ for line in old_file:
 		line_new = line.replace(x_old_str, x_new_str)
 		line_new = line_new.replace(y_old_str, y_new_str)
 		new_file.write(line_new)
-
 	else:
-		print("Line %d: SKIP" % (n))
 		new_file.write(line)
 	n += 1
 

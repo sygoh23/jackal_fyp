@@ -6,58 +6,45 @@ old_file = open(input("Please enter input file path: "), 'r+')
 new_file = open(input("Please enter output file path: "), 'a')
 x_shift = int(input("Please enter X shift value: "))
 y_shift = int(input("Please enter Y shift value: "))
+z_shift = int(input("Please enter Z shift value: "))
+
 n = 1
-modify_pose = False
+modify_next_pose = False
 print("Processing file...")
 for line in old_file:
-	# Check for the specific models:
-	ground_flag = line.find("<model name='ground")		
-	campus_flag = line.find("<model name='Campus")
-	bounding_flag = line.find("<model name='Bounding")	
+	new_line = line
+
+	# Check for specific models to update:
+	ground_flag = line.find("<model name='ground")
 	if ground_flag > 0: print("\nFound ground plane!")
+	campus_flag = line.find("<model name='Campus")
 	if campus_flag > 0: print("\nFound campus model!")
+	bounding_flag = line.find("<model name='Bounding")
 	if bounding_flag > 0: print("\nFound bounding box!")
 
-	# If models are there, update pose:
-	if ground_flag > 0 or campus_flag > 0 or bounding_flag > 0: 
-		modify_pose = True
-	if modify_pose == True:
-		has_pose = line.find("<pose>")
+	# If the model is present, modify the next <pose> tag:
+	if ground_flag > 0 or campus_flag > 0 or bounding_flag > 0:
+		modify_next_pose = True
 
-		if has_pose > 0:
-			print("Updating pose...")
+	# Check line for the <pose> tag:
+	if modify_next_pose == True and line.find("<pose>") > 0:
+		print("Updating pose...")
+		# Separate out old coordinates:
+		data = line[line.find("<pose>")+6:len(line)-8].split()
+		x_old, y_old, z_old = int(data[0]), int(data[1]), int(data[2])
 
-			# Parse x value:
-			stop = True
-			x_pos = has_pose
-			i = 7
-			while stop == True:
-				stop = line[x_pos+i].isnumeric()
-				i += 1
-			x_old = int(line[x_pos+6: x_pos+i-1])
-			x_new = x_old + x_shift
-			print("x: %d >>> x: %d" % (x_old, x_new))				
+		# Prepare new coordinates:
+		x_new, y_new, z_new = x_old + x_shift, y_old + y_shift, z_old + z_shift
+		print("(%d, %d, %d) >>> (%d, %d, %d)" % (x_old, y_old, z_old, x_new, y_new, z_new))
 
-			# Parse y value:
-			j = 1
-			stop = True
-			y_pos = x_pos+i
-			while stop == True:
-				stop = line[y_pos+j].isnumeric()
-				j += 1
-			y_old = int(line[y_pos: y_pos+j])	
-			y_new = y_old + y_shift
-			print("y: %d >>> z: %d" % (y_old, y_new))	
+		# Replace string:
+		old_str = str(x_old) + " " + str(y_old) + " " + str(z_old)
+		new_str = str(x_new) + " " + str(y_new) + " " + str(z_new)
+		line_new = line.replace(old_str, new_str, 1)
 
-			# Replace string:
-			old_str = str(x_old) + " " + str(y_old)
-			new_str = str(x_new) + " " + str(y_new)
-			line_new = line.replace(old_str, new_str, 1)
-			new_file.write(line_new)
-		else:
-			new_file.write(line)	
+		# Write to file:
+		new_file.write(line_new)
+		modify_next_pose = False
 	else:
-		new_file.write(line)
-	n += 1
-
+		new_file.write(new_line)
 print("\nComplete!")
