@@ -56,15 +56,14 @@
 
     <!-- ********** Models ********** -->
     <model name='ground_plane'>
-      <!-- Keep ground plane completely underneath campus -->
-      <pose>-10 207 -16 0 0 0</pose>
+      <pose>0 0 0 0 0 0</pose>
       <static>1</static>
       <link name='link'>
         <collision name='collision'>
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>1100 1100</size>
+              <size>500 500</size>
             </plane>
           </geometry>
           <surface>
@@ -89,7 +88,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>1100 1100</size>
+              <size>500 500</size>
             </plane>
           </geometry>
           <material>
@@ -106,13 +105,42 @@
       </link>
     </model>
 
+    <!--
+    
+    Following coordinates assume the campus model is imported at (0, 0, 0, 0, 0, 0)
+
+    *************** BUILDINGS (rough centre of building) ***************
+      ==> #1 Eng faculty: (-100, -40)
+      ==> #2 New horizons: (-60, 70)
+      ==> #3 HAL: (-110, -90)
+      ==> #4 Monash motorsport: (20, -10)
+      ==> #5 Eng lecture theatres college walk: (20, -120)
+
+
+    *************** ENTRANCES (location of doorway) ***************
+      ==> #1 Eng faculty: (-104, -17)
+      ==> #2 New horizons: (-72, 45)
+      ==> #3 HAL: (-94, -110)
+      ==> #4 Monash motorsport: (25, -44)
+      ==> #5 Eng lecture theatres college walk: (25, -140) 
+
+
+    Want jackal to spawn in front of eng faculty entrance: (-105, -10, 12, 0, 0, 1.57)
+    i.e. offset_x = 105, offset_y = 10, offset_z = -12, offset_yaw = -1.57
+
+    -->
+
     <model name='Campus'>
-      <static>1</static>
       <include>
         <uri>model://campus</uri>
-        <!-- Want jackal at (10, -207, 6.0) -->
-        <!-- Campus spawns at z=20 -->
-        <pose>-10 207 -26 0 0 0</pose>
+        <pose>0 0 0 0 0 0</pose>
+      </include>
+    </model>
+
+    <model name='Bounding_walls'>
+      <include>
+        <uri>model://bounding_walls</uri>
+        <pose>0 0 0 0 0 0</pose>
       </include>
     </model>
 

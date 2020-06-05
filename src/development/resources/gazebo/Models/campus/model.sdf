@@ -1,20 +1,19 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
   <model name="Campus">
+      <static>1</static>
       <link name="campus">
-
         <collision name="collision">
           <geometry>
             <mesh>
-              <uri>model://campus/meshes/campus.dae</uri>
+              <uri>model://campus/meshes/campus_eng_only.dae</uri>
             </mesh>
           </geometry>
         </collision>
-
         <visual name="visual">
           <geometry>
             <mesh>
-              <uri>model://campus/meshes/campus.dae</uri>
+              <uri>model://campus/meshes/campus_eng_only.dae</uri>
             </mesh>
           </geometry>
           <material>
@@ -26,7 +25,6 @@
             <ambient>1 1 1 1</ambient>
           </material>
         </visual>
-
       </link>
   </model>
 </sdf>
