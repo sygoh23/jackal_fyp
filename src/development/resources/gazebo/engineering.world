@@ -1,10 +1,17 @@
 <sdf version='1.6'>
   <world name='default'>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>-177.715 -202.712 88.264 0 0.481797 0.832268</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
 
     <!-- ********** World Properties ********** -->
     <light name='sun' type='directional'>
-      <pose frame=''>35.263 64.3234 1 0 -0 0</pose>
-      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <pose frame=''>100 150 40 0 -0 0</pose>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
       <specular>0.1 0.1 0.1 1</specular>
       <direction>0.1 0.1 -0.9</direction>
       <attenuation>
@@ -19,12 +26,12 @@
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
     <atmosphere type='adiabatic'/>
     <scene>
-      <ambient>0.4 0.4 0.4 1</ambient>
-      <background>0.7 0.7 0.7 1</background>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.2 0.2 0.2 1</background>
       <shadows>1</shadows>
       <sky>
         <clouds>
-          <speed>1</speed>
+          <speed>0.1</speed>
         </clouds>
       </sky>
       <grid>0</grid>
@@ -106,20 +113,20 @@
     <!-- WORLD STATE -->
     <state world_name='default'>
       <light name='sun'>
-        <pose frame=''>0 0 0 0.5 -0.6 1.9</pose>
+        <pose frame=''>0 0 0 -0.1 -0.75 2.0</pose>
       </light>
     </state>
 
     <!-- ********** Models ********** -->
-    <!--<model name='ground_plane'>
-      <pose>0 0 0 0 0 0</pose>
+    <model name='ground_plane'>
+      <pose>6 -12 0 0 0 0</pose>
       <static>1</static>
       <link name='link'>
         <collision name='collision'>
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>500 500</size>
+              <size>320 340</size>
             </plane>
           </geometry>
           <surface>
@@ -144,7 +151,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>500 500</size>
+              <size>320 340</size>
             </plane>
           </geometry>
           <material>
@@ -157,7 +164,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-    </model>-->
+    </model>
 
     <model name='Campus'>
       <include>
@@ -169,8 +176,11 @@
     <model name='Bounding_walls'>
       <include>
         <uri>model://bounding_walls</uri>
-        <pose>0 -1 0 0 0 0</pose>
+        <pose>6 -7 0 0 0 0</pose>
       </include>
     </model>
+
+  <plugin name="ActorPosesPlugin" filename="libActorPosesPlugin.so"></plugin>
+
   </world>
 </sdf>

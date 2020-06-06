@@ -2,7 +2,7 @@
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!-- RVIZ CONFIG -->
   <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_pedsim_nav.rviz"/>
-  <arg name="enable_rviz" default="true"/>
+  <arg name="enable_rviz" default="false"/>
 
   <!--  GAZEBO CONFIG -->
   <arg name="world_name" default="$(find development)/resources/gazebo/engineering.world"/>
@@ -17,8 +17,8 @@
   <arg name="enable_jackal_robot" default="false"/>
 
   <!-- PEDSIM CONFIG -->
-  <arg name="scene_file" value="$(find development)resources/pedsim/engineering.xml"/>
-  <arg name="simulation_factor" default="2.5"/> <!-- Simulation rate -->
+  <arg name="scene_file" value="$(find development)resources/pedsim/engineering_v2.xml"/>
+  <arg name="simulation_factor" default="7"/> <!-- Simulation rate -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
   <arg name="ped_gazebo_plugin" default="true"/>
   <arg name="enable_pedsim" default="true"/>
@@ -59,7 +59,7 @@
     <arg name="robot_mode" value="1"/>
     <arg name="enable_groups" value="false"/>
   </include>
-  <include file="$(find pedsim_visualizer)/launch/visualizer.launch" if="$(arg enable_pedsim)"/>
+  <include file="$(find pedsim_visualizer)/launch/visualizer.launch" if="$(arg enable_rviz)"/>
   <node pkg="pedsim_gazebo_plugin" type="spawn_pedsim_agents.py" name="spawn_pedsim_agents" output="screen" if="$(arg ped_gazebo_plugin)"/>
 
   <!-- ******************** LAUNCH RVIZ ******************** -->

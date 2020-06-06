@@ -6,7 +6,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
-              <uri>model://campus/meshes/engineering.dae</uri>
+              <uri>model://campus/meshes/engineering_buildings.dae</uri>
             </mesh>
           </geometry>
         </collision>
@@ -14,7 +14,7 @@
           <cast_shadows>1</cast_shadows>
           <geometry>
             <mesh>
-              <uri>model://campus/meshes/engineering.dae</uri>
+              <uri>model://campus/meshes/engineering_buildings.dae</uri>
             </mesh>
           </geometry>
         </visual>
