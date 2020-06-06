@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+  <!--Waypoints -->
+  <waypoint id="start" x="107" y="19" r="1"/>
+  <waypoint id="intersection1" x="180" y="20" r="1"/>
+  <waypoint id="intersection2" x="260" y="20" r="1"/>
+
+  <waypoint id="enclosure1" x="180" y="50" r="1"/>
+  <waypoint id="enclosure2" x="180" y="-10" r="1"/>
+  <waypoint id="enclosure3" x="260" y="50" r="1"/>
+  <waypoint id="enclosure4" x="260" y="-10" r="1"/>
+
+  <!--Sinks -->
+  <waypoint id="building1" x="175" y="80" r="1" b="2"/>
+  <waypoint id="building2" x="190" y="-45" r="1" b="2"/>
+  <waypoint id="building3" x="280" y="75" r="1" b="2"/>
+  <waypoint id="building4" x="240" y="80" r="1" b="2"/>
+  <waypoint id="building5" x="260" y="-45" r="1" b="2"/>
+
+  <!--Peds going to building 1 -->
+  <source x="107" y="19" n="1" dx="3" dy="3" type="0">
+    <addwaypoint id="intersection1"/>
+    <addwaypoint id="enclosure1"/>
+    <addwaypoint id="building1"/>
+  </source>
+
+  <!--Peds going to building 2 -->
+  <source x="107" y="19" n="1" dx="3" dy="3" type="0">
+    <addwaypoint id="intersection1"/>
+    <addwaypoint id="enclosure2"/>
+    <addwaypoint id="building2"/>
+  </source>
+
+  <!--Peds going to building 3 -->
+  <source x="180" y="20" n="1" dx="3" dy="3" type="0">
+    <addwaypoint id="intersection2"/>
+    <addwaypoint id="enclosure3"/>
+    <addwaypoint id="building3"/>
+  </source>
+
+  <!--Peds going to building 4 -->
+  <source x="180" y="20" n="1" dx="3" dy="3" type="0">
+    <addwaypoint id="intersection2"/>
+    <addwaypoint id="enclosure3"/>
+    <addwaypoint id="building4"/>
+  </source>
+
+  <!--Peds going to building 5 -->
+  <source x="180" y="20" n="1" dx="3" dy="3" type="0">
+    <addwaypoint id="intersection2"/>
+    <addwaypoint id="enclosure4"/>
+    <addwaypoint id="building5"/>
+  </source>
+
+</scenario>
