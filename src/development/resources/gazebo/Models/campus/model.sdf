@@ -6,24 +6,17 @@
         <collision name="collision">
           <geometry>
             <mesh>
-              <uri>model://campus/meshes/campus_eng_only.dae</uri>
+              <uri>model://campus/meshes/engineering.dae</uri>
             </mesh>
           </geometry>
         </collision>
         <visual name="visual">
+          <cast_shadows>1</cast_shadows>
           <geometry>
             <mesh>
-              <uri>model://campus/meshes/campus_eng_only.dae</uri>
+              <uri>model://campus/meshes/engineering.dae</uri>
             </mesh>
           </geometry>
-          <material>
-            <script>
-              <uri>model://corridor/materials/scripts</uri>
-              <uri>model://corridor/materials/textures</uri>
-              <name>Gazebo/Grass</name>
-            </script>
-            <ambient>1 1 1 1</ambient>
-          </material>
         </visual>
       </link>
   </model>

@@ -37,7 +37,7 @@ def actor_poses_callback(actors):
 if __name__ == '__main__':
 
     rospy.init_node("spawn_pedsim_agents")
-    
+
     rospack1 = RosPack()
     pkg_path = rospack1.get_path('pedsim_gazebo_plugin')
     file_xml = open(pkg_path + "/models/actor_model.sdf")
