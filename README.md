@@ -1,7 +1,7 @@
 # ECSE Final Year Project
 
-#### Last Major Update: 31st May 2020
-<img src="https://github.com/sygoh23/jackal_fyp/blob/master/.images/02-jackal-pedsim.png" height="250">
+#### Last Major Update: 10th June 2020
+<img src="https://github.com/sygoh23/jackal_fyp/blob/master/.images/03-engineering-sim.png" height="350">
 
 ### Source Code Structure:
 ```
@@ -19,6 +19,7 @@ jackal_fyp/src/...
 Change directory to `jackal_fyp` and run one of the following scripts:
  * `reset.sh`: Kills all ROS processes.
  * `setup.sh`: Sources the ROS installation.
+ * `reconfigure.sh`: Launches dynamic reconfigure.
  
 ### Jackal Configuration:
 The Jackal sensor configuration can be adjusted by changing the configuration argument in the simulation launch files. The following configurations are available:
