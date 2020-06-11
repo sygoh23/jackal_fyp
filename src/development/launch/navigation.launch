@@ -1,6 +1,6 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
-  <arg name="ped_follow" default="false"/>
+  <arg name="ped_follow" default="true"/>
 
   <!-- ******************** LAUNCH MOVE BASE NAVIGATION ******************** -->
   <!-- VELODYNE SENSOR -->
