@@ -20,5 +20,5 @@
   </node>
 
   <!-- ******************** LAUNCH PEDESTRIAN FOLLOWING  ******************** -->
-  <node pkg="development" if="$(arg ped_follow)" type="ped_follow_v5.py" name="ped_follower" output="screen"/>
+  <node pkg="development" if="$(arg ped_follow)" type="main.py" name="FYP_algorithm" output="screen"/>
 </launch>

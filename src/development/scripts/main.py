@@ -1,11 +1,7 @@
 #!/usr/bin/env python
-# V5: Follows pedestrians based on distance and velocity.
-import rospy
-import random
 import time
-import math
+import rospy
 import actionlib
-import numpy as np
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from pedsim_msgs.msg import AgentStates
 from nav_msgs.msg import Odometry
@@ -13,17 +9,27 @@ from static_params import *
 from ped_selection import *
 from utils import *
 
+# May need to put navigation stack stuff within if statement
+# No peds going to new horizons?
+# Add code to keep moving when no peds are selected
 
 def movebase_client():
     # Move_base initialisation:
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-    client.wait_for_server() # Waits until the action server has started up:
+    client.wait_for_server()
     total_peds = get_total_peds()
-    print("Delay: %d | Iterations: %d | Target: (%d, %d)" % (t_delay, n_loop, target_xy[0], target_xy[1]))
 
     for i in range(n_loop):
         print("\n\n------------------------- i = %d -------------------------" % i)
-        goal_xy, send_goal, reached_target = select_ped_no_building(total_peds, i)
+        robot_xy = get_robot_xy()
+        dist_robot_building = get_distance(robot_xy[0], building_center_xy[0], robot_xy[1], building_center_xy[1])
+
+        # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity
+        if dist_robot_building < building_threshold:
+            pass
+            # select_ped_within_vicinity()
+        else:
+            goal_xy, send_goal = select_ped_outside_vicinity(total_peds, i)
 
         # Send navigation goal to navigation stack:
         if send_goal == 1:
@@ -34,9 +40,12 @@ def movebase_client():
             goal.target_pose.pose.position.y = goal_xy[1]
             goal.target_pose.pose.orientation.w = 1.0
             client.send_goal(goal)
+
+        reached_target = 0 # temporary
         if reached_target == 1:
             print("- Robot navigation complete!")
             break
+
         print("----------------------------------------------------------")
         time.sleep(t_delay)
 
