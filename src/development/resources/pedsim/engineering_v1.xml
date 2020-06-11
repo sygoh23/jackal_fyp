@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+  <!--Waypoints -->
+  <waypoint id="1" x="-104" y="-17" r="1"/>
+  <waypoint id="2" x="-104" y="0" r="1"/>
+  <waypoint id="3" x="-130.5" y="-1.5" r="1"/>
+  <waypoint id="4" x="-138" y="-143" r="1"/>
+  <waypoint id="5" x="-90" y="-127" r="1"/>
+  <waypoint id="6" x="-95" y="-110" r="1"/>
+
+
+  <!--Peds 0 and 1 -->
+  <agent x="-104" y="-17" n="10" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="3"/>
+    <addwaypoint id="4"/>
+    <addwaypoint id="5"/>
+    <addwaypoint id="6"/>    
+  </agent>
+
+</scenario>
