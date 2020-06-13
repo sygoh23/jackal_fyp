@@ -33,7 +33,7 @@ def movebase_client():
             # If no suitable peds detected, just move 5 metres in a straight line towards building center (or could move to last detected pedestrian position?)
             if ped_found == 0:
                 goal_xy = get_straight_line_pos("building_center", 5)
-                time.sleep(t_delay)
+                time.sleep(t_delay) # allow some more time for robot to finish its previous straight line movement
                 
         # Send navigation goal to navigation stack:
         goal = MoveBaseGoal()
