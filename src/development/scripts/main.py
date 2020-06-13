@@ -16,7 +16,6 @@ def movebase_client():
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
     total_peds = get_total_peds()
-    flag = 0
 
     for i in range(n_loop):
         print("\n\n------------------------- i = %d -------------------------" % i)
@@ -31,14 +30,10 @@ def movebase_client():
             print("Outside building vicinity")
             goal_xy, ped_found = select_ped_outside_vicinity(total_peds, i)
 
-            # If no suitable peds detected, just move 5 metres in a straight line towards building center
+            # If no suitable peds detected, just move 5 metres in a straight line towards building center (or could move to last detected pedestrian position?)
             if ped_found == 0:
-                if flag == 1:
-                    time.sleep(10)
                 goal_xy = get_straight_line_pos("building_center", 5)
-                flag == 1
-            else:
-                flag = 0
+                time.sleep(t_delay)
                 
         # Send navigation goal to navigation stack:
         goal = MoveBaseGoal()

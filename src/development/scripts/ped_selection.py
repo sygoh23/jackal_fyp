@@ -20,6 +20,7 @@ def select_ped_within_vicinity():
     # Follow a random ped, staying within vicinity
     # If no ped, try move forward but within vicinity, else move right within vicinity, else move left, ...
     # Continuously scan for doorways
+    # This assumes there is only one doorway in the defined building vicinity
 
 
 # Selects a pedestrian when the robot is outside the building vicinity
@@ -95,7 +96,7 @@ def select_ped_outside_vicinity(total_ped, i):
             ped_found = 1
         else:
             print("\nRESULTS:")
-            print("- Did not find a pedestrian to follow...")
+            print("- Did not find a pedestrian to follow...moving towards building center")
 
     else:
         print("- Please wait for the next iteration...")

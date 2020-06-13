@@ -27,8 +27,8 @@ lecture_theatres_entrance = [25+offset_x, -140+offset_y]
 
 
 #################### Set Target Building ####################
-building_center_xy = HAL_center
-building_entrance_xy = HAL_entrance
+building_center_xy = new_horizons_center
+building_entrance_xy = new_horizons_entrance
 
 
 #################### Algorithm ####################
