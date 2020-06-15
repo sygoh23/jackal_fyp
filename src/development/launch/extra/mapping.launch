@@ -1,0 +1,32 @@
+<launch>
+  <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
+  <arg name="ped_follow" default="false"/>
+
+  <!-- ******************** LAUNCH GMAPPING ******************** -->
+  <include file="$(find development)/launch/extra/pointcloud_to_laserscan.launch" />  
+  <include file="$(find development)/launch/extra/gmapping.launch" />
+
+  <!-- ******************** LAUNCH MOVE BASE NAVIGATION ******************** -->
+  <!-- VELODYNE SENSOR -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <!-- Odom navigation global and local costmap -->
+    <rosparam file="$(find development)resources/move_base/costmap_common_velodyne.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find development)resources/move_base/costmap_common_velodyne.yaml" command="load" ns="local_costmap" />
+
+    <!-- Global and local planner -->
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+
+    <!-- Global and local planner parameters -->
+    <rosparam file="$(find development)resources/move_base/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find development)resources/move_base/move_base_params.yaml" command="load" />
+
+    <!-- Mapping global and local costmap -->
+    <rosparam file="$(find development)resources/move_base/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find development)resources/move_base/global_costmap_params.yaml" command="load" />
+    <remap from="odom" to="odometry/filtered" />
+  </node>
+
+  <!-- ******************** LAUNCH PEDESTRIAN FOLLOWING  ******************** -->
+  <node pkg="development" if="$(arg ped_follow)" type="ped_follow_v5.py" name="ped_follower" output="screen"/>
+</launch>
