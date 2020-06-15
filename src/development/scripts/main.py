@@ -11,6 +11,16 @@ from ped_selection import select_ped_within_vicinity, select_ped_outside_vicinit
 from utils import *
 
 
+"""
+Ideas:
+
+--> When robot is outside building vicinity and no peds are detected, first move to last detected pedestrian position, and then start moving towards building center
+--> Map out a bounding box for each building to use as the building vicinity, circular radius method probably won't work. Would then need an area-checking method
+--> Ped selection within building vicinity: follow a random pedestrian, move along edge of building
+--> Stop navigation if robot is stuck driving into a wall
+"""
+
+
 def movebase_client():
     # Move_base initialisation:
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
@@ -30,7 +40,7 @@ def movebase_client():
             print("Outside building vicinity")
             goal_xy, ped_found = select_ped_outside_vicinity(total_peds, i)
 
-            # If no suitable peds detected, just move 5 metres in a straight line towards building center (or could move to last detected pedestrian position?)
+            # If no suitable peds detected, just move 5 metres in a straight line towards building center
             if ped_found == 0:
                 goal_xy = get_straight_line_pos("building_center", 5)
                 time.sleep(t_delay) # allow some more time for robot to finish its previous straight line movement
