@@ -1,4 +1,4 @@
-<!--
+<!--front/scan
   Copyright 2016 The Cartographer Authors
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@
               $(find development)/resources/cartographer
           -configuration_basename jackal.lua"
       output="screen">
-    <remap from="scan" to="front/scan" />
+    <remap from="points2" to="/velodyne_points2" />-->
     <remap from="odom" to="odometry/filtered" />
   </node>
 
@@ -29,6 +29,7 @@
       type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
 
   <!--- Run Move Base -->
-  <include file="$(find development)/launch/move_base.launch" />
+  <!--<include file="$(find development)/launch/extra/pointcloud_to_laserscan.launch" />-->
+  <include file="$(find development)/launch/extra/move_base.launch" />
 
 </launch>

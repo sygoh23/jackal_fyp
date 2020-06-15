@@ -5,7 +5,7 @@
   <arg name="enable_rviz" default="true"/>
 
   <!--  GAZEBO CONFIG -->
-  <arg name="world_name" default="$(find development)/resources/gazebo/basic.world"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/engineering_shift.world"/>
   <arg name="enable_gazebo_gui" default="false"/>
 
   <!-- JACKAL CONFIG -->

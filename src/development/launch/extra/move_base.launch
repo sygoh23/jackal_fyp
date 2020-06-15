@@ -11,6 +11,6 @@
     <!-- Global and local planner parameters -->
     <rosparam file="$(find development)resources/move_base/base_local_planner_params.yaml" command="load" />
     <rosparam file="$(find development)resources/move_base/move_base_params.yaml" command="load" />
-    <remap from="odom" to="odometry/filtered" />
+    <!--<remap from="odom" to="odometry/filtered" />-->
   </node>
 </launch>
