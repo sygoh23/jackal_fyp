@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import time
+from threading import Timer
 import rospy
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -7,7 +8,7 @@ from pedsim_msgs.msg import AgentStates
 from nav_msgs.msg import Odometry
 from static_params import *
 import dynamic_params
-from ped_selection import select_ped_within_vicinity, select_ped_outside_vicinity
+from ped_selection import *
 from utils import *
 
 
@@ -21,11 +22,18 @@ Ideas:
 """
 
 
+def test():
+    print("- Timer finished, still no peds detected, starting straight line movement")
+    dynamic_params.goal_xy = get_straight_line_pos("building_center", 5)
+    dynamic_params.timer_set = 0
+
+
 def movebase_client():
     # Move_base initialisation:
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
     total_peds = get_total_peds()
+    timer = Timer(20, test)    # Initialise the timer to begin straight line movement
 
     for i in range(n_loop):
         print("\n\n------------------------- i = %d -------------------------" % i)
@@ -38,19 +46,46 @@ def movebase_client():
             select_ped_within_vicinity()
         else:
             print("Outside building vicinity")
-            goal_xy, ped_found = select_ped_outside_vicinity(total_peds, i)
+            ped_found = select_ped_outside_vicinity(total_peds, i)
 
             # If no suitable peds detected, just move 5 metres in a straight line towards building center
             if ped_found == 0:
-                goal_xy = get_straight_line_pos("building_center", 5)
-                time.sleep(t_delay) # allow some more time for robot to finish its previous straight line movement
+                
+                # Set a timer that starts straight line movement after x seconds, giving time for the robot to finish moving to last ped location
+                # The timer should allow ped detection to still occur
+                # If a ped is found, reset everything
+                # If a ped still isn't found and the timer has expired, start straight line movement
+
+                # Check if a last selected ped exists (i.e. is list NOT empty)
+                if dynamic_params.ped_last:
+                    print("- Moving to location of last selected pedestrian")
+                    dynamic_params.goal_xy = dynamic_params.ped_last   # Set goal as last pedestrian position
+                    dynamic_params.ped_last = []        # Clear the last pedestrian position
+                    timer = Timer(20, test)              # Create a new timer to begin straight line movement
+                    timer.start()                       # Start the new timer
+                    dynamic_params.timer_set = 1        # Set the timer flag
+                
+                # If last selected ped does not exist, AND the timer has not been set (indicating the robot is stationary, not moving towards the last ped position)
+                # THEN start straight line movement
+                elif dynamic_params.timer_set == 0:
+                    print("- No last selected ped, and not in the middle of moving toward last ped position. Starting straight line movement")
+                    dynamic_params.goal_xy = get_straight_line_pos("building_center", 5)
+                else:
+                    print("- Moving to location of last selected pedestrian (else statement)")
+            else:
+                # Ped found. Cancel the timer if it is running
+                if dynamic_params.timer_set == 1:
+                    print("- Ped found, cancelling timer and following new ped")
+                    timer.cancel()
+                    dynamic_params.timer_set == 0
+
                 
         # Send navigation goal to navigation stack:
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = "odom"
         goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = goal_xy[0]
-        goal.target_pose.pose.position.y = goal_xy[1]
+        goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
+        goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 
