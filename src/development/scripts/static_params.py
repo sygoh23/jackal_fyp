@@ -32,7 +32,9 @@ building_entrance_xy = new_horizons_entrance
 
 
 #################### Algorithm ####################
-n_loop = 10000              # Number of following iterations
-t_delay = 2                 # Seconds between iterations (lower = more responsive)
-robot_range = 20            # Radius around the robot in which pedestrians must be in order to be 'detected'
+t_delay = 1                 # Seconds between iterations (lower = more responsive)
+robot_range = 15            # Radius around the robot in which pedestrians must be in order to be 'detected'
 building_threshold = 40     # Radius threshold to determine when the robot is in the vicinity of the target building
+target_threshold = 1        # Radius threshold to determine when the robot has reached a given target point
+straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point
+movement_pause = 10         # Seconds that the robot should wait in between movements

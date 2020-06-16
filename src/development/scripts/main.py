@@ -7,14 +7,14 @@ from pedsim_msgs.msg import AgentStates
 from nav_msgs.msg import Odometry
 from static_params import *
 import dynamic_params
-from ped_selection import select_ped_within_vicinity, select_ped_outside_vicinity
+from static_params import *
+from ped_selection import *
 from utils import *
 
 
 """
 Ideas:
 
---> When robot is outside building vicinity and no peds are detected, first move to last detected pedestrian position, and then start moving towards building center
 --> Map out a bounding box for each building to use as the building vicinity, circular radius method probably won't work. Would then need an area-checking method
 --> Ped selection within building vicinity: follow a random pedestrian, move along edge of building
 --> Stop navigation if robot is stuck driving into a wall
@@ -25,9 +25,9 @@ def movebase_client():
     # Move_base initialisation:
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
-    total_peds = get_total_peds()
+    i = 0
 
-    for i in range(n_loop):
+    while True:
         print("\n\n------------------------- i = %d -------------------------" % i)
         robot_xy = get_robot_xy()
         dist_robot_building_center = get_distance(robot_xy[0], building_center_xy[0], robot_xy[1], building_center_xy[1])
@@ -38,27 +38,37 @@ def movebase_client():
             select_ped_within_vicinity()
         else:
             print("Outside building vicinity")
-            goal_xy, ped_found = select_ped_outside_vicinity(total_peds, i)
+            ped_found = select_ped_outside_vicinity(i)
 
-            # If no suitable peds detected, just move 5 metres in a straight line towards building center
+            # Manually set robot goal if a pedestrian was not found by the ped selection logic
             if ped_found == 0:
-                goal_xy = get_straight_line_pos("building_center", 5)
-                time.sleep(t_delay) # allow some more time for robot to finish its previous straight line movement
+                move_without_peds_outside_vicinity()
+            else:
+                # Reset moving_to_last_ped flag if it was set
+                if dynamic_params.moving_to_last_ped == 1:
+                    dynamic_params.moving_to_last_ped = 0
+
+                # Cancel timer if it is counting down
+                elif dynamic_params.timer_set == 1:
+                    dynamic_params.timer.cancel()
+                    dynamic_params.timer_set = 0
                 
         # Send navigation goal to navigation stack:
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = "odom"
         goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = goal_xy[0]
-        goal.target_pose.pose.position.y = goal_xy[1]
+        goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
+        goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 
+        # Exit program if target is reached
         if dynamic_params.reached_target == 1:
             print("- Robot navigation complete!")
             break
 
         print("----------------------------------------------------------")
+        i += 1
         time.sleep(t_delay)
 
 

@@ -24,20 +24,19 @@ def select_ped_within_vicinity():
 
 
 # Selects a pedestrian when the robot is outside the building vicinity
-def select_ped_outside_vicinity(total_ped, i):
+def select_ped_outside_vicinity(i):
     
     ##############################################
     ############### Initialization ###############
     ##############################################
 
     ped_found = 0                           # Flag for whether a suitable pedestrian to follow was found
-    goal_xy = [0, 0]                        # Robot navigation goal
     robot_xy = get_robot_xy()               # Robot current x-y position
     dist_ped_building_center_list = []      # Distance to building center (always +ve, lower = better)
     vel = []                                # Velocity towards building center (-ve = distance decreasing, +ve = distance increasing)
     dist_robot_ped_list = []                # List of distances between the robot and each pedestrian
     dist_robot_building_center = get_distance(robot_xy[0], building_center_xy[0], robot_xy[1], building_center_xy[1])   # Distance between robot and building center
-    
+    total_ped = get_total_peds()
 
     ###############################################
     ############### Data Collection ###############
@@ -89,16 +88,16 @@ def select_ped_outside_vicinity(total_ped, i):
                         break
     
         # Update navigation goal if the selection logic found a pedestrian to follow
+        print("\nRESULTS:")
         if not no_peds:
-            print("\nRESULTS:")
-            print("- Following: Ped %d @ %.1fm from pedestrian and %.1fm from building center..." % (best_ped_smart, dist_robot_ped, dist_robot_building_center))
-            goal_xy = [ped.agent_states[best_ped_smart].pose.position.x, ped.agent_states[best_ped_smart].pose.position.y]
+            print("- Following ped %d @ %.1fm from pedestrian and %.1fm from building center..." % (best_ped_smart, dist_robot_ped, dist_robot_building_center))
+            dynamic_params.goal_xy = [ped.agent_states[best_ped_smart].pose.position.x, ped.agent_states[best_ped_smart].pose.position.y]
+            dynamic_params.ped_last = dynamic_params.goal_xy
             ped_found = 1
         else:
-            print("\nRESULTS:")
-            print("- Did not find a pedestrian to follow...moving towards building center")
+            print("- Did not find a pedestrian to follow")
 
     else:
         print("- Please wait for the next iteration...")
     
-    return (goal_xy, ped_found)
+    return ped_found
