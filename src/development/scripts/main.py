@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import time
-from threading import Timer
 import rospy
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -22,25 +21,13 @@ Ideas:
 """
 
 
-def no_peds_movement():
-    print("- Moving towards building center...")
-    dynamic_params.goal_xy = get_straight_line_pos("building_center", straight_line_dist)
-    
-    # If function call was triggered because of the timer, reset the timer flag
-    if dynamic_params.timer_set == 1:
-        dynamic_params.timer_set = 0
-    
-    # If function call was triggered because robot has reached last detected pedestrian, reset the moving_to_last_ped flag
-    if dynamic_params.moving_to_last_ped == 1:
-        dynamic_params.moving_to_last_ped = 0
-
-
 def movebase_client():
     # Move_base initialisation:
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
+    i = 0
 
-    for i in range(n_loop):
+    while True:
         print("\n\n------------------------- i = %d -------------------------" % i)
         robot_xy = get_robot_xy()
         dist_robot_building_center = get_distance(robot_xy[0], building_center_xy[0], robot_xy[1], building_center_xy[1])
@@ -53,62 +40,18 @@ def movebase_client():
             print("Outside building vicinity")
             ped_found = select_ped_outside_vicinity(i)
 
-            # If no suitable peds detected, choose movement logic
+            # Manually set robot goal if a pedestrian was not found by the ped selection logic
             if ped_found == 0:
-
-                # A last detected ped exists (list is non-empty)
-                if dynamic_params.ped_last:
-                    print("- Moving to last detected pedestrian...")
-                    dynamic_params.goal_xy = dynamic_params.ped_last    # Set goal as last pedestrian position
-                    dynamic_params.ped_last = []                        # Clear the last pedestrian position
-                    dynamic_params.moving_to_last_ped = 1               # Set flag indicating robot is moving to location of last detected ped
-                
-                # No last detected ped exists AND not in the middle of moving towards a last detected ped
-                elif dynamic_params.moving_to_last_ped == 0:
-                    dist_robot_straight_line_goal = get_distance(robot_xy[0], dynamic_params.goal_xy[0], robot_xy[1], dynamic_params.goal_xy[1])
-                    
-                    # Reached target point
-                    if dist_robot_straight_line_goal <= target_threshold:
-                        # Waiting for timer to trigger and begin the next movement, or a new ped to be detected
-                        if dynamic_params.timer_set == 1:
-                            print("- Waiting for new peds...")
-                        else:
-                            timer = Timer(movement_pause, no_peds_movement)     # Create new countdown timer for no_peds_movement
-                            timer.start()                                       # Start timer
-                            dynamic_params.timer_set = 1                        # Set timer flag
-                    
-                    # In the middle of moving towards the previously set target point
-                    else:
-                        print("- Moving towards building center...")
-                else:
-                    # Reached last ped position and waiting for timer to trigger
-                    if dynamic_params.timer_set == 1:
-                        print("- Waiting for new peds...")
-                    
-                    # In the middle of moving towards a last detected ped
-                    else:
-                        print("- Moving to last detected pedestrian...")
-
-                        # Check if robot has reached position of last detected ped
-                        dist_robot_last_ped = get_distance(robot_xy[0], dynamic_params.goal_xy[0], robot_xy[1], dynamic_params.goal_xy[1])
-                        if dist_robot_last_ped <= target_threshold:
-                            print("- Reached last detected pedestrian\n- Waiting for new peds...")
-                            timer = Timer(movement_pause, no_peds_movement)     # Create new countdown timer for no_peds_movement
-                            timer.start()                                       # Start timer
-                            dynamic_params.timer_set = 1                        # Set timer flag
+                move_without_peds_outside_vicinity()
             else:
-                # Ped found. Reset moving_to_last_ped flag if it was set
+                # Reset moving_to_last_ped flag if it was set
                 if dynamic_params.moving_to_last_ped == 1:
-                    print("- New pedestrian detected, following...")
                     dynamic_params.moving_to_last_ped = 0
 
-                # Ped found. Cancel timer if it is counting down
+                # Cancel timer if it is counting down
                 elif dynamic_params.timer_set == 1:
-                    print("- New pedestrian detected, following...")
-                    timer.cancel()
+                    dynamic_params.timer.cancel()
                     dynamic_params.timer_set = 0
-                
-
                 
         # Send navigation goal to navigation stack:
         goal = MoveBaseGoal()
@@ -119,11 +62,13 @@ def movebase_client():
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 
+        # Exit program if target is reached
         if dynamic_params.reached_target == 1:
             print("- Robot navigation complete!")
             break
 
         print("----------------------------------------------------------")
+        i += 1
         time.sleep(t_delay)
 
 

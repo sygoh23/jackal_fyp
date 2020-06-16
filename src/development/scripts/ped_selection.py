@@ -88,17 +88,16 @@ def select_ped_outside_vicinity(i):
                         break
     
         # Update navigation goal if the selection logic found a pedestrian to follow
+        print("\nRESULTS:")
         if not no_peds:
-            print("\nRESULTS:")
-            print("- Following: Ped %d @ %.1fm from pedestrian and %.1fm from building center..." % (best_ped_smart, dist_robot_ped, dist_robot_building_center))
+            print("- Following ped %d @ %.1fm from pedestrian and %.1fm from building center..." % (best_ped_smart, dist_robot_ped, dist_robot_building_center))
             dynamic_params.goal_xy = [ped.agent_states[best_ped_smart].pose.position.x, ped.agent_states[best_ped_smart].pose.position.y]
             dynamic_params.ped_last = dynamic_params.goal_xy
             ped_found = 1
         else:
-            print("\nRESULTS:")
             print("- Did not find a pedestrian to follow")
 
-    #else:
-        #print("- Please wait for the next iteration...")
+    else:
+        print("- Please wait for the next iteration...")
     
     return ped_found
