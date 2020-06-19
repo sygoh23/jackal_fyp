@@ -15,9 +15,10 @@ from utils import *
 """
 Ideas:
 
---> Map out a bounding box for each building to use as the building vicinity, circular radius method probably won't work. Would then need an area-checking method
+--> Map out the coordinates for a bounding polygon for each building to use as the building vicinity
 --> Ped selection within building vicinity: follow a random pedestrian, move along edge of building
---> Stop navigation if robot is stuck driving into a wall
+--> Smarter navigation when there are no peds and outside building vicinity
+--> Detect and recover when robot is stuck driving into a wall
 """
 
 
@@ -29,11 +30,9 @@ def movebase_client():
 
     while True:
         print("\n\n------------------------- i = %d -------------------------" % i)
-        robot_xy = get_robot_xy()
-        dist_robot_building_center = get_distance(robot_xy[0], building_center_xy[0], robot_xy[1], building_center_xy[1])
 
         # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity
-        if dist_robot_building_center < building_threshold:
+        if check_vicinity():
             print("Within building vicinity")
             select_ped_within_vicinity()
         else:

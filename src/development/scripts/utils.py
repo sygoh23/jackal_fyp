@@ -6,6 +6,7 @@ Contains helper functions for other parts of the program
 
 from math import sqrt
 from threading import Timer
+import matplotlib.path as mpltPath
 import rospy
 from pedsim_msgs.msg import AgentStates
 from nav_msgs.msg import Odometry
@@ -118,3 +119,10 @@ def move_without_peds_outside_vicinity():
                 dynamic_params.timer = Timer(movement_pause, straight_line_movement)    # Create new countdown timer for straight_line_movement
                 dynamic_params.timer.start()                                            # Start timer
                 dynamic_params.timer_set = 1                                            # Set timer flag
+
+
+# Checks if the robot is within the vicinity of the target building
+def check_vicinity():
+    robot_xy = get_robot_xy()
+    path = mpltPath.Path(building_polygon)
+    return path.contains_point(robot_xy)

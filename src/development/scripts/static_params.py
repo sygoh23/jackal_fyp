@@ -6,29 +6,83 @@ Contains static parameters to be accessed throughout the algorithm
 --> Do not change the value of these parameters, only access their value
 """
 
+import numpy as np
+
 #################### Coordinates ####################
 offset_x = 105
 offset_y = 10
 
-eng_faculty_center = [-100+offset_x, -40+offset_y]
-eng_faculty_entrance = [-104+offset_x, -17+offset_y]
+building_centers = [
+    # Index 0: Eng Faculty
+    [-100+offset_x, -40+offset_y],
 
-new_horizons_center = [-60+offset_x, 70+offset_y]
-new_horizons_entrance = [-72+offset_x, 45+offset_y]
+    # Index 1: New Horizons
+    [-60+offset_x, 70+offset_y],
 
-HAL_center = [-110+offset_x, -90+offset_y]
-HAL_entrance = [-94+offset_x, -110+offset_y]
+    # Index 2: HAL
+    [-110+offset_x, -90+offset_y],
 
-motorsport_center = [20+offset_x, -10+offset_y]
-motorsport_entrance = [25+offset_x, -44+offset_y]
+    # Index 3: Monash Motorsport
+    [20+offset_x, -10+offset_y],
 
-lecture_theatres_center = [20+offset_x, -120+offset_y]
-lecture_theatres_entrance = [25+offset_x, -140+offset_y]
+    # Index 4: Eng Lecture Theatres
+    [20+offset_x, -120+offset_y]
+]
 
+building_entrances = [
+    # Index 0: Eng Faculty
+    [-104+offset_x, -17+offset_y],
+
+    # Index 1: New Horizons
+    [-72+offset_x, 45+offset_y],
+
+    # Index 2: HAL
+    [-94+offset_x, -110+offset_y],
+
+    # Index 3: Monash Motorsport
+    [25+offset_x, -44+offset_y],
+
+    # Index 4: Eng Lecture Theatres
+    [25+offset_x, -140+offset_y]
+]
+
+building_bounding_polygons = [
+    # Index 0: Eng Faculty
+    np.array([[0, 0],
+            [1, 0],
+            [1, 1]]),
+
+    # Index 1: New Horizons
+    np.array([[-97+offset_x, 15+offset_y],
+            [-45+offset_x, 5+offset_y],
+            [-42+offset_x, 50+offset_y],
+            [-38+offset_x, 75+offset_y],
+            [5+offset_x, 90+offset_y],
+            [5+offset_x, 150+offset_y],
+            [-100+offset_x, 150+offset_y],
+            [-97+offset_x, 15+offset_y]]),
+
+    # Index 2: HAL
+    np.array([[0, 0],
+            [1, 0],
+            [1, 1]]),
+
+    # Index 3: Monash Motorsport
+    np.array([[0, 0],
+            [1, 0],
+            [1, 1]]),
+
+    # Index 4: Eng Lecture Theatres
+    np.array([[0, 0],
+            [1, 0],
+            [1, 1]])
+]
 
 #################### Set Target Building ####################
-building_center_xy = new_horizons_center
-building_entrance_xy = new_horizons_entrance
+target = 1  # 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
+building_center_xy = building_centers[target]
+building_entrance_xy = building_entrances[target]
+building_polygon = building_bounding_polygons[target]
 
 
 #################### Algorithm ####################
