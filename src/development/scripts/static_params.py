@@ -48,34 +48,52 @@ building_entrances = [
 
 building_bounding_polygons = [
     # Index 0: Eng Faculty
-    np.array([[0, 0],
-            [1, 0],
-            [1, 1]]),
+    np.array([
+        [-70+offset_x, 5+offset_y],
+        [-71+offset_x, -40+offset_y],
+        [-135+offset_x, -40+offset_y],
+        [-130+offset_x, 5+offset_y],
+        [-70+offset_x, 5+offset_y]
+    ]),
 
     # Index 1: New Horizons
-    np.array([[-97+offset_x, 15+offset_y],
-            [-45+offset_x, 5+offset_y],
-            [-42+offset_x, 50+offset_y],
-            [-38+offset_x, 75+offset_y],
-            [5+offset_x, 90+offset_y],
-            [5+offset_x, 150+offset_y],
-            [-100+offset_x, 150+offset_y],
-            [-97+offset_x, 15+offset_y]]),
+    np.array([
+        [-45+offset_x, 0+offset_y],
+        [-42+offset_x, 50+offset_y],
+        [-100+offset_x, 60+offset_y],
+        [-100+offset_x, 40+offset_y],
+        [-80+offset_x, 10+offset_y],
+        [-45+offset_x, 0+offset_y]
+    ]),
 
     # Index 2: HAL
-    np.array([[0, 0],
-            [1, 0],
-            [1, 1]]),
+    np.array([
+        [-60+offset_x, -90+offset_y],
+        [-60+offset_x, -112+offset_y],
+        [-72+offset_x, -112+offset_y],
+        [-97+offset_x, -128+offset_y],
+        [-135+offset_x, -128+offset_y],
+        [-135+offset_x, -110+offset_y],
+        [-60+offset_x, -90+offset_y]
+    ]),
 
     # Index 3: Monash Motorsport
-    np.array([[0, 0],
-            [1, 0],
-            [1, 1]]),
+    np.array([
+        [-17+offset_x, -41+offset_y],
+        [-17+offset_x, -53+offset_y],
+        [65+offset_x, -56+offset_y],
+        [65+offset_x, -41+offset_y],
+        [-17+offset_x, -41+offset_y]
+    ]),
 
     # Index 4: Eng Lecture Theatres
-    np.array([[0, 0],
-            [1, 0],
-            [1, 1]])
+    np.array([
+        [50+offset_x, -153+offset_y],
+        [50+offset_x, -130+offset_y],
+        [-20+offset_x, -130+offset_y],
+        [-20+offset_x, -153+offset_y],
+        [50+offset_x, -153+offset_y]
+    ])
 ]
 
 #################### Set Target Building ####################
@@ -88,7 +106,6 @@ building_polygon = building_bounding_polygons[target]
 #################### Algorithm ####################
 t_delay = 1                 # Seconds between iterations (lower = more responsive)
 robot_range = 15            # Radius around the robot in which pedestrians must be in order to be 'detected'
-building_threshold = 40     # Radius threshold to determine when the robot is in the vicinity of the target building
 target_threshold = 1        # Radius threshold to determine when the robot has reached a given target point
 straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point
 movement_pause = 10         # Seconds that the robot should wait in between movements
