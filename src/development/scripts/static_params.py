@@ -97,15 +97,16 @@ building_bounding_polygons = [
 ]
 
 #################### Set Target Building ####################
-target = 1  # 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
+target = 2  # 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
 building_center_xy = building_centers[target]
 building_entrance_xy = building_entrances[target]
 building_polygon = building_bounding_polygons[target]
 
 
 #################### Algorithm ####################
-t_delay = 1                 # Seconds between iterations (lower = more responsive)
+t_delay = 2                 # Seconds between iterations (lower = more responsive)
 robot_range = 15            # Radius around the robot in which pedestrians must be in order to be 'detected'
 target_threshold = 1        # Radius threshold to determine when the robot has reached a given target point
 straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point
-movement_pause = 10         # Seconds that the robot should wait in between movements
+movement_pause = 5          # Seconds that the robot should wait in between movements
+phase3_dist = 10            # Distance that the robot should follow a pedestrian for in phase 3

@@ -10,15 +10,18 @@ import dynamic_params
 from static_params import *
 from ped_selection import *
 from utils import *
+from movement import *
 
+from sensor_msgs.msg import PointCloud2
+from sensor_msgs import point_cloud2
+import pickle
 
 """
 Ideas:
-
---> Map out the coordinates for a bounding polygon for each building to use as the building vicinity
 --> Ped selection within building vicinity: follow a random pedestrian, move along edge of building
 --> Smarter navigation when there are no peds and outside building vicinity
 --> Detect and recover when robot is stuck driving into a wall
+--> Implement no-go zones
 """
 
 
@@ -37,7 +40,7 @@ def movebase_client():
             select_ped_within_vicinity()
         else:
             print("Outside building vicinity")
-            ped_found = select_ped_outside_vicinity(i)
+            ped_found, _ = select_ped_outside_vicinity(1, i)
 
             # Manually set robot goal if a pedestrian was not found by the ped selection logic
             if ped_found == 0:
@@ -75,5 +78,19 @@ if __name__ == '__main__':
     try:
         rospy.init_node('movebase_client_py')
         result = movebase_client()
+
+        """
+        print("********** STARTED **********")
+        rospy.init_node("parse_pc2", anonymous=True)
+        data = rospy.wait_for_message("/velodyne_points2", PointCloud2)
+        points_list = []
+        gen = point_cloud2.read_points(data, field_names = ("x", "y", "z"), skip_nans=True)
+        for point in gen:
+            #print(point) # tuple (-44.07529067993164, 13.067326545715332, 8.661510467529297)
+            points_list.append(point)
+        with open("/home/bob/Documents/walls.pickle", "wb") as f:
+            pickle.dump(points_list, f)
+        print("********** Saved **********")
+        """
     except rospy.ROSInterruptException:
         print("Algorithm finished!")
