@@ -51,11 +51,10 @@ def get_straight_line_pos(target, d):
     return [robot_xy[0] + d*unit_x, robot_xy[1] + d*unit_y]
 
 
-# Checks if the robot is within the vicinity of the target building
-def check_vicinity():
-    robot_xy = get_robot_xy()
-    path = mpltPath.Path(building_polygon)
-    return path.contains_point(robot_xy)
+# Checks if a given point pt is contained within a given polygon A
+def contains_pt(pt, A):
+    path = mpltPath.Path(A)
+    return path.contains_point(pt)
 
 
 # Parses and returns velodyne point cloud data in a list. Each element of the list is a tuple (x, y, z) indicating a particular point in the point cloud
@@ -66,3 +65,15 @@ def get_pointcloud():
     for point in generator:
         points_list.append(point)
     return points_list
+
+
+# Generates a square polygon of side length L centered around point pt
+def generate_zone(pt, L):
+    L = float(L)
+    return np.array([
+        [pt[0]-L/2, pt[1]-L/2],
+        [pt[0]+L/2, pt[1]-L/2],
+        [pt[0]+L/2, pt[1]+L/2],
+        [pt[0]-L/2, pt[1]+L/2],
+        [pt[0]-L/2, pt[1]-L/2]
+    ])

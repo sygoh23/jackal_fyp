@@ -112,3 +112,4 @@ target_threshold = 1        # Radius threshold to determine when the robot has r
 straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point
 movement_pause = 8          # Seconds that the robot should wait in between movements
 phase3_dist = 10            # Distance that the robot should follow a pedestrian for in phase 3
+zone_length = 5             # Side length of a generated square, which is currently used as an exclusion zone

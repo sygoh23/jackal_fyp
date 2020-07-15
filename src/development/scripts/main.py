@@ -3,8 +3,6 @@ import time
 import rospy
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-from pedsim_msgs.msg import AgentStates
-from nav_msgs.msg import Odometry
 from static_params import *
 import dynamic_params
 from static_params import *
@@ -22,6 +20,7 @@ Ideas:
 --> In phase 3 keep track of how much further you're moving away from the target. If you've moved more than say 20 metres in a straight line direction away from the target since starting the first phase 3 movement, stop and do something else? 
 --> Make robot follow to the last position of phase 3 ped, without being interrupted by phase 1 (likely dangerous)
 --> If statement in main that only sends the goal to movebase if the robot is outside the distance threshold from the target
+--> Only follow peds moving away from robot?
 """
 
 
@@ -31,11 +30,16 @@ def movebase_client():
     client.wait_for_server()
     i = 0
 
+    # Set exclusion zone around starting point
+    start_point = get_robot_xy()
+    dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
+
+    # Begin navigation algorithm
     while True:
         print("\n\n------------------------- i = %d -------------------------" % i)
 
         # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity
-        if check_vicinity():
+        if contains_pt(get_robot_xy(), building_polygon):
             print("Within building vicinity")
             select_ped_within_vicinity()
         else:
@@ -56,6 +60,14 @@ def movebase_client():
                 elif dynamic_params.timer_set == 1:
                     dynamic_params.timer.cancel()
                     dynamic_params.timer_set = 0
+
+                # If phase 3 was interrputed while following a pedestrian, reset the following_ped flag
+                if dynamic_params.following_ped == 1:
+                    dynamic_params.following_ped = 0
+                
+                # If phase 3 was interrupted while moving to last ped position, reset out_of_range flag
+                if dynamic_params.out_of_range == 1:
+                    dynamic_params.out_of_range = 0
                 
         # Send navigation goal to navigation stack:
         goal = MoveBaseGoal()

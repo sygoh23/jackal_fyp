@@ -112,11 +112,8 @@ def move_without_peds_outside_vicinity():
     
     # No last detected phase 1 ped exists AND the robot is not in the middle of moving towards a last detected phase 1 ped. I.e. this is phase 3
     elif dynamic_params.moving_to_last_ped == 0:
-        # if an if statement goes here with a flag set in phase3_movement, then follow_closest will be run again 
-        # which will update the goal and therefore the distance will never be below the threshold so the timer will 
-        # not be started again. But if say the ped goes out of range, then the goal won't be updated and it'll keep 
-        # moving to the last spot of the ped. Would have to set the goal to the current position of the robot in that ase
-        robot_xy = get_robot_xy()   # Want this to be as close as possible to the call inside follow_closest_ped, to minimise variation
+        # Want this call to get_robot_xy() to be as close as possible to the call inside follow_closest_ped, to minimise variation
+        robot_xy = get_robot_xy()   
         
         # Robot is in the middle of following a phase 3 ped. In this case run follow_closest_ped() again to update goal
         if dynamic_params.following_ped == 1:
