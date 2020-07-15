@@ -1,6 +1,5 @@
 """
 Contains helper functions for other parts of the program
-
 --> Import this file as 'from utils import *', then all functions will be added to the file namespace
 """
 
@@ -11,6 +10,8 @@ from pedsim_msgs.msg import AgentStates
 from nav_msgs.msg import Odometry
 from static_params import *
 import dynamic_params
+from sensor_msgs.msg import PointCloud2
+from sensor_msgs import point_cloud2
 
 
 # Returns the total number of pedsim pedestrians
@@ -55,3 +56,13 @@ def check_vicinity():
     robot_xy = get_robot_xy()
     path = mpltPath.Path(building_polygon)
     return path.contains_point(robot_xy)
+
+
+# Parses and returns velodyne point cloud data in a list. Each element of the list is a tuple (x, y, z) indicating a particular point in the point cloud
+def get_pointcloud():
+    data = rospy.wait_for_message("/velodyne_points2", PointCloud2)
+    generator = point_cloud2.read_points(data, field_names = ("x", "y", "z"), skip_nans=True)
+    points_list = []
+    for point in generator:
+        points_list.append(point)
+    return points_list

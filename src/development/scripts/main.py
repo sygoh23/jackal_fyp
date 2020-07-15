@@ -12,16 +12,16 @@ from ped_selection import *
 from utils import *
 from movement import *
 
-from sensor_msgs.msg import PointCloud2
-from sensor_msgs import point_cloud2
-import pickle
 
 """
 Ideas:
---> Ped selection within building vicinity: follow a random pedestrian, move along edge of building
---> Smarter navigation when there are no peds and outside building vicinity
---> Detect and recover when robot is stuck driving into a wall
---> Implement no-go zones
+--> Implement no-go zone around starting point, and enforce once out of starting point
+--> Component approach for distance instead of radius: follow ped as long as distance in any one of x or y directions is decreasing
+--> Set a no-go zone once a phase 1 ped is detected, and enforce once out of that range (likely dangerous)
+--> Implement a last resort movement after say 4 rounds of phase 3 ped follows. Maybe a round of straight line movement, maybe 5m left then wait, 5m right then wait, ...
+--> In phase 3 keep track of how much further you're moving away from the target. If you've moved more than say 20 metres in a straight line direction away from the target since starting the first phase 3 movement, stop and do something else? 
+--> Make robot follow to the last position of phase 3 ped, without being interrupted by phase 1 (likely dangerous)
+--> If statement in main that only sends the goal to movebase if the robot is outside the distance threshold from the target
 """
 
 
@@ -42,15 +42,17 @@ def movebase_client():
             print("Outside building vicinity")
             ped_found, _ = select_ped_outside_vicinity(1, i)
 
-            # Manually set robot goal if a pedestrian was not found by the ped selection logic
+            # Phase 1 pedestrian not found: use other movement logic to set robot goal
             if ped_found == 0:
                 move_without_peds_outside_vicinity()
+            
+            # Phase 1 pedestrian found: clear various flags to prevent phases 2 and 3 from executing. Goal has already been updated by the ped selection function
             else:
-                # Reset moving_to_last_ped flag if it was set
+                # Reset moving_to_last_ped flag if it was set, to indicate robot is no longer moving towards a pedestrian's last detected position (phase 2)
                 if dynamic_params.moving_to_last_ped == 1:
                     dynamic_params.moving_to_last_ped = 0
 
-                # Cancel timer if it is counting down
+                # Cancel timer if it is counting down, to prevent phase 3 from triggering
                 elif dynamic_params.timer_set == 1:
                     dynamic_params.timer.cancel()
                     dynamic_params.timer_set = 0
@@ -78,19 +80,5 @@ if __name__ == '__main__':
     try:
         rospy.init_node('movebase_client_py')
         result = movebase_client()
-
-        """
-        print("********** STARTED **********")
-        rospy.init_node("parse_pc2", anonymous=True)
-        data = rospy.wait_for_message("/velodyne_points2", PointCloud2)
-        points_list = []
-        gen = point_cloud2.read_points(data, field_names = ("x", "y", "z"), skip_nans=True)
-        for point in gen:
-            #print(point) # tuple (-44.07529067993164, 13.067326545715332, 8.661510467529297)
-            points_list.append(point)
-        with open("/home/bob/Documents/walls.pickle", "wb") as f:
-            pickle.dump(points_list, f)
-        print("********** Saved **********")
-        """
     except rospy.ROSInterruptException:
         print("Algorithm finished!")

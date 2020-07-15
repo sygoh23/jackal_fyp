@@ -1,6 +1,5 @@
 """
 Contains static parameters to be accessed throughout the algorithm
-
 --> Import this file as 'from static_params import *', then all parameters will be added to the file namespace
 --> Do not assign local variables with the same name as these parameters
 --> Do not change the value of these parameters, only access their value
@@ -9,8 +8,11 @@ Contains static parameters to be accessed throughout the algorithm
 import numpy as np
 
 #################### Coordinates ####################
-offset_x = 105
-offset_y = 10
+# X-offset: 105 to test from start point, 63 to test from sticking point, -18 to test from within eng lectures vicinity
+offset_x = 105  
+
+# Y-offset: 10 to test from start point, 74 to test from sticking point, -140 to test from within eng lectures vicinity
+offset_y = 10       
 
 building_centers = [
     # Index 0: Eng Faculty
@@ -25,8 +27,8 @@ building_centers = [
     # Index 3: Monash Motorsport
     [20+offset_x, -10+offset_y],
 
-    # Index 4: Eng Lecture Theatres
-    [20+offset_x, -120+offset_y]
+    # Index 4: Eng Lecture Theatres. Y-value was -120
+    [20+offset_x, -135+offset_y]
 ]
 
 building_entrances = [
@@ -97,16 +99,16 @@ building_bounding_polygons = [
 ]
 
 #################### Set Target Building ####################
-target = 2  # 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
+target = 4  # 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
 building_center_xy = building_centers[target]
 building_entrance_xy = building_entrances[target]
 building_polygon = building_bounding_polygons[target]
 
 
 #################### Algorithm ####################
-t_delay = 2                 # Seconds between iterations (lower = more responsive)
+t_delay = 1                 # Seconds between iterations (lower = more responsive)
 robot_range = 15            # Radius around the robot in which pedestrians must be in order to be 'detected'
 target_threshold = 1        # Radius threshold to determine when the robot has reached a given target point
 straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point
-movement_pause = 5          # Seconds that the robot should wait in between movements
+movement_pause = 8          # Seconds that the robot should wait in between movements
 phase3_dist = 10            # Distance that the robot should follow a pedestrian for in phase 3

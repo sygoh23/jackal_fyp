@@ -1,0 +1,186 @@
+<sdf version='1.6'>
+  <world name='default'>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>-177.715 -202.712 88.264 0 0.481797 0.832268</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+
+    <!-- ********** World Properties ********** -->
+    <light name='sun' type='directional'>
+      <pose frame=''>100 150 40 0 -0 0</pose>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.1 0.1 -0.9</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>1</cast_shadows>
+    </light>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.2 0.2 0.2 1</background>
+      <shadows>1</shadows>
+      <sky>
+        <clouds>
+          <speed>0.1</speed>
+        </clouds>
+      </sky>
+      <grid>0</grid>
+      <origin_visual>0</origin_visual>
+    </scene>
+    <wind/>
+
+    <light name='glow_1' type='point'>
+      <pose>-90 -100 50 0 0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>200</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>1</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <light name='glow_2' type='point'>
+      <pose>-90 70 50 0 0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>200</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>1</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <light name='glow_3' type='point'>
+      <pose>90 70 50 0 0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>200</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>1</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <light name='glow_4' type='point'>
+      <pose>90 -100 50 0 0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>200</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>1</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+
+    <light name='glow_5' type='point'>
+        <pose>0 -10 50 0 0 0</pose>
+        <diffuse>0.5 0.5 0.5 1</diffuse>
+        <specular>0.1 0.1 0.1 1</specular>
+        <attenuation>
+          <range>200</range>
+          <constant>0.5</constant>
+          <linear>0.01</linear>
+          <quadratic>0.001</quadratic>
+        </attenuation>
+        <cast_shadows>1</cast_shadows>
+        <direction>0 0 -1</direction>
+      </light>
+
+    <!-- WORLD STATE -->
+    <state world_name='default'>
+      <light name='sun'>
+        <pose frame=''>0 0 0 -0.1 -0.75 2.0</pose>
+      </light>
+    </state>
+
+    <!-- ********** Models ********** -->
+    <model name='ground_plane'>
+      <pose>-12 -152 0 0 0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>320 340</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>1</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>320 340</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+            <name>Gazebo/Grey</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+
+    <model name='Campus'>
+      <include>
+        <uri>model://campus</uri>
+        <pose>-18 -140 0 0 0 0</pose>
+      </include>
+    </model>
+
+    <model name='Bounding_walls'>
+      <include>
+        <uri>model://bounding_walls</uri>
+        <pose>-12 -147 0 0 0 0</pose>
+      </include>
+    </model>
+
+  <plugin name="ActorPosesPlugin" filename="libActorPosesPlugin.so"></plugin>
+
+  </world>
+</sdf>

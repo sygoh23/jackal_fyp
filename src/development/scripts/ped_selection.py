@@ -1,6 +1,5 @@
 """
 Contains pedestrian selection logic
-
 --> select_ped_within_vicinity(): used when the robot is within the building vicinity
 --> select_ped_outside_vicinity(): used when the robot is outside the building vicinity
 """
