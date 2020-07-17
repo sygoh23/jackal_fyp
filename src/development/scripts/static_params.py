@@ -100,7 +100,7 @@ building_bounding_polygons = [
 
 #################### Set Target Building ####################
 target = 4  # 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
-building_center_xy = building_centers[target]
+building_center_xy = building_entrances[target] #building_centers[target] changed such that robot moves to entrance in stage 1
 building_entrance_xy = building_entrances[target]
 building_polygon = building_bounding_polygons[target]
 
@@ -112,4 +112,4 @@ target_threshold = 1        # Radius threshold to determine when the robot has r
 straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point
 movement_pause = 8          # Seconds that the robot should wait in between movements
 phase3_dist = 10            # Distance that the robot should follow a pedestrian for in phase 3
-zone_length = 5             # Side length of a generated square, which is currently used as an exclusion zone
+zone_length = 5             # Side length of a generated square, which is currently used as a no-go zone
