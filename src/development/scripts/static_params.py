@@ -5,6 +5,7 @@ Contains static parameters to be accessed throughout the algorithm
 --> Do not change the value of these parameters, only access their value
 """
 
+import rospy
 import numpy as np
 
 #################### Coordinates ####################
@@ -98,12 +99,19 @@ building_bounding_polygons = [
     ])
 ]
 
-#################### Set Target Building ####################
+#################### Set Targets ####################
 target = 4  # 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
 building_center_xy = building_entrances[target] #building_centers[target] changed such that robot moves to entrance in stage 1
 building_entrance_xy = building_entrances[target]
 building_polygon = building_bounding_polygons[target]
 
+#################### Object Detection ####################
+repo_pth = rospy.get_param("/image_processor/root")
+use_webcam = rospy.get_param("/image_processor/webcam")
+obj_detection_dir = "src/development/resources/obj_detection/"
+model_name = "checkpoint_ssd300.pth.tar"
+font_name = "OpenSans-Regular.ttf"
+test_img_name = "dog.jpg"
 
 #################### Algorithm ####################
 t_delay = 1                 # Seconds between iterations (lower = more responsive)

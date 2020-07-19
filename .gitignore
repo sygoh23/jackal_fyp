@@ -1,6 +1,11 @@
-# Ignore build folders:
+# Build folders:
 build/
 devel/
 
-# Ignore python compiled binaries:
+# Python compiled binaries:
 *.pyc
+__pycache__/
+
+# Pytorch models:
+*.pt.tar
+*.pth.tar
