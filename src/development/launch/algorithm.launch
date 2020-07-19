@@ -38,5 +38,5 @@
   </node>
 
   <!-- ******************** IMAGE PROCESSING ******************** -->
-  <node if="$(arg image_process)" name="image_processor" pkg="development" type="img_proc.py" output="screen" launch-prefix="gnome-terminal --command"/>
+  <node if="$(arg image_process)" name="image_processor" pkg="development" type="img_proc.py" output="screen"/>
 </launch>
