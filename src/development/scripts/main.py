@@ -40,6 +40,7 @@ def movebase_client():
     while True:
         print("\n\n------------------------- i = %d -------------------------" % i)
 
+        # Read object detection results
         if process_img:
             is_door = rospy.wait_for_message("/detected_objects", String)
             print("Door detected: %s" % is_door.data)

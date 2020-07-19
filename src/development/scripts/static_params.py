@@ -101,18 +101,18 @@ building_bounding_polygons = [
 
 #################### Set Targets ####################
 target = 4  # 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
-building_center_xy = building_entrances[target] #building_centers[target] changed such that robot moves to entrance in stage 1
-building_entrance_xy = building_entrances[target]
-building_polygon = building_bounding_polygons[target]
+building_center_xy = building_entrances[target]         # Do not need to change (was set to building_centers[target])
+building_entrance_xy = building_entrances[target]       # Do not need to change
+building_polygon = building_bounding_polygons[target]   # Do not need to change
 
 #################### Object Detection ####################
-repo_pth = "/home/chris/Documents/jackal_fyp"
-use_webcam = rospy.get_param("/move_base/webcam")
-process_img = rospy.get_param("/move_base/img_process")
-obj_detection_dir = "src/development/resources/obj_detection/"
-model_name = "checkpoint_ssd300.pth.tar"
-font_name = "OpenSans-Regular.ttf"
-test_img_name = "dog.jpg"
+repo_pth = "/home/chris/Documents/jackal_fyp"                       # Full path to root directory of the repo              
+model_name = "checkpoint_ssd300.pth.tar"                            # Filename of object detection model to load (do not need to change atm)
+test_img_name = "dog.jpg"                                           # Filename of image to test object detection model
+use_webcam = rospy.get_param("/move_base/webcam")                   # Do not need to change
+process_img = rospy.get_param("/move_base/img_process")             # Do not need to change
+obj_detection_dir = "src/development/resources/obj_detection/"      # Do not need to change
+font_name = "OpenSans-Regular.ttf"                                  # Do not need to change
 
 #################### Algorithm ####################
 t_delay = 1                 # Seconds between iterations (lower = more responsive)

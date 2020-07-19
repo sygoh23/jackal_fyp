@@ -33,6 +33,11 @@ import rospy
 from std_msgs.msg import String
 
 
+# Check repo exists
+if not os.path.exists(repo_pth):
+    print("\n==> [WARNING]: Error while accessing [%s]\nChange path variable: [.../scripts/static_params.py] --> 'repo_pth'\n" % repo_pth)
+    sys.exit()
+
 # Init publisher
 pub = rospy.Publisher("detected_objects", String, queue_size=10)
 
