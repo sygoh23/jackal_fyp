@@ -106,8 +106,9 @@ building_entrance_xy = building_entrances[target]
 building_polygon = building_bounding_polygons[target]
 
 #################### Object Detection ####################
-repo_pth = rospy.get_param("/image_processor/root")
-use_webcam = rospy.get_param("/image_processor/webcam")
+repo_pth = "/home/chris/Documents/jackal_fyp"
+use_webcam = rospy.get_param("/move_base/webcam")
+process_img = rospy.get_param("/move_base/img_process")
 obj_detection_dir = "src/development/resources/obj_detection/"
 model_name = "checkpoint_ssd300.pth.tar"
 font_name = "OpenSans-Regular.ttf"

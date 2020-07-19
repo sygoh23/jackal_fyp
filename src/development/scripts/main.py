@@ -40,8 +40,9 @@ def movebase_client():
     while True:
         print("\n\n------------------------- i = %d -------------------------" % i)
 
-        is_door = rospy.wait_for_message("/detected_objects", String)
-        print("Door detected: %s" % is_door.data)
+        if process_img:
+            is_door = rospy.wait_for_message("/detected_objects", String)
+            print("Door detected: %s" % is_door.data)
 
         # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity
         if contains_pt(get_robot_xy(), building_polygon):

@@ -1,12 +1,10 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <arg name="ped_follow" default="true"/>
-  <arg name="image_process" default="true"/>
-  <arg name="repo_path" default="/home/chris/Documents/jackal_fyp"/>
+  <arg name="image_process" default="false"/>
   <arg name="use_webcam" default="false"/>
-
+  
   <!-- ******************** MOVE BASE NAVIGATION ******************** -->
-  <!-- VELODYNE SENSOR -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <!-- Global and local costmap -->
     <rosparam file="$(find development)resources/move_base/costmap_common_velodyne.yaml" command="load" ns="global_costmap" />
@@ -20,6 +18,10 @@
     <rosparam file="$(find development)resources/move_base/base_local_planner_params.yaml" command="load" />
     <rosparam file="$(find development)resources/move_base/move_base_params.yaml" command="load" />
     <remap from="odom" to="odometry/filtered" />
+
+    <!-- Object detection parameters (since this is the only node that is always executed) -->
+    <param name="img_process" value="$(arg image_process)"/>
+    <param name="webcam" value="$(arg use_webcam)"/>
   </node>
 
   <!-- ******************** PEDESTRIAN FOLLOWING  ******************** -->
@@ -36,8 +38,5 @@
   </node>
 
   <!-- ******************** IMAGE PROCESSING ******************** -->
-  <node if="$(arg image_process)" name="image_processor" pkg="development" type="img_proc.py" output="screen" launch-prefix="gnome-terminal --command">
-    <param name="root" value="$(arg repo_path)"/>
-    <param name="webcam" value="$(arg use_webcam)"/>
-  </node>
+  <node if="$(arg image_process)" name="image_processor" pkg="development" type="img_proc.py" output="screen" launch-prefix="gnome-terminal --command"/>
 </launch>
