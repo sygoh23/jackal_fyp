@@ -9,6 +9,7 @@ from static_params import *
 from ped_selection import *
 from utils import *
 from movement import *
+from std_msgs.msg import String
 
 
 """
@@ -38,6 +39,9 @@ def movebase_client():
     # Begin navigation algorithm
     while True:
         print("\n\n------------------------- i = %d -------------------------" % i)
+
+        is_door = rospy.wait_for_message("/detected_objects", String)
+        print("Door detected: %s" % is_door.data)
 
         # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity
         if contains_pt(get_robot_xy(), building_polygon):

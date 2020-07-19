@@ -15,20 +15,17 @@ def img_converter():
     if use_webcam:
         ros_img = rospy.wait_for_message("/usb_cam/image_raw", Image)
     else:
-        #ros_img = rospy.wait_for_message("/usb_cam/image_raw", Image)
-        # Use realsense image topic
-        pass
-
-    bridge = CvBridge()
+        ros_img = rospy.wait_for_message("/front/image_raw", Image)
 
     # Convert to cv::Mat
+    bridge = CvBridge()
     try:
         cv_image = bridge.imgmsg_to_cv2(ros_img, "rgb8")
     except CvBridgeError as err:
         print(err)
 
     # Convert to PIL through numpy
-    np_img = np.asarray(cv_image)       # (H, W, C)/(rows, cols, channels), uint8
+    np_img = np.asarray(cv_image)       # dim = (H, W, C) = (rows, cols, channels), dtype = uint8
     pil_img = PIL.Image.fromarray(np_img)
 
     return pil_img
@@ -51,7 +48,7 @@ if __name__ == "__main__":
             cv2.imshow("Image window", img_pred_cv)
             cv2.waitKey(1)
             
-            #time.sleep(0.1)
+            #time.sleep(1)
             
     except KeyboardInterrupt:
         print("Shutting down")

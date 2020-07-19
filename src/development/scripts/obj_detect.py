@@ -29,6 +29,12 @@ from obj_utils import *
 from PIL import Image, ImageDraw, ImageFont
 from static_params import repo_pth, obj_detection_dir, model_name, font_name, test_img_name
 import sys
+import rospy
+from std_msgs.msg import String
+
+
+# Init publisher
+pub = rospy.Publisher("detected_objects", String, queue_size=10)
 
 # Set device
 if torch.cuda.is_available():
@@ -103,9 +109,14 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None):
     # Decode class integer labels
     det_labels = [rev_label_map[l] for l in det_labels[0].to('cpu').tolist()]
 
+    print("*************** DETECTED: ***************")
+
     # If no objects found, the detected labels will be set to ['0.'], i.e. ['background'] in SSD300.detect_objects() in model.py
     if det_labels == ['background']:
         # Just return original image
+        print("==> nothing")
+        print("*****************************************\n")
+        pub.publish("false")
         return original_image
 
     # Annotate
@@ -137,6 +148,16 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None):
         draw.rectangle(xy=textbox_location, fill=label_color_map[det_labels[i]])
         draw.text(xy=text_location, text=det_labels[i].upper(), fill='white',
                   font=font)
+        
+        # Publish result
+        if det_labels[i].lower() == "door":
+            pub.publish("true")
+        else:
+            pub.publish("false")
+
+        print("==> %s" % det_labels[i].lower())
+
+    print("*****************************************\n")
     del draw
 
     return annotated_image

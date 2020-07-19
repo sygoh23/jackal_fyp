@@ -1,11 +1,11 @@
 <launch>
 
-  <!-- ******************** Args ******************** -->
+  <!-- ******************** ARGS ******************** -->
   <arg name="image_process" default="true"/>
   <arg name="repo_path" default="/home/chris/Documents/jackal_fyp"/>
   <arg name="use_webcam" default="true"/>
 
-  <!-- ******************** USB Cam Feed  ******************** -->
+  <!-- ******************** USB WEBCAM  ******************** -->
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video0" />
     <param name="image_width" value="640" />
@@ -15,7 +15,7 @@
     <param name="io_method" value="mmap"/>
   </node>
 
-  <!-- ******************** Image Processing ******************** -->
+  <!-- ******************** IMAGE PROCESSING ******************** -->
   <node if="$(arg image_process)" name="image_processor" pkg="development" type="img_proc.py" output="screen">
     <param name="root" value="$(arg repo_path)"/>
     <param name="webcam" value="$(arg use_webcam)"/>
