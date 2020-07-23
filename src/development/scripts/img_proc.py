@@ -16,6 +16,7 @@ def img_converter():
         ros_img = rospy.wait_for_message("/usb_cam/image_raw", Image)
     else:
         ros_img = rospy.wait_for_message("/front/image_raw", Image)
+        #ros_img = rospy.wait_for_message("/camera/color/image_raw", Image)     # Different topic in realsense.bag
 
     # Convert to cv::Mat
     bridge = CvBridge()
