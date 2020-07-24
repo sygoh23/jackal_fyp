@@ -31,31 +31,55 @@ import torch.utils.data
 from model import SSD300, MultiBoxLoss
 from datasets import PascalVOCDataset
 from obj_utils import *
+import sys
 
-# Data parameters
-data_folder = './'  # folder with data files
-keep_difficult = True  # use objects considered difficult to detect?
 
-# Model parameters
-# Not too many here since the SSD300 has a very specific structure
-n_classes = len(label_map)  # number of different types of objects
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+##############################################
+##### Training parameters (change these) #####
+##############################################
+data_folder = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Data_lists'     # Directory containing data lists
+save_dir = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models'            # Directory to save trained model
+batch_size = 2                      # batch size
+iterations = 20                     # number of iterations to train, where 1 iteration = processed 1 batch
+print_freq = 1                      # print training status every __ batches
+eval_freq = 1                       # evaluate accuracy on test set every __ epochs
+checkpoint = None                   # path to model checkpoint, None if none
 
-# Learning parameters
-checkpoint = None  # path to model checkpoint, None if none
-batch_size = 8  # batch size
-iterations = 120000  # number of iterations to train
-workers = 4  # number of workers for loading data in the DataLoader
-print_freq = 200  # print training status every __ batches
-lr = 1e-3  # learning rate
-decay_lr_at = [80000, 100000]  # decay learning rate after these many iterations
-decay_lr_to = 0.1  # decay learning rate to this fraction of the existing learning rate
-momentum = 0.9  # momentum
-weight_decay = 5e-4  # weight decay
-grad_clip = None  # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MuliBox loss calculation
-
+# Learning parameters (do not need to change)
+keep_difficult = True               # use objects considered difficult to detect
+workers = 4                         # number of workers for loading data in the DataLoader
+lr = 1e-3                           # learning rate
+decay_lr_at = [80000, 100000]       # decay learning rate after these many iterations
+decay_lr_to = 0.1                   # decay learning rate to this fraction of the existing learning rate
+momentum = 0.9                      # momentum
+weight_decay = 5e-4                 # weight decay
+grad_clip = None                    # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MuliBox loss calculation
 cudnn.benchmark = True
 
+# Model parameters
+n_classes = len(label_map)  # number of different types of objects
+
+# Set device
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    print("GPU found.\n")
+else:
+    device = torch.device("cpu")
+    print("Using CPU.\n")
+
+# Check directories
+if not os.path.exists(data_folder):
+    print("\n[WARNING]: Error accessing [%s]\n" % data_folder)
+    sys.exit()
+
+if not os.path.exists(save_dir):
+    print("\n[WARNING]: Error accessing [%s]\n" % save_dir)
+    sys.exit()
+
+if checkpoint is not None:
+    if not os.path.exists(checkpoint):
+        print("\n[WARNING]: Error accessing [%s]\n" % checkpoint)
+        sys.exit()
 
 def main():
     """
@@ -65,32 +89,39 @@ def main():
 
     # Initialize model or load checkpoint
     if checkpoint is None:
-        start_epoch = 0
+        start_epoch = 1
+        print("Preparing model...")
         model = SSD300(n_classes=n_classes)
+
         # Initialize the optimizer, with twice the default learning rate for biases, as in the original Caffe repo
         biases = list()
         not_biases = list()
+
         for param_name, param in model.named_parameters():
             if param.requires_grad:
                 if param_name.endswith('.bias'):
                     biases.append(param)
                 else:
                     not_biases.append(param)
+        
+        print("Preparing optimizer...\n")
         optimizer = torch.optim.SGD(params=[{'params': biases, 'lr': 2 * lr}, {'params': not_biases}],
                                     lr=lr, momentum=momentum, weight_decay=weight_decay)
 
     else:
         checkpoint = torch.load(checkpoint)
         start_epoch = checkpoint['epoch'] + 1
-        print('\nLoaded checkpoint from epoch %d.\n' % start_epoch)
+        print('\nLoaded checkpoint model from epoch %d.\n' % start_epoch)
         model = checkpoint['model']
         optimizer = checkpoint['optimizer']
 
     # Move to default device
     model = model.to(device)
+    print("Preparing loss function...\n")
     criterion = MultiBoxLoss(priors_cxcy=model.priors_cxcy).to(device)
 
     # Custom dataloaders
+    print("\nPreparing dataloaders...\n")
     train_dataset = PascalVOCDataset(data_folder,
                                      split='train',
                                      keep_difficult=keep_difficult)
@@ -101,10 +132,11 @@ def main():
     # Calculate total number of epochs to train and the epochs to decay learning rate at (i.e. convert iterations to epochs)
     # To convert iterations to epochs, divide iterations by the number of iterations per epoch
     # The paper trains for 120,000 iterations with a batch size of 32, decays after 80,000 and 100,000 iterations
-    epochs = iterations // (len(train_dataset) // 32)
-    decay_lr_at = [it // (len(train_dataset) // 32) for it in decay_lr_at]
+    epochs = iterations // (len(train_dataset) // batch_size)
+    decay_lr_at = [it // (len(train_dataset) // batch_size) for it in decay_lr_at]
 
-    # Epochs
+    # Training loop
+    print("\n***** Begin Training *****\n")
     for epoch in range(start_epoch, epochs):
 
         # Decay learning rate at particular epochs
@@ -116,13 +148,47 @@ def main():
               model=model,
               criterion=criterion,
               optimizer=optimizer,
-              epoch=epoch)
+              epoch=epoch,
+              n_epochs=epochs)
 
-        # Save checkpoint
-        save_checkpoint(epoch, model, optimizer)
+        # Evaluation and model saving
+        if epoch % eval_freq == 0:     
+            
+            # Accuracy on test set
+            """
+            correct, total, acc = evaluate(my_net, dataloader_val)
+            acc_record.append(acc)
+            acc_iters_record.append(iters)
+
+            if acc > best_acc:
+                best_acc = acc
+                best_epoch = epoch
+            """
+
+            # Print info
+            print("")
+            print("***** Epoch %d *****" % epoch)
+            #print("ACC: %d/%d correct (%.2f%%)" % (correct, total, acc))
+            
+            # Save model
+            filename = 'ssd300_epoch{}.pth.tar'.format(epoch)
+            path = os.path.join(save_dir, filename)
+            save_checkpoint(epoch, model, optimizer, path)
+            print("Saved model: %s to %s" % (filename, save_dir))
+
+            """
+            # Plot training loss
+            plot_loss(loss_record, iteration_record, opt.continue_epoch, opt.output_dir)
+            print("Saving plot: Loss_vs_Iters_{}".format(opt.continue_epoch))
+
+            # Plot accuracy
+            plot_acc(acc_record, acc_iters_record, opt.continue_epoch, opt.output_dir)
+            print("Saving plot: Acc_vs_Iters_{}".format(opt.continue_epoch))
+            """
+            print("")
 
 
-def train(train_loader, model, criterion, optimizer, epoch):
+def train(train_loader, model, criterion, optimizer, epoch, n_epochs):
     """
     One epoch's training.
 
@@ -173,14 +239,38 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
         # Print status
         if i % print_freq == 0:
-            print('Epoch: [{0}][{1}/{2}]\t'
-                  'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                  'Data Time {data_time.val:.3f} ({data_time.avg:.3f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format(epoch, i, len(train_loader),
-                                                                  batch_time=batch_time,
-                                                                  data_time=data_time, loss=losses))
+            print(
+                '[Epoch: %d/%d]\t'
+                '[Batch: %d/%d]\t'
+                '[Loss (this batch): %.4f]\t'
+                '[Loss (avg): %.4f]\t'
+                '[Batch Time (this batch): %.4fsec]\t'
+                '[Batch Time (avg): %.4fsec]\t' % (
+                    epoch,
+                    n_epochs,
+                    i+1,
+                    len(train_loader),
+                    losses.val,
+                    losses.avg,
+                    batch_time.val,
+                    batch_time.avg
+                )
+            )
+            """
+            print(
+                '[Epoch: {0}/{1}] [Batch: {2}/{3}]\t'
+                '[Loss (this batch): {loss.val:.4f} Loss (avg): ({loss.avg:.4f})]\t'
+                '[Batch Process Time (this batch): {batch_time.val:.3f} Batch Process Time (avg): ({batch_time.avg:.3f})]\t'
+                '[Dataload Time (this batch): {data_time.val:.3f} Dataload Time (avg): ({data_time.avg:.3f})]\t'.format(
+                                                                                                                    epoch, n_epochs, i+1, len(train_loader),
+                                                                                                                    batch_time=batch_time,
+                                                                                                                    data_time=data_time, loss=losses
+                                                                                                                )
+            )"""
+
     del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored
 
 
 if __name__ == '__main__':
     main()
+    print("\n***** FINISHED *****")

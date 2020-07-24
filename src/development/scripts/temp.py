@@ -30,5 +30,7 @@ distinct_colors = ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911e
 label_color_map = {k: distinct_colors[i] for i, k in enumerate(label_map.keys())}   # {"aeroplane": '#e6194b', "bicycle": '#3cb44, ...}
 
 obj = {'boxes': [[0, 1, 2, 3], [4, 5, 6, 7]], 'labels': [1, 1], 'difficulties': [0, 0]}
-print(obj['boxes'])
-print(len(obj['boxes']))
+
+decay_lr_at = [80000, 100000]
+decay_lr_at = [it // (100 // 32) for it in decay_lr_at]
+print(decay_lr_at)
