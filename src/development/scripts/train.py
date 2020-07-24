@@ -33,6 +33,7 @@ from datasets import PascalVOCDataset
 from obj_utils import *
 import sys
 import matplotlib.pyplot as plt
+from evaluate import evaluate
 
 
 ##############################################
@@ -40,13 +41,13 @@ import matplotlib.pyplot as plt
 ##############################################
 data_folder = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Data_lists'     # Directory containing data lists
 save_dir = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models'            # Directory to save trained model
-batch_size = 2                      # batch size
-iterations = 20                     # number of iterations to train, where 1 iteration = processed 1 batch
+batch_size = 3                      # batch size
+iterations = 50                     # number of iterations to train, where 1 iteration = processed 1 batch
 print_freq = 1                      # print training status every __ batches
 eval_freq = 1                       # evaluate accuracy on test set every __ epochs
 checkpoint = None                   # path to model checkpoint, None if none
 
-# Learning parameters (do not need to change)
+# Learning parameters
 keep_difficult = True               # use objects considered difficult to detect
 workers = 4                         # number of workers for loading data in the DataLoader
 lr = 1e-3                           # learning rate
@@ -59,6 +60,8 @@ loss_list = []                      # list for plotting loss
 acc_list = []                       # list for plotting mAP
 epoch_list = []                     # corresponding epochs at which mAP is calculated
 actual_iters = 0                    # actual number of iterations after rounding
+best_acc = 0                        # best accuracy achieved on test set
+best_epoch = 0                      # epoch where best accuracy was achieved
 cudnn.benchmark = True
 
 # Model parameters
@@ -91,7 +94,7 @@ def main():
     """
     Training.
     """
-    global start_epoch, label_map, epoch, checkpoint, decay_lr_at, epoch_list, actual_iters
+    global start_epoch, label_map, epoch, checkpoint, decay_lr_at, epoch_list, actual_iters, acc_list, best_acc, best_epoch
 
     # Initialize model or load checkpoint
     if checkpoint is None:
@@ -128,12 +131,35 @@ def main():
 
     # Custom dataloaders
     print("\nPreparing dataloaders...\n")
-    train_dataset = PascalVOCDataset(data_folder,
-                                     split='train',
-                                     keep_difficult=keep_difficult)
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
-                                               collate_fn=train_dataset.collate_fn, num_workers=workers,
-                                               pin_memory=True)  # note that we're passing the collate function here
+    train_dataset = PascalVOCDataset(
+        data_folder,
+        split='train',
+        keep_difficult=keep_difficult
+    )
+
+    train_loader = torch.utils.data.DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        collate_fn=train_dataset.collate_fn,
+        num_workers=workers,
+        pin_memory=True
+    )
+    
+    test_dataset = PascalVOCDataset(
+        data_folder,
+        split='test',
+        keep_difficult=keep_difficult
+    )
+
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        collate_fn=test_dataset.collate_fn,
+        num_workers=workers,
+        pin_memory=True
+    )
 
     # Calculate total number of epochs to train and the epochs to decay learning rate at (i.e. convert iterations to epochs)
     # To convert iterations to epochs, divide iterations by the number of iterations per epoch
@@ -151,33 +177,30 @@ def main():
             adjust_learning_rate(optimizer, decay_lr_to)
 
         # One epoch's training
-        train(train_loader=train_loader,
-              model=model,
-              criterion=criterion,
-              optimizer=optimizer,
-              epoch=epoch,
-              n_epochs=epochs)
+        train(
+            train_loader=train_loader,
+            model=model,
+            criterion=criterion,
+            optimizer=optimizer,
+            epoch=epoch,
+            n_epochs=epochs
+        )
 
         # Evaluation and model saving
         if epoch % eval_freq == 0:     
             
             # Accuracy on test set
+            acc = evaluate(test_loader, model)
+            acc_list.append(acc)
             epoch_list.append(epoch)
-            #acc_list.append(acc)
-            """
-            correct, total, acc = evaluate(my_net, dataloader_val)
-            acc_record.append(acc)
-            acc_iters_record.append(iters)
 
             if acc > best_acc:
                 best_acc = acc
                 best_epoch = epoch
-            """
-
+            
             # Print info
-            print("")
-            print("***** Epoch %d *****" % epoch)
-            #print("ACC: %d/%d correct (%.2f%%)" % (correct, total, acc))
+            print("\n***** Evaluation on Epoch %d *****" % epoch)
+            print('Mean Average Precision (mAP): %.3f' % acc)
             
             # Save model
             filename = 'ssd300_epoch{}.pth.tar'.format(epoch)
@@ -269,17 +292,18 @@ def plot():
     plt.xlabel('Iterations') 
     plt.ylabel('Loss') 
     plt.title('Loss vs Iterations') 
-    """
+    
     fig2 = plt.figure()
     plt.plot(epoch_list, acc_list)
-    plt.xlabel('Iterations') 
-    plt.ylabel('Loss') 
-    plt.title('Loss vs Iterations') 
-    """
+    plt.xlabel('Epochs') 
+    plt.ylabel('mAP') 
+    plt.title('mAP vs Epochs') 
+    
     plt.show() 
 
 
 if __name__ == '__main__':
     main()
-    plot()
     print("\n***** FINISHED *****")
+    print("Best mAP = %.3f achieved on epoch %d" % (best_acc, best_epoch))
+    plot()
