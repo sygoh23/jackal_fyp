@@ -32,6 +32,7 @@ from model import SSD300, MultiBoxLoss
 from datasets import PascalVOCDataset
 from obj_utils import *
 import sys
+import matplotlib.pyplot as plt
 
 
 ##############################################
@@ -54,6 +55,10 @@ decay_lr_to = 0.1                   # decay learning rate to this fraction of th
 momentum = 0.9                      # momentum
 weight_decay = 5e-4                 # weight decay
 grad_clip = None                    # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MuliBox loss calculation
+loss_list = []                      # list for plotting loss
+acc_list = []                       # list for plotting mAP
+epoch_list = []                     # corresponding epochs at which mAP is calculated
+actual_iters = 0                    # actual number of iterations after rounding
 cudnn.benchmark = True
 
 # Model parameters
@@ -81,11 +86,12 @@ if checkpoint is not None:
         print("\n[WARNING]: Error accessing [%s]\n" % checkpoint)
         sys.exit()
 
+
 def main():
     """
     Training.
     """
-    global start_epoch, label_map, epoch, checkpoint, decay_lr_at
+    global start_epoch, label_map, epoch, checkpoint, decay_lr_at, epoch_list, actual_iters
 
     # Initialize model or load checkpoint
     if checkpoint is None:
@@ -134,10 +140,11 @@ def main():
     # The paper trains for 120,000 iterations with a batch size of 32, decays after 80,000 and 100,000 iterations
     epochs = iterations // (len(train_dataset) // batch_size)
     decay_lr_at = [it // (len(train_dataset) // batch_size) for it in decay_lr_at]
+    actual_iters = epochs*(len(train_dataset) // batch_size)
 
     # Training loop
     print("\n***** Begin Training *****\n")
-    for epoch in range(start_epoch, epochs):
+    for epoch in range(start_epoch, epochs+1):
 
         # Decay learning rate at particular epochs
         if epoch in decay_lr_at:
@@ -155,6 +162,8 @@ def main():
         if epoch % eval_freq == 0:     
             
             # Accuracy on test set
+            epoch_list.append(epoch)
+            #acc_list.append(acc)
             """
             correct, total, acc = evaluate(my_net, dataloader_val)
             acc_record.append(acc)
@@ -174,18 +183,7 @@ def main():
             filename = 'ssd300_epoch{}.pth.tar'.format(epoch)
             path = os.path.join(save_dir, filename)
             save_checkpoint(epoch, model, optimizer, path)
-            print("Saved model: %s to %s" % (filename, save_dir))
-
-            """
-            # Plot training loss
-            plot_loss(loss_record, iteration_record, opt.continue_epoch, opt.output_dir)
-            print("Saving plot: Loss_vs_Iters_{}".format(opt.continue_epoch))
-
-            # Plot accuracy
-            plot_acc(acc_record, acc_iters_record, opt.continue_epoch, opt.output_dir)
-            print("Saving plot: Acc_vs_Iters_{}".format(opt.continue_epoch))
-            """
-            print("")
+            print("Saved model: %s to %s\n" % (filename, save_dir))
 
 
 def train(train_loader, model, criterion, optimizer, epoch, n_epochs):
@@ -198,6 +196,8 @@ def train(train_loader, model, criterion, optimizer, epoch, n_epochs):
     :param optimizer: optimizer
     :param epoch: epoch number
     """
+    global loss_list
+
     model.train()  # training mode enables dropout
 
     batch_time = AverageMeter()  # forward prop. + back prop. time
@@ -220,6 +220,7 @@ def train(train_loader, model, criterion, optimizer, epoch, n_epochs):
 
         # Loss
         loss = criterion(predicted_locs, predicted_scores, boxes, labels)  # scalar
+        loss_list.append(loss.item())
 
         # Backward prop.
         optimizer.zero_grad()
@@ -256,21 +257,29 @@ def train(train_loader, model, criterion, optimizer, epoch, n_epochs):
                     batch_time.avg
                 )
             )
-            """
-            print(
-                '[Epoch: {0}/{1}] [Batch: {2}/{3}]\t'
-                '[Loss (this batch): {loss.val:.4f} Loss (avg): ({loss.avg:.4f})]\t'
-                '[Batch Process Time (this batch): {batch_time.val:.3f} Batch Process Time (avg): ({batch_time.avg:.3f})]\t'
-                '[Dataload Time (this batch): {data_time.val:.3f} Dataload Time (avg): ({data_time.avg:.3f})]\t'.format(
-                                                                                                                    epoch, n_epochs, i+1, len(train_loader),
-                                                                                                                    batch_time=batch_time,
-                                                                                                                    data_time=data_time, loss=losses
-                                                                                                                )
-            )"""
 
     del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored
 
 
+def plot():
+    global actual_iters, epoch_list, loss_list, acc_list
+
+    fig1 = plt.figure()
+    plt.plot(range(1, actual_iters+1), loss_list)
+    plt.xlabel('Iterations') 
+    plt.ylabel('Loss') 
+    plt.title('Loss vs Iterations') 
+    """
+    fig2 = plt.figure()
+    plt.plot(epoch_list, acc_list)
+    plt.xlabel('Iterations') 
+    plt.ylabel('Loss') 
+    plt.title('Loss vs Iterations') 
+    """
+    plt.show() 
+
+
 if __name__ == '__main__':
     main()
+    plot()
     print("\n***** FINISHED *****")
