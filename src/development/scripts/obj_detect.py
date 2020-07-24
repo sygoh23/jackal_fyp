@@ -1,4 +1,4 @@
-# Code from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
+# https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 
 """
 MIT License

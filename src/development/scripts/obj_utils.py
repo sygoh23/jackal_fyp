@@ -1,4 +1,4 @@
-# Code from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
+# https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 
 """
 MIT License
@@ -34,10 +34,10 @@ import torchvision.transforms.functional as FT
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Label map
-voc_labels = ('aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable',
-              'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor')
-label_map = {k: v + 1 for v, k in enumerate(voc_labels)}
-label_map['background'] = 0
+#voc_labels = ('aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor')
+#label_map = {k: v + 1 for v, k in enumerate(voc_labels)}
+#label_map['background'] = 0
+label_map = {"background": 0, "entrance": 1}
 rev_label_map = {v: k for k, v in label_map.items()}  # Inverse mapping
 
 # Color map for bounding boxes of detected objects from https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
@@ -55,7 +55,7 @@ def parse_annotation(annotation_path):
     labels = list()
     difficulties = list()
     for object in root.iter('object'):
-
+        
         difficult = int(object.find('difficult').text == '1')
 
         label = object.find('name').text.lower().strip()
@@ -75,35 +75,35 @@ def parse_annotation(annotation_path):
     return {'boxes': boxes, 'labels': labels, 'difficulties': difficulties}
 
 
-def create_data_lists(voc07_path, voc12_path, output_folder):
+def create_data_lists(data_dir, output_folder):
     """
     Create lists of images, the bounding boxes and labels of the objects in these images, and save these to file.
-    :param voc07_path: path to the 'VOC2007' folder
-    :param voc12_path: path to the 'VOC2012' folder
+    :param data_dir: path to the data directory
     :param output_folder: folder where the JSONs must be saved
     """
-    voc07_path = os.path.abspath(voc07_path)
-    voc12_path = os.path.abspath(voc12_path)
+    data_dir = os.path.abspath(data_dir)
+
+    # Training data
+    img_names_train = sorted(os.listdir(os.path.join(data_dir, "Images", "Train")))
+    annotation_names_train = sorted(os.listdir(os.path.join(data_dir, "Annotations", "Train")))
 
     train_images = list()
     train_objects = list()
     n_objects = 0
 
-    # Training data
-    for path in [voc07_path, voc12_path]:
+    for img_name, annotation_name in zip(img_names_train, annotation_names_train):
+        
+        img_path = os.path.join(data_dir, "Images", "Train", img_name)
+        annotation_path = os.path.join(data_dir, "Annotations", "Train", annotation_name)
 
-        # Find IDs of images in training data
-        with open(os.path.join(path, 'ImageSets/Main/trainval.txt')) as f:
-            ids = f.read().splitlines()
-
-        for id in ids:
-            # Parse annotation's XML file
-            objects = parse_annotation(os.path.join(path, 'Annotations', id + '.xml'))
-            if len(objects) == 0:
-                continue
-            n_objects += len(objects)
-            train_objects.append(objects)
-            train_images.append(os.path.join(path, 'JPEGImages', id + '.jpg'))
+        # Parse annotation's XML file
+        objects = parse_annotation(annotation_path)
+        if len(objects['boxes']) == 0:
+            continue
+        
+        n_objects += len(objects['boxes'])
+        train_objects.append(objects)
+        train_images.append(img_path)
 
     assert len(train_objects) == len(train_images)
 
@@ -119,22 +119,26 @@ def create_data_lists(voc07_path, voc12_path, output_folder):
         len(train_images), n_objects, os.path.abspath(output_folder)))
 
     # Test data
+    img_names_test = sorted(os.listdir(os.path.join(data_dir, "Images", "Test")))
+    annotation_names_test = sorted(os.listdir(os.path.join(data_dir, "Annotations", "Test")))
+
     test_images = list()
     test_objects = list()
     n_objects = 0
 
-    # Find IDs of images in the test data
-    with open(os.path.join(voc07_path, 'ImageSets/Main/test.txt')) as f:
-        ids = f.read().splitlines()
+    for img_name, annotation_name in zip(img_names_test, annotation_names_test):
+        
+        img_path = os.path.join(data_dir, "Images", "Test", img_name)
+        annotation_path = os.path.join(data_dir, "Annotations", "Test", annotation_name)
 
-    for id in ids:
         # Parse annotation's XML file
-        objects = parse_annotation(os.path.join(voc07_path, 'Annotations', id + '.xml'))
-        if len(objects) == 0:
+        objects = parse_annotation(annotation_path)
+        if len(objects['boxes']) == 0:
             continue
+        
         test_objects.append(objects)
-        n_objects += len(objects)
-        test_images.append(os.path.join(voc07_path, 'JPEGImages', id + '.jpg'))
+        n_objects += len(objects['boxes'])
+        test_images.append(img_path)
 
     assert len(test_objects) == len(test_images)
 

@@ -1,11 +1,16 @@
-# Build folders:
+# Build folders
 build/
 devel/
 
-# Python compiled binaries:
+# Python compiled binaries
 *.pyc
 __pycache__/
 
-# Pytorch models:
+# Pytorch models
 *.pt.tar
 *.pth.tar
+
+# Images
+*.jpg
+*.jpeg
+*.png
