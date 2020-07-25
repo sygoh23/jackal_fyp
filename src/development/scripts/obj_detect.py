@@ -27,15 +27,19 @@ SOFTWARE.
 from torchvision import transforms
 from obj_utils import *
 from PIL import Image, ImageDraw, ImageFont
-from static_params import repo_pth, obj_detection_dir, model_name, font_name, test_img_name
+from static_params import model_pth, font_pth
 import sys
 import rospy
 from std_msgs.msg import String
 
 
-# Check repo exists
-if not os.path.exists(repo_pth):
-    print("\n==> [WARNING]: Error accessing [%s]\nChange path variable: [.../scripts/static_params.py] --> 'repo_pth'\n" % repo_pth)
+# Check filepaths
+if not os.path.exists(model_pth):
+    print("\n[WARNING]: Error accessing [%s]\nChange path variable: [.../scripts/static_params.py] --> 'model_pth'\nPre-trained model can be downloaded at [https://drive.google.com/file/d/1bvJfF6r_zYl2xZEpYXxgb7jLQHFZ01Qe/view]\n" % model_pth)
+    sys.exit()
+
+if not os.path.exists(font_pth):
+    print("\n[WARNING]: Error accessing [%s]\nChange path variable: [.../scripts/static_params.py] --> 'font_pth'\n" % font_pth)
     sys.exit()
 
 # Init publisher
@@ -44,22 +48,16 @@ pub = rospy.Publisher("detected_objects", String, queue_size=10)
 # Set device
 if torch.cuda.is_available():
     device = torch.device("cuda")
-    print("==> GPU found\n")
+    print("GPU found.\n")
 else:
     device = torch.device("cpu")
-    print("==> Using CPU\n")
+    print("Using CPU.\n")
 
 # Load model
-checkpoint = os.path.join(repo_pth, obj_detection_dir, model_name)
-
-if not os.path.exists(checkpoint):
-    print("\n==> [WARNING]: Model not found. Download at [https://drive.google.com/file/d/1bvJfF6r_zYl2xZEpYXxgb7jLQHFZ01Qe/view] and copy into [%s]\n" % os.path.join(repo_pth, obj_detection_dir))
-    sys.exit()
-
-print("==> Model found at %s\n" % checkpoint)
-checkpoint = torch.load(checkpoint)
+print("Model found at [%s]\n" % model_pth)
+checkpoint = torch.load(model_pth)
 start_epoch = checkpoint['epoch'] + 1
-print("\n==> Loaded weights from epoch %d.\n" % start_epoch)
+print("\nLoaded weights from epoch %d.\n" % start_epoch)
 model = checkpoint['model']
 model = model.to(device)
 model.eval()
@@ -127,7 +125,7 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None):
     # Annotate
     annotated_image = original_image
     draw = ImageDraw.Draw(annotated_image)
-    font = ImageFont.truetype(os.path.join(repo_pth, obj_detection_dir, font_name), 15)
+    font = ImageFont.truetype(font_pth, 15)
 
     # Suppress specific classes, if needed
     for i in range(det_boxes.size(0)):
@@ -167,10 +165,11 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None):
 
     return annotated_image
 
-
+"""
 if __name__ == '__main__':
     # Run on test image
     img_path = os.path.join(repo_pth, obj_detection_dir, test_img_name)
     original_image = Image.open(img_path, mode='r')
     original_image = original_image.convert('RGB')
     detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
+    """
