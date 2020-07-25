@@ -85,6 +85,7 @@ def create_data_lists(data_dir, output_folder):
 
     # Training data
     img_names_train = sorted(os.listdir(os.path.join(data_dir, "Images", "Train")))
+    img_names_train.remove("README.md")  # remove readme file
     annotation_names_train = sorted(os.listdir(os.path.join(data_dir, "Annotations", "Train")))
 
     train_images = list()
@@ -120,6 +121,7 @@ def create_data_lists(data_dir, output_folder):
 
     # Test data
     img_names_test = sorted(os.listdir(os.path.join(data_dir, "Images", "Test")))
+    img_names_test.remove("README.md")  # remove readme file
     annotation_names_test = sorted(os.listdir(os.path.join(data_dir, "Annotations", "Test")))
 
     test_images = list()

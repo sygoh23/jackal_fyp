@@ -33,4 +33,8 @@ obj = {'boxes': [[0, 1, 2, 3], [4, 5, 6, 7]], 'labels': [1, 1], 'difficulties': 
 
 decay_lr_at = [80000, 100000]
 decay_lr_at = [it // (100 // 32) for it in decay_lr_at]
-print(decay_lr_at)
+
+img_names_train = sorted(os.listdir("/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Images/Train"))
+print(img_names_train)
+img_names_train.remove("README.md")  # remove readme file
+print(img_names_train)
