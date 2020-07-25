@@ -108,9 +108,8 @@ building_polygon = building_bounding_polygons[target]   # Do not need to change
 #################### Object Detection ####################
 model_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models/ssd300_epoch6.pth.tar"     # Full path to model
 font_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/OpenSans-Regular.ttf"              # Full path to font file
-test_img_name = "dog.jpg"                                           # Filename of image to test object detection model
-use_webcam = rospy.get_param("/move_base/webcam")                   # Do not need to change
-process_img = rospy.get_param("/move_base/img_process")             # Do not need to change
+use_webcam = rospy.get_param("/move_base/webcam")           # Do not need to change
+process_img = rospy.get_param("/move_base/img_process")     # Do not need to change
 
 #################### Algorithm ####################
 t_delay = 1                 # Seconds between iterations (lower = more responsive)
