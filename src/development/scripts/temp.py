@@ -1,3 +1,7 @@
+"""
+Temporary file for testing ideas. Not used by the main code and will be deleted at some point.
+"""
+
 from obj_utils import *
 from PIL import Image, ImageDraw
 import torch

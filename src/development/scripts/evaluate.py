@@ -24,6 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+"""
+Used to provide evaluation metric during training.
+"""
+
 from obj_utils import *
 from datasets import PascalVOCDataset
 from tqdm import tqdm

@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+"""
+Used to generate JSON files used in training.
+Set 'pth' variable to obj_detection directory on your system
+"""
+
 from obj_utils import create_data_lists
 import os
 

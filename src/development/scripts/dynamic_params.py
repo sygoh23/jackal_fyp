@@ -1,8 +1,8 @@
 """
-Contains dynamic parameters to be accessed and modified throughout the algorithm
---> Import this file as 'import dynamic_params', then access/modify any parameters as 'dynamic_params.parameter'
---> Do not assign local variables with the same name as these parameters
---> Modifying a parameter will modify it for all files which access it
+Contains dynamic parameters to be accessed and modified throughout the algorithm.
+Import this file as 'import dynamic_params', then access/modify any parameters as 'dynamic_params.parameter'.
+Do not assign local variables with the same name as these parameters.
+Modifying a parameter will modify it for all files which access it.
 """
 
 import numpy as np

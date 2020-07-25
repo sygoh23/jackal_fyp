@@ -1,8 +1,8 @@
 """
-Contains static parameters to be accessed throughout the algorithm
---> Import this file as 'from static_params import *', then all parameters will be added to the file namespace
---> Do not assign local variables with the same name as these parameters
---> Do not change the value of these parameters, only access their value
+Contains static parameters to be accessed throughout the algorithm.
+Import this file as 'from static_params import *', then all parameters will be added to the file namespace.
+Do not assign local variables with the same name as these parameters.
+Do not change the value of these parameters, only access their value.
 """
 
 import rospy

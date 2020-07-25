@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+
+"""
+Used to start the image processing node.
+Reads image data from a ROS topic, performs conversions, and sends to object detection model.
+"""
+
 import rospy
 import cv2
 from sensor_msgs.msg import Image

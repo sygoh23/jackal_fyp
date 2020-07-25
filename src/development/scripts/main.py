@@ -16,12 +16,11 @@ from std_msgs.msg import String
 Ideas:
 --> Don't follow a pedestrian if it's where the robot came from
 --> Component approach for distance instead of radius: follow ped as long as distance in any one of x or y directions is decreasing
---> Set a no-go zone once a phase 1 ped is detected, and enforce once out of that range (risky)
---> Implement a last resort movement after say 4 rounds of following a pedestrian in phase 3. Maybe a round of straight line movement, maybe 5m left then wait, 5m right then wait, ...
---> In phase 3 keep track of how much further you're moving away from the target. If you've moved more than say 20 metres in a straight line direction away from the target since starting the first phase 3 movement, stop and do something else? 
---> Make robot move to the last position of phase 3 ped, without being interrupted by phase 1 (risky)
+--> Implement a last resort movement logic after say 4 rounds of following a pedestrian in phase 3. Maybe a round of straight line movement, maybe 5m left then wait, 5m right then wait, etc
+--> In phase 3 keep track of how much further the robot is moving away from the target. If it's moved more than say 20 metres in a straight line direction away from the target since starting the first phase 3 movement, stop and do something else? 
+--> Make robot move to the last position of the pedestrian in phase 3, without being interrupted by phase 1? (risky)
 --> If statement in main that only sends the goal to movebase if the robot is outside the distance threshold from the target
---> Only follow peds moving away from robot?
+--> Only follow pedestrians moving away from robot?
 --> Obtain the result of movebase for use in decision making. Somehow published through a topic
 """
 

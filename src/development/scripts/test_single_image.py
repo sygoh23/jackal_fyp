@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+"""
+Standalone file used to run the object detection model on a given image to quickly test results. Not used by the main code.
+Set 'img_pth', 'model_pth', 'font_pth'.
+"""
+
 from torchvision import transforms
 from obj_utils import *
 from PIL import Image, ImageDraw, ImageFont

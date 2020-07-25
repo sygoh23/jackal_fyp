@@ -1,6 +1,6 @@
 """
-Contains helper functions for other parts of the program
---> Import this file as 'from utils import *', then all functions will be added to the file namespace
+Contains helper functions for other parts of the program.
+Import this file as 'from utils import *', then all functions will be added to the file namespace.
 """
 
 from math import sqrt

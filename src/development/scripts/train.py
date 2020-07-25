@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+"""
+Used to train the model.
+Set variables listed under 'Training parameters'
+"""
+
 import time
 import torch.backends.cudnn as cudnn
 import torch.optim

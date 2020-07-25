@@ -1,5 +1,6 @@
 """
-Contains movement logic, currently for when there are no detected phase 1 pedestrians
+Contains movement logic.
+Currently all functions are for when the robot is in stage 1 and there are no detected phase 1 pedestrians. Nothing in here for stage 2 (yet).
 """
 
 from ped_selection import *

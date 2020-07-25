@@ -24,6 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+"""
+Runs object detection model on a given image. Code is setup to be called from another file.
+"""
+
 from torchvision import transforms
 from obj_utils import *
 from PIL import Image, ImageDraw, ImageFont
@@ -164,12 +168,3 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None):
     del draw
 
     return annotated_image
-
-"""
-if __name__ == '__main__':
-    # Run on test image
-    img_path = os.path.join(repo_pth, obj_detection_dir, test_img_name)
-    original_image = Image.open(img_path, mode='r')
-    original_image = original_image.convert('RGB')
-    detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
-    """
