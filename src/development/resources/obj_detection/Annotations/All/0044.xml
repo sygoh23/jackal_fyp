@@ -1,0 +1,26 @@
+<annotation>
+	<folder>All</folder>
+	<filename>0044.jpg</filename>
+	<path>/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Images/All/0044.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1333</width>
+		<height>1000</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>entrance</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>356</xmin>
+			<ymin>197</ymin>
+			<xmax>945</xmax>
+			<ymax>765</ymax>
+		</bndbox>
+	</object>
+</annotation>
