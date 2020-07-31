@@ -33,5 +33,5 @@ from obj_utils import create_data_lists
 import os
 
 if __name__ == '__main__':
-    pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection"
+    pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection"    # change this to point to the obj_detection directory on your system
     create_data_lists(data_dir=pth, output_folder=os.path.join(pth, "Data_lists"))

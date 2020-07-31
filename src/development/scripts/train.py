@@ -47,9 +47,9 @@ from evaluate import evaluate
 data_folder = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Data_lists'     # Directory containing data lists
 save_dir = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models'            # Directory to save trained model
 batch_size = 6                      # batch size
-iterations = 100000                 # number of iterations to train, where 1 iteration = processed 1 batch
+iterations = 200                    # number of iterations to train, where 1 iteration = processed 1 batch
 print_freq = 1                      # print training status every __ batches
-eval_freq = 1                       # evaluate accuracy on test set every __ epochs
+eval_freq = 2                       # evaluate accuracy on test set every __ epochs
 checkpoint = None                   # path to model checkpoint, None if none
 
 # Learning parameters
