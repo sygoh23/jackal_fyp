@@ -10,6 +10,7 @@ from static_params import *
 
 ########## Algorithm ##########
 reached_target = 0          # Flag for whether robot has reached the target building entrance
+entrance_found = False      # Flag for whether entrance has been found by object detection model
 goal_xy = [0, 0]            # Navigation goal sent to move_base
 dist_last = []              # Distance of each pedestrian from the building center, from the previous iteration
 ped_last = []               # Phase 2: x-y position of the last detected pedestrian, from the previous iteration

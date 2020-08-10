@@ -39,16 +39,23 @@ def movebase_client():
     while True:
         print("\n\n------------------------- i = %d -------------------------" % i)
 
-        # Read object detection results
-        if process_img:
-            is_door = rospy.wait_for_message("/detected_objects", String)
-            print("Door detected: %s" % is_door.data)
-
-        # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity
-        if contains_pt(get_robot_xy(), building_polygon):
+        # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity, and if an entrance has/has not been found
+        if contains_pt(get_robot_xy(), building_polygon) and (not dynamic_params.entrance_found):
             print("Within building vicinity")
             select_ped_within_vicinity()
-        else:
+
+            # Read object detection results
+            if process_img:
+                is_door = rospy.wait_for_message("/detected_objects", String)
+                print("Door detected: %s" % is_door.data)
+
+                # If entrance was detected, trigger final movement to entrance
+                if is_door.data == "true":
+                    print("Moving to doorway")
+                    dynamic_params.entrance_found = True
+                    move_to_doorway()
+                
+        elif not dynamic_params.entrance_found:
             print("Outside building vicinity")
             ped_found, _ = select_ped_outside_vicinity(1, i)
 

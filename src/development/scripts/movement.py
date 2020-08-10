@@ -12,6 +12,11 @@ from pedsim_msgs.msg import AgentStates
 import rospy
 
 
+# Used once object detection has found a doorway
+def move_to_doorway():
+    pass
+
+
 """
 Used in phase 3. Sets the robot goal as the closest pedestrian to the robot, regardless of their direction of movement or other constraints imposed in phase 1
 --> Will be called repeatedly in phase 3 until a) ped is out of range, b) robot has moved x metres, c) a phase 1 ped is found

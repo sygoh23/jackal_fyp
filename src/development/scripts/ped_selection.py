@@ -12,13 +12,21 @@ import dynamic_params
 from utils import *
 
 
-# Selects a pedestrian when the robot is within the building vicinity
+"""
+Selects a pedestrian to follow when the robot is within the building vicinity
+--> Assumes there is only one doorway in the defined building vicinity
+--> Currently doesn't use pedestrians at all, but kept the name because following pedestrians may be a better option. Depends how well the current idea performs
+"""
 def select_ped_within_vicinity():
-    pass
-    # Follow a random ped, staying within vicinity
-    # If no ped, try move forward but within vicinity, else move right within vicinity, else move left, ...
-    # Continuously scan for doorways
-    # This assumes there is only one doorway in the defined building vicinity
+    
+    # While the goal point is outside the building vicinity
+    while not contains_pt(dynamic_params.goal_xy, building_polygon):
+        print("--> Current goal is outside vicinity, generating new goal...")
+
+        # Generate new goal point that is close to a wall, and in the direction of the target
+        pointcloud = get_pointcloud()
+        
+    print("--> Looking for doorway")
 
 
 # Selects a pedestrian when the robot is outside the building vicinity, based on which movement phase the robot is in
