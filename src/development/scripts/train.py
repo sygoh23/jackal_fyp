@@ -46,8 +46,8 @@ from evaluate import evaluate
 ##############################################
 data_folder = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Data_lists'     # Directory containing data lists
 save_dir = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models'            # Directory to save trained model
-batch_size = 6                      # batch size
-iterations = 200                    # number of iterations to train, where 1 iteration = processed 1 batch
+batch_size = 8                      # batch size
+iterations = 100                    # number of iterations to train, where 1 iteration = processed 1 batch
 print_freq = 1                      # print training status every __ batches
 eval_freq = 2                       # evaluate accuracy on test set every __ epochs
 checkpoint = None                   # path to model checkpoint, None if none
@@ -60,7 +60,7 @@ decay_lr_at = [80000, 100000]       # decay learning rate after these many itera
 decay_lr_to = 0.1                   # decay learning rate to this fraction of the existing learning rate
 momentum = 0.9                      # momentum
 weight_decay = 5e-4                 # weight decay
-grad_clip = None                    # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MuliBox loss calculation
+grad_clip = None                    # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MultiBox loss calculation
 loss_list = []                      # list for plotting loss
 acc_list = []                       # list for plotting mAP
 epoch_list = []                     # corresponding epochs at which mAP is calculated
@@ -77,8 +77,8 @@ if torch.cuda.is_available():
     device = torch.device("cuda")
     print("GPU found.\n")
 else:
-    device = torch.device("cpu")
-    print("Using CPU.\n")
+    print("[WARNING]: No GPU found. Exiting.\n")
+    sys.exit()
 
 # Check directories
 if not os.path.exists(data_folder):
@@ -170,8 +170,9 @@ def main():
     # To convert iterations to epochs, divide iterations by the number of iterations per epoch
     # The paper trains for 120,000 iterations with a batch size of 32, decays after 80,000 and 100,000 iterations
     epochs = iterations // (len(train_dataset) // batch_size)
+    n_batches = len(train_loader)
     decay_lr_at = [it // (len(train_dataset) // batch_size) for it in decay_lr_at]
-    actual_iters = epochs*(len(train_dataset) // batch_size)
+    actual_iters = epochs*n_batches
 
     # Training loop
     print("\n***** Begin Training *****\n")
