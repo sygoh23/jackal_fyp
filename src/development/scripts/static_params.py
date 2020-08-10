@@ -9,11 +9,11 @@ import rospy
 import numpy as np
 
 #################### Coordinates ####################
-# X-offset: 105 to test from start point, 63 to test from sticking point, -18 to test from within eng lectures vicinity
-offset_x = 105  
+# X-offset: 105 to test from start point, 63 to test from sticking point, 48 to test from within eng lectures vicinity
+offset_x = 48
 
-# Y-offset: 10 to test from start point, 74 to test from sticking point, -140 to test from within eng lectures vicinity
-offset_y = 10       
+# Y-offset: 10 to test from start point, 74 to test from sticking point, 148 to test from within eng lectures vicinity
+offset_y = 148
 
 building_centers = [
     # Index 0: Eng Faculty
@@ -93,8 +93,8 @@ building_bounding_polygons = [
     np.array([
         [50+offset_x, -153+offset_y],
         [50+offset_x, -130+offset_y],
-        [-20+offset_x, -130+offset_y],
-        [-20+offset_x, -153+offset_y],
+        [-50+offset_x, -130+offset_y],
+        [-50+offset_x, -153+offset_y],
         [50+offset_x, -153+offset_y]
     ])
 ]

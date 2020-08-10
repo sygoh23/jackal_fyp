@@ -6,7 +6,7 @@
 
   <!--  GAZEBO CONFIG -->
   <arg name="world_name" default="$(find development)/resources/gazebo/engineering_shift_within_vicinity.world"/>
-  <arg name="enable_gazebo_gui" default="true"/>
+  <arg name="enable_gazebo_gui" default="false"/>
 
   <!-- JACKAL CONFIG -->
   <!-- base: Generates Jackal model only (faster) -->

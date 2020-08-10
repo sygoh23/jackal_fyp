@@ -119,7 +119,7 @@
 
     <!-- ********** Models ********** -->
     <model name='ground_plane'>
-      <pose>-12 -152 0 0 0 0</pose>
+      <pose>54 136 0 0 0 0</pose>
       <static>1</static>
       <link name='link'>
         <collision name='collision'>
@@ -169,14 +169,14 @@
     <model name='Campus'>
       <include>
         <uri>model://campus</uri>
-        <pose>-18 -140 0 0 0 0</pose>
+        <pose>48 148 0 0 0 0</pose>
       </include>
     </model>
 
     <model name='Bounding_walls'>
       <include>
         <uri>model://bounding_walls</uri>
-        <pose>-12 -147 0 0 0 0</pose>
+        <pose>54 141 0 0 0 0</pose>
       </include>
     </model>
 
