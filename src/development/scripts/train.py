@@ -44,10 +44,15 @@ from evaluate import evaluate
 ##############################################
 ##### Training parameters (change these) #####
 ##############################################
-data_folder = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Data_lists'     # Directory containing data lists
-save_dir = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models'            # Directory to save trained model
+# SAMUEL DIRECTORY:
+data_folder = '/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/Data_lists'     # Directory containing data lists
+save_dir = '/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/Models'            # Directory to save trained model
+
+# CHRIS DIRECTORY:
+#data_folder = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Data_lists'
+#save_dir = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models'
 batch_size = 8                      # batch size
-iterations = 100                    # number of iterations to train, where 1 iteration = processed 1 batch
+iterations = 1000                    # number of iterations to train, where 1 iteration = processed 1 batch
 print_freq = 1                      # print training status every __ batches
 eval_freq = 2                       # evaluate accuracy on test set every __ epochs
 checkpoint = None                   # path to model checkpoint, None if none
@@ -117,7 +122,7 @@ def main():
                     biases.append(param)
                 else:
                     not_biases.append(param)
-        
+
         print("Preparing optimizer...\n")
         optimizer = torch.optim.SGD(params=[{'params': biases, 'lr': 2 * lr}, {'params': not_biases}],
                                     lr=lr, momentum=momentum, weight_decay=weight_decay)
@@ -150,7 +155,7 @@ def main():
         num_workers=workers,
         pin_memory=True
     )
-    
+
     test_dataset = PascalVOCDataset(
         data_folder,
         split='test',
@@ -193,8 +198,8 @@ def main():
         )
 
         # Evaluation and model saving
-        if epoch % eval_freq == 0:     
-            
+        if epoch % eval_freq == 0:
+
             # Accuracy on test set
             acc = evaluate(test_loader, model)
             acc_list.append(acc)
@@ -203,11 +208,11 @@ def main():
             if acc > best_acc:
                 best_acc = acc
                 best_epoch = epoch
-            
+
             # Print info
             print("\n***** Evaluation on Epoch %d *****" % epoch)
             print('Mean Average Precision (mAP): %.3f' % acc)
-            
+
             # Save model
             filename = 'ssd300_epoch{}.pth.tar'.format(epoch)
             path = os.path.join(save_dir, filename)
@@ -295,17 +300,17 @@ def plot():
 
     fig1 = plt.figure()
     plt.plot(range(1, actual_iters+1), loss_list)
-    plt.xlabel('Iterations') 
-    plt.ylabel('Loss') 
-    plt.title('Loss vs Iterations') 
-    
+    plt.xlabel('Iterations')
+    plt.ylabel('Loss')
+    plt.title('Loss vs Iterations')
+
     fig2 = plt.figure()
     plt.plot(epoch_list, acc_list)
-    plt.xlabel('Epochs') 
-    plt.ylabel('mAP') 
-    plt.title('mAP vs Epochs') 
-    
-    plt.show() 
+    plt.xlabel('Epochs')
+    plt.ylabel('mAP')
+    plt.title('mAP vs Epochs')
+
+    plt.show()
 
 
 if __name__ == '__main__':
