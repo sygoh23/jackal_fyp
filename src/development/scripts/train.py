@@ -46,15 +46,15 @@ from evaluate import evaluate
 ##############################################
 # SAMUEL DIRECTORY:
 data_folder = '/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/Data_lists'     # Directory containing data lists
-save_dir = '/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/Models'            # Directory to save trained model
+save_dir = '/media/ubuntu/Media/Models'            # Directory to save trained model
 
 # CHRIS DIRECTORY:
 #data_folder = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Data_lists'
 #save_dir = '/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models'
 batch_size = 8                      # batch size
-iterations = 1000                    # number of iterations to train, where 1 iteration = processed 1 batch
+iterations = 4000                    # number of iterations to train, where 1 iteration = processed 1 batch
 print_freq = 1                      # print training status every __ batches
-eval_freq = 2                       # evaluate accuracy on test set every __ epochs
+eval_freq = 5                       # evaluate accuracy on test set every __ epochs
 checkpoint = None                   # path to model checkpoint, None if none
 
 # Learning parameters

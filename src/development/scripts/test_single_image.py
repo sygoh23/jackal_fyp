@@ -37,9 +37,15 @@ import sys
 ##########################
 ##### Set paths here #####
 ##########################
-img_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Images/All/0005.jpg"
-model_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models/ssd300_epoch6.pth.tar"
-font_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/OpenSans-Regular.ttf"
+# SAMUEL DIRECTORY:
+img_pth = "/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/Images/Test/0105.jpg"
+model_pth = "/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/Models/iter8000_ssd300_epoch158.pth.tar"
+font_pth = "/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/OpenSans-Regular.ttf"
+
+# CHRIS DIRECTORY:
+#img_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Images/All/0005.jpg"
+#model_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models/ssd300_epoch6.pth.tar"
+#font_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/OpenSans-Regular.ttf"
 
 # Check filepaths
 if not os.path.exists(img_pth):
