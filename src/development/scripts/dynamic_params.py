@@ -31,3 +31,8 @@ exclusion_zones = [         # List of polygons in which the robot should not set
         [-109+offset_x, -25+offset_y]
     ])
 ]
+
+# Recovery behaviour:
+x_hist = []
+y_hist = []
+dist_hist = []

@@ -17,7 +17,7 @@ Ideas:
 --> Don't follow a pedestrian if it's where the robot came from
 --> Component approach for distance instead of radius: follow ped as long as distance in any one of x or y directions is decreasing
 --> Implement a last resort movement logic after say 4 rounds of following a pedestrian in phase 3. Maybe a round of straight line movement, maybe 5m left then wait, 5m right then wait, etc
---> In phase 3 keep track of how much further the robot is moving away from the target. If it's moved more than say 20 metres in a straight line direction away from the target since starting the first phase 3 movement, stop and do something else? 
+--> In phase 3 keep track of how much further the robot is moving away from the target. If it's moved more than say 20 metres in a straight line direction away from the target since starting the first phase 3 movement, stop and do something else?
 --> Make robot move to the last position of the pedestrian in phase 3, without being interrupted by phase 1? (risky)
 --> If statement in main that only sends the goal to movebase if the robot is outside the distance threshold from the target
 --> Only follow pedestrians moving away from robot?
@@ -54,7 +54,7 @@ def movebase_client():
                     print("Moving to doorway")
                     dynamic_params.entrance_found = True
                     move_to_doorway()
-                
+
         elif not dynamic_params.entrance_found:
             print("Outside building vicinity")
             ped_found, _ = select_ped_outside_vicinity(1, i)
@@ -62,7 +62,7 @@ def movebase_client():
             # Phase 1 pedestrian not found: use other movement logic to set robot goal
             if ped_found == 0:
                 move_without_peds_outside_vicinity()
-            
+
             # Phase 1 pedestrian found: clear various flags to prevent phases 2 and 3 from executing. Goal has already been updated by the ped selection function
             else:
                 # Reset moving_to_last_ped flag if it was set, to indicate robot is no longer moving towards a pedestrian's last detected position (phase 2)
@@ -77,11 +77,11 @@ def movebase_client():
                 # If phase 3 was interrputed while following a pedestrian, reset the following_ped flag
                 if dynamic_params.following_ped == 1:
                     dynamic_params.following_ped = 0
-                
+
                 # If phase 3 was interrupted while moving to last ped position, reset out_of_range flag
                 if dynamic_params.out_of_range == 1:
                     dynamic_params.out_of_range = 0
-                
+
         # Send navigation goal to navigation stack:
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = "odom"
@@ -91,6 +91,22 @@ def movebase_client():
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 
+        # RB0 - Recovery behaviour start:
+        rb_threshold = 3
+
+        robot_xy = get_robot_xy()
+        dynamic_params.x_hist.append(robot_xy[0])
+        dynamic_params.y_hist.append(robot_xy[1])
+        print("- RB - Robot location: (%d, %d)" % (dynamic_params.x_hist[i], dynamic_params.y_hist[i]))
+
+        # RB1 - After 20 seconds, calculate distance covered in last 20 seconds:
+        if i >= 20:
+            dist_covered = 0
+            for j in range(20):
+                new_dist = get_distance(dynamic_params.x_hist[i-j], dynamic_params.x_hist[i-j-1],dynamic_params.y_hist[i-j], dynamic_params.y_hist[i-j-1])
+                dist_covered = dist_covered + new_dist
+            print("- RB - Averaged distance: %dm" % dist_covered)
+
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:
             print("- Robot navigation complete!")
@@ -99,7 +115,6 @@ def movebase_client():
         print("----------------------------------------------------------")
         i += 1
         time.sleep(t_delay)
-
 
 if __name__ == '__main__':
     try:

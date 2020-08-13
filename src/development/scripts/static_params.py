@@ -10,10 +10,12 @@ import numpy as np
 
 #################### Coordinates ####################
 # X-offset: 105 to test from start point, 63 to test from sticking point, 48 to test from within eng lectures vicinity
-offset_x = 48
+#offset_x = 48
+offset_x = 105
 
 # Y-offset: 10 to test from start point, 74 to test from sticking point, 148 to test from within eng lectures vicinity
-offset_y = 148
+#offset_y = 148
+offset_y = 10
 
 building_centers = [
     # Index 0: Eng Faculty
