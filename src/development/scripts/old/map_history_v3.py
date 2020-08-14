@@ -1,19 +1,20 @@
 import matplotlib.pyplot as plt
 from math import sqrt
-min_dist = 2
-max_dev = 4
-x_pth = "/home/ubuntu/Mapping/x_v3.txt"
-y_pth = "/home/ubuntu/Mapping/y_v3.txt"
+min_dist = 3
+max_dev = 2
+x_pth = "/home/ubuntu/Mapping/x.txt";
+y_pth = "/home/ubuntu/Mapping/y.txt"
 
 # Returns distance between two sets of x-y coordinates
 def get_distance(x1, x2, y1, y2):
     return sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
-def linear_const(x1, x2, y1, y2):
-    return (y1-y2), (x2-x1), (x1*y2-x2*y1)
+def linear_ABC(x1, x2, y1, y2):
+        return (y1-y2), (x2-x1), (x1*y2-x2*y1)
 
 def linear_dist(A, B, C, x, y):
-    return abs(A*x+B*y+C)/sqrt(A**2+B**2)
+        dist = abs(A*x+B*y+C)/sqrt(A**2+B**2)
+        return dist
 
 # Open files:
 x_in = []; y_in = []
@@ -27,14 +28,9 @@ with open(y_pth, 'r') as filehandle:
     for line in filecontents:
         y_in.append(float(line[:-1]))
 
-print("PARAMETERS:")
-print("- Min Distance: " + str(min_dist))
-print("- Max Deviation " + str(max_dev))
-
 # Clean points which are too close to each other:
 x_out = x_in; y_out = y_in
-print("\nCLEANING POINTS:")
-print("- Old Size: " + str(len(x_out)))
+print("Cleaning points:\n- Original Length: " + str(len(x_out)))
 i = 0
 while i < (len(x_out)-1):
     dist = get_distance(x_in[i], x_in[i+1], y_in[i], y_in[i+1])
@@ -43,34 +39,36 @@ while i < (len(x_out)-1):
         del x_out[del_i]; del y_out[del_i]
     else:
         i += 1
-print("- New Size: " + str(len(x_out)) + "\n")
+print("- New Length: " + str(len(x_out)) + "\n")
 
 # Check points distance from a line:
-print("SEGMENT DETECTION:")
+print("Segment detection:")
 poi = []; i = 0; j = 2
 length = len(x_out)
 
 while True:
     if (j >= (len(x_out)-1)) or (i >= (len(x_out)-1)):
         break
+
     print("- Checking Segment from: " + str(i) + " -> " + str(j))
-    const = linear_const(x_out[i], x_out[j], y_out[i], y_out[j])
+    const = linear_ABC(x_out[i], x_out[j], y_out[i], y_out[j])
+
     for k in range(i+1, j):
         d = linear_dist(const[0], const[1], const[2], x_out[k], y_out[k])
-        #print("-- Point: " + str(k) + " | Distance: " + str(d))
+        print("-- Point: " + str(k) + " | Distance: " + str(d))
         if d > max_dev:
             poi.append(j)
             print("-- POI Detected: " + str(j))
-            i = j; j = j + 2
+            i = j
+            j = j + 2
             break
     j += 1
 
-print("\nCRITICAL POINTS:")
-print(poi)
-x_poi = [x_out[i] for i in poi]; y_poi = [y_out[i] for i in poi]
+print("POI: " + str(poi))
+x_poi = [x_out[i] for i in poi]
+y_poi = [y_out[i] for i in poi]
 
-# Plot results:
-plt.scatter(x_out, y_out, c='k', marker='.', label='1')
-plt.scatter(x_poi, y_poi, c='r', marker='x', s=100, label='-1')
+plt.scatter(x_out, y_out, c='b', marker='x', label='1')
+plt.scatter(x_poi, y_poi, c='r', marker='s', label='-1')
 plt.gca().set_aspect('equal', adjustable='box')
 plt.show()

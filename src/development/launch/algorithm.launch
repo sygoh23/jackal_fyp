@@ -1,9 +1,9 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
-  <arg name="ped_follow" default="true"/>
+  <arg name="ped_follow" default="false"/>
   <arg name="image_process" default="false"/>
   <arg name="use_webcam" default="false"/>
-  
+
   <!-- ******************** MOVE BASE NAVIGATION ******************** -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <!-- Global and local costmap -->

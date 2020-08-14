@@ -33,8 +33,8 @@ def movebase_client():
 
     # Recovery behaviour:
     rb_i = 0
-    rb_pth_x = "/home/ubuntu/x.txt"
-    rb_pth_y = "/home/ubuntu/y.txt"
+    rb_pth_x = "/home/ubuntu/Mapping/x_v3.txt"
+    rb_pth_y = "/home/ubuntu/Mapping/y_v3.txt"
 
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
@@ -103,6 +103,7 @@ def movebase_client():
         dynamic_params.y_hist.append(robot_xy[1])
         print("- RB - Robot location: (%d, %d)" % (dynamic_params.x_hist[i], dynamic_params.y_hist[i]))
 
+        # RB - Calculate distance covered:
         if i >= 20:
             dist_covered = 0
             for j in range(20):
@@ -110,14 +111,15 @@ def movebase_client():
                 dist_covered = dist_covered + new_dist
             print("- RB - Averaged distance: %dm" % dist_covered)
 
-        rb_i += 1
+        # RB - Saving history:
         if rb_i == 10:
             rb_i = 0
             with open(rb_pth_x, 'w') as filehandle:
                 filehandle.writelines("%s\n" % x_coord for x_coord in dynamic_params.x_hist)
-
             with open(rb_pth_y, 'w') as filehandle:
                 filehandle.writelines("%s\n" % y_coord for y_coord in dynamic_params.y_hist)
+            print("- RB - Saved history!")
+        rb_i += 1
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:
