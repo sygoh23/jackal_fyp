@@ -31,6 +31,11 @@ def movebase_client():
     client.wait_for_server()
     i = 0
 
+    # Recovery behaviour:
+    rb_i = 0
+    rb_pth_x = "/home/ubuntu/x.txt"
+    rb_pth_y = "/home/ubuntu/y.txt"
+
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
     dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
@@ -91,21 +96,28 @@ def movebase_client():
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 
-        # RB0 - Recovery behaviour start:
+        # RB - Recovery behaviour:
         rb_threshold = 3
-
         robot_xy = get_robot_xy()
         dynamic_params.x_hist.append(robot_xy[0])
         dynamic_params.y_hist.append(robot_xy[1])
         print("- RB - Robot location: (%d, %d)" % (dynamic_params.x_hist[i], dynamic_params.y_hist[i]))
 
-        # RB1 - After 20 seconds, calculate distance covered in last 20 seconds:
         if i >= 20:
             dist_covered = 0
             for j in range(20):
                 new_dist = get_distance(dynamic_params.x_hist[i-j], dynamic_params.x_hist[i-j-1],dynamic_params.y_hist[i-j], dynamic_params.y_hist[i-j-1])
                 dist_covered = dist_covered + new_dist
             print("- RB - Averaged distance: %dm" % dist_covered)
+
+        rb_i += 1
+        if rb_i == 10:
+            rb_i = 0
+            with open(rb_pth_x, 'w') as filehandle:
+                filehandle.writelines("%s\n" % x_coord for x_coord in dynamic_params.x_hist)
+
+            with open(rb_pth_y, 'w') as filehandle:
+                filehandle.writelines("%s\n" % y_coord for y_coord in dynamic_params.y_hist)
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:
