@@ -2,9 +2,15 @@
 Temporary file for testing ideas. Not used by the main code and will be deleted at some point.
 """
 
-from obj_utils import *
-from PIL import Image, ImageDraw
-import torch
+#from obj_utils import *
+#from PIL import Image, ImageDraw
+#import torch
+import pickle
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, Birch, DBSCAN, KMeans
+import numpy as np
+#import cv2
 
 """
 old = Image.open("/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/0001.jpg")
@@ -20,6 +26,7 @@ draw_new.rectangle(((new_box[0][0], new_box[0][1]), (new_box[0][2], new_box[0][3
 new.show()
 """
 
+"""
 # Label map
 voc_labels = ('entrance')
 label_map = {k: v + 1 for v, k in enumerate(voc_labels)}    # {"aeroplane": 1, "bicycle": 2, ...}
@@ -42,3 +49,82 @@ img_names_train = sorted(os.listdir("/home/chris/Documents/jackal_fyp/src/develo
 print(img_names_train)
 img_names_train.remove("README.md")  # remove readme file
 print(img_names_train)
+"""
+
+with open('/home/chris/Documents/pointcloud.pickle', 'rb') as f:
+    pointcloud = pickle.load(f)
+
+dataset = np.array([])
+x = []
+y = []
+z = []
+first = True
+for point in pointcloud:
+    if point[2] > 0.5:
+        if first:
+            dataset = np.array([point[0], point[1]])
+            first = False
+        else:
+            new_point = np.array([point[0], point[1]])
+            dataset = np.vstack((dataset, new_point))
+
+        x.append(point[0])
+        y.append(point[1])
+        #z.append(point[2])
+
+
+#fig = plt.figure()
+#ax = Axes3D(fig)
+#ax.scatter(x, y, z)
+
+fig = plt.figure(facecolor='k')
+ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
+ax.scatter(x, y, facecolors='none', edgecolors='w')
+plt.axis('off')
+fig.savefig('/home/chris/Documents/test.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
+plt.show()
+
+#model = AffinityPropagation(damping=0.9)
+#model.fit(dataset)
+#yhat = model.predict(dataset)
+
+#model = AgglomerativeClustering(n_clusters=3)
+#yhat = model.fit_predict(dataset)
+
+#model = Birch(threshold=0.01, n_clusters=3)
+#model.fit(dataset)
+#yhat = model.predict(dataset)
+
+#model = DBSCAN(eps=0.60, min_samples=9)
+#yhat = model.fit_predict(dataset)
+
+#model = KMeans(n_clusters=2)
+#model.fit(dataset)
+#yhat = model.predict(dataset)
+
+"""
+clusters = np.unique(yhat)
+for cluster in clusters:
+	# get row indexes for samples with this cluster
+	row_ix = np.where(yhat == cluster)
+	plt.scatter(dataset[row_ix, 0], dataset[row_ix, 1])
+
+plt.show()
+"""
+
+"""
+img = plt.imshow(dataset, interpolation='nearest')
+img.set_cmap('hot')
+plt.axis('off')
+plt.show()
+"""
+
+"""
+fig = plt.figure(frameon=False)
+fig.set_size_inches(w,h)
+ax = plt.Axes(fig, [0., 0., 1., 1.])
+ax.set_axis_off()
+fig.add_axes(ax)
+ax.imshow(your_image, aspect='auto')
+fig.savefig("test.jpg", dpi)
+"""
