@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, Birch, DBSCAN, KMeans
 import numpy as np
-#import cv2
+import cv2
 
 """
 old = Image.open("/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/0001.jpg")
@@ -51,7 +51,8 @@ img_names_train.remove("README.md")  # remove readme file
 print(img_names_train)
 """
 
-with open('/home/chris/Documents/pointcloud.pickle', 'rb') as f:
+
+with open('/home/chris/Documents/jackal_fyp/plugins/pointcloud.pickle', 'rb') as f:
     pointcloud = pickle.load(f)
 
 dataset = np.array([])
@@ -77,12 +78,14 @@ for point in pointcloud:
 #ax = Axes3D(fig)
 #ax.scatter(x, y, z)
 
+"""
 fig = plt.figure(facecolor='k')
 ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
-ax.scatter(x, y, facecolors='none', edgecolors='w')
+ax.scatter(x, y, color='w', marker=',')
 plt.axis('off')
-fig.savefig('/home/chris/Documents/test.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
+fig.savefig('/home/chris/Documents/test4.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
 plt.show()
+"""
 
 #model = AffinityPropagation(damping=0.9)
 #model.fit(dataset)
@@ -98,7 +101,7 @@ plt.show()
 #model = DBSCAN(eps=0.60, min_samples=9)
 #yhat = model.fit_predict(dataset)
 
-#model = KMeans(n_clusters=2)
+#model = KMeans(n_clusters=3)
 #model.fit(dataset)
 #yhat = model.predict(dataset)
 
@@ -112,19 +115,32 @@ for cluster in clusters:
 plt.show()
 """
 
-"""
-img = plt.imshow(dataset, interpolation='nearest')
-img.set_cmap('hot')
-plt.axis('off')
-plt.show()
-"""
 
-"""
-fig = plt.figure(frameon=False)
-fig.set_size_inches(w,h)
-ax = plt.Axes(fig, [0., 0., 1., 1.])
-ax.set_axis_off()
-fig.add_axes(ax)
-ax.imshow(your_image, aspect='auto')
-fig.savefig("test.jpg", dpi)
-"""
+# Read image 
+img = cv2.imread('/home/chris/Documents/test4.jpg', cv2.IMREAD_COLOR)
+#cv2.imshow("Initial", img)
+#cv2.waitKey()
+
+# Convert the image to gray-scale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#cv2.imshow("Gray", gray)
+#cv2.waitKey()
+
+# Find the edges in the image using canny detector
+edges = cv2.Canny(gray, 50, 200)
+#cv2.imshow("Edges", gray)
+#cv2.waitKey()
+
+# Detect points that form a line
+lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=60, minLineLength=160, maxLineGap=250)
+
+# Draw lines on the image
+for line in lines:
+    print(line)
+    x1, y1, x2, y2 = line[0]
+    cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
+
+# Show result
+#cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
+#cv2.imshow("Result Image", img)
+#cv2.waitKey()
