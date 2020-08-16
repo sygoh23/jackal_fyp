@@ -67,7 +67,7 @@ Contains the logic to move the robot when phase 3 is triggered by the timer
 """
 def phase3_movement():
     if (dynamic_params.recovery_override == 1):
-        break
+        return
     #print("- Phase 3: Timer triggered")
 
     # Set the robot goal as a specified number of metres towards the building center in a straight line

@@ -33,7 +33,13 @@ exclusion_zones = [         # List of polygons in which the robot should not set
 ]
 
 # Recovery behaviour:
-x_hist = []
-y_hist = []
-dist_hist = []
 recovery_override = 0
+rec_plot = False
+hist_x = []
+hist_y = []
+remove_x = []
+remove_y = []
+rec_x = []
+rec_y = []
+poi_x = []
+poi_y = []
