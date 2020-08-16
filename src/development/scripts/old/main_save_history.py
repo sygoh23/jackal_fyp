@@ -7,13 +7,10 @@ from static_params import *
 import dynamic_params
 from static_params import *
 from ped_selection import *
-from recovery import *
 from utils import *
 from movement import *
 from std_msgs.msg import String
-import matplotlib
 import matplotlib.pyplot as plt
-matplotlib.use('Agg')
 
 """
 Ideas:
@@ -27,11 +24,17 @@ Ideas:
 --> Obtain the result of movebase for use in decision making. Somehow published through a topic
 """
 
+
 def movebase_client():
     # Move_base initialisation:
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
     i = 0
+
+    # Recovery behaviour:
+    rb_i = 0
+    rb_pth_x = "/home/ubuntu/Mapping/x_v4.txt"
+    rb_pth_y = "/home/ubuntu/Mapping/y_v4.txt"
 
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
@@ -93,26 +96,38 @@ def movebase_client():
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 
-        # Recovery behaviour:
-        rb_threshold = 3; rb_smooth = 20
+        # RB - Recovery behaviour:
+        rb_threshold = 3
         robot_xy = get_robot_xy()
         dynamic_params.x_hist.append(robot_xy[0])
         dynamic_params.y_hist.append(robot_xy[1])
-        if (i % 5) == 0:
-            poi_xy = find_poi(dynamic_params.x_hist[:], dynamic_params.y_hist[:])
-            poi_x = poi_xy[0]; poi_y = poi_xy[1]
-            plt.scatter(dynamic_params.x_hist, dynamic_params.y_hist, c='k', marker='.', alpha=1, label='1')
-            plt.scatter(poi_x, poi_y, c='b', marker='D', s=50, label='-1')
-            plt.gca().set_aspect('equal', adjustable='box')
-            plt.savefig("/home/ubuntu/Map.png")
-        if i >= rb_smooth:
+        print("- RB - Robot location: (%d, %d)" % (dynamic_params.x_hist[i], dynamic_params.y_hist[i]))
+
+        # RB - Calculate distance covered:
+        if i >= 20:
             dist_covered = 0
-            for j in range(rb_smooth):
+            for j in range(20):
                 new_dist = get_distance(dynamic_params.x_hist[i-j], dynamic_params.x_hist[i-j-1],dynamic_params.y_hist[i-j], dynamic_params.y_hist[i-j-1])
                 dist_covered = dist_covered + new_dist
-            print("- Recovery score: %d points / Threshold: %d points" % (dist_covered, rb_threshold))
-            if dist_covered < rb_threshold:
-                print("- Initialise recovery behaviour!")
+            print("- RB - Averaged distance: %dm" % dist_covered)
+
+        # RB - Saving history:
+        if rb_i == 10:
+            rb_i = 0
+            with open(rb_pth_x, 'w') as filehandle:
+                filehandle.writelines("%s\n" % x_coord for x_coord in dynamic_params.x_hist)
+            with open(rb_pth_y, 'w') as filehandle:
+                filehandle.writelines("%s\n" % y_coord for y_coord in dynamic_params.y_hist)
+            print("- RB - Saved history!")
+
+            plt.close()
+            #plt.ion()
+            fig = plt.figure()
+            plt.scatter(dynamic_params.x_hist, dynamic_params.y_hist, c='k', marker='.', alpha=.5, label='1')
+            #plt.pause(0.001)
+            plt.show(block = False)
+
+        rb_i += 1
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:

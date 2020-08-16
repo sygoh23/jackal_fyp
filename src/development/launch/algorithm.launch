@@ -1,6 +1,6 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
-  <arg name="ped_follow" default="false"/>
+  <arg name="ped_follow" default="true"/>
   <arg name="image_process" default="false"/>
   <arg name="use_webcam" default="false"/>
 
