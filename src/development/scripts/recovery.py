@@ -7,14 +7,14 @@ min_dist = 3 # Keep points given they are 'min_dist' apart from each other...
 # Larger: Removes more points from original data.
 # Smaller: Removes less points from original data.
 
-max_dev_clean = 2 # Maximum deviation from a line segment to mark a POI...
+max_dev_clean = 3 # Maximum deviation from a line segment to mark a POI...
 # Larger: Sharper / tighter bends are needed to mark a POI.
 # Smaller: Slight bends will mark a POI.
 
-max_dev_boundary = 3 # Maximum deviation around robot and POI point...
+max_dev_boundary = 1 # Maximum deviation around robot and POI point...
 # Larger: Points further away from robot position will be marked for removal
 
-max_dev_remove = max_dev_clean # Maximum deviation from robot-POI line segment to remove points...
+max_dev_remove = 3 # Maximum deviation from robot-POI line segment to remove points...
 # This value can be set close to 'max_dev_clean'
 
 # Function definitions:
@@ -58,9 +58,9 @@ def find_poi(x_in, y_in):
     x_poi = [x_out[i] for i in poi]; y_poi = [y_out[i] for i in poi]
     return x_poi, y_poi
 
-def remove_points(x_in, y_in, x_poi, y_poi, robot_x, roboy_y):
-    rb_seg_x = [robot_x, x_poi[-1]]
-    rb_seg_y = [robot_y, y_poi[-1]]
+def remove_points(x_in, y_in, x_poi, y_poi, robot_x, robot_y):
+    rb_seg_x = [robot_x, x_poi]
+    rb_seg_y = [robot_y, y_poi]
     check_point = []
     for i in range(len(x_in)):
         if (x_in[i] > (min(rb_seg_x)-max_dev_boundary)) and (x_in[i] < (max(rb_seg_x)+max_dev_boundary)):
@@ -73,8 +73,8 @@ def remove_points(x_in, y_in, x_poi, y_poi, robot_x, roboy_y):
     const = linear_const(rb_seg_x[0], rb_seg_x[1], rb_seg_y[0], rb_seg_y[1])
     for i in check_point:
         d = linear_dist(const[0], const[1], const[2], x_in[i], y_in[i])
-        #print("-- Checking point: " + str(i) + " | Distance: " + str(d))
-        if d < max_dev_remove and (inside_radius(rb_seg_x[1], rb_seg_y[1], max_dev_remove, x_in[i], y_in[i]) == False):
+        if d < max_dev_remove:# and (inside_radius(rb_seg_x[1], rb_seg_y[1], max_dev_remove, x_in[i], y_in[i]) == False):
             remove_point.append(i)
     print("- Points to Remove: " + str(len(remove_point)) + " points")
     x_remove = [x_in[i] for i in remove_point]; y_remove= [y_in[i] for i in remove_point]
+    return x_remove, y_remove

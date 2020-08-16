@@ -35,19 +35,19 @@ def follow_closest_ped(idx):
         print("- Phase 3: Ped %d out of range" % idx)
 
         # Reset the following_ped flag to indicate robot is no longer following a phase 3 ped
-        dynamic_params.following_ped = 0   
+        dynamic_params.following_ped = 0
 
         # Set out_of_range flag to indicate that the ped is out of range, but the robot hasn't moved the required distance yet
-        dynamic_params.out_of_range = 1    
+        dynamic_params.out_of_range = 1
 
     elif dynamic_params.total_dist > phase3_dist:
         print("- Phase 3: Moved required distance")
 
         # Set the goal as the robot's current position so that it doesn't keep moving to the last position of this ped
-        dynamic_params.goal_xy = robot_xy      
+        dynamic_params.goal_xy = robot_xy
 
-        # Reset the following_ped flag to indicate robot is no longer following a phase 3 ped     
-        dynamic_params.following_ped = 0    
+        # Reset the following_ped flag to indicate robot is no longer following a phase 3 ped
+        dynamic_params.following_ped = 0
 
     else:
         # Set goal as position of target ped
@@ -66,7 +66,8 @@ Contains the logic to move the robot when phase 3 is triggered by the timer
 --> Must be inside its own function so that the timer can trigger it
 """
 def phase3_movement():
-
+    if (dynamic_params.recovery_override == 1):
+        break
     #print("- Phase 3: Timer triggered")
 
     # Set the robot goal as a specified number of metres towards the building center in a straight line
@@ -86,7 +87,7 @@ def phase3_movement():
     # If function call was triggered because of the timer, reset the timer flag
     if dynamic_params.timer_set == 1:
         dynamic_params.timer_set = 0
-    
+
     # If function call was triggered because robot has reached last detected pedestrian, reset the moving_to_last_ped flag
     if dynamic_params.moving_to_last_ped == 1:
         dynamic_params.moving_to_last_ped = 0
@@ -115,18 +116,18 @@ def move_without_peds_outside_vicinity():
         dynamic_params.goal_xy = dynamic_params.ped_last    # Set goal as last pedestrian position
         dynamic_params.ped_last = []                        # Clear the last pedestrian position
         dynamic_params.moving_to_last_ped = 1               # Set flag indicating robot is moving to location of last detected ped
-    
+
     # No last detected phase 1 ped exists AND the robot is not in the middle of moving towards a last detected phase 1 ped. I.e. this is phase 3
     elif dynamic_params.moving_to_last_ped == 0:
         # Want this call to get_robot_xy() to be as close as possible to the call inside follow_closest_ped, to minimise variation
-        robot_xy = get_robot_xy()   
-        
+        robot_xy = get_robot_xy()
+
         # Robot is in the middle of following a phase 3 ped. In this case run follow_closest_ped() again to update goal
         if dynamic_params.following_ped == 1:
             follow_closest_ped(dynamic_params.ped_number)
 
-        # Phase 3 ped has moved out of range, but the required distance has not yet been covered. Keep moving to the ped's last detected position  
-        elif dynamic_params.out_of_range == 1:       
+        # Phase 3 ped has moved out of range, but the required distance has not yet been covered. Keep moving to the ped's last detected position
+        elif dynamic_params.out_of_range == 1:
             # Increment the distance moved
             distance_moved = get_distance(robot_xy[0], dynamic_params.robot_xy_prev[0], robot_xy[1], dynamic_params.robot_xy_prev[1])
             dynamic_params.total_dist += distance_moved
@@ -154,13 +155,13 @@ def move_without_peds_outside_vicinity():
                 dynamic_params.timer = Timer(movement_pause, phase3_movement)           # Create new countdown timer for phase3_movement
                 dynamic_params.timer.start()                                            # Start timer
                 dynamic_params.timer_set = 1                                            # Set timer flag
-        
+
         # Robot is in the middle of moving towards the previously set goal point
         else:
             # If the phase 3 ped is out of range, robot must be moving towards its last detected position
             if dynamic_params.out_of_range == 1:
                 print("- Phase 3: Moving toward ped %d last position" % dynamic_params.ped_number)
-            
+
             # Otherwise, phase 3 ped is in range and robot must be following it
             else:
                 print("- Phase 3: Following ped %d" % dynamic_params.ped_number)
@@ -168,7 +169,7 @@ def move_without_peds_outside_vicinity():
         # Robot has reached the last detected phase 1 ped position and is waiting for a new ped to be detected
         if dynamic_params.timer_set == 1:
             print("- Phase 2: Waiting for new peds...")
-        
+
         # Robot is in the middle of moving towards the last detected phase 1 ped
         else:
             print("- Phase 2: Moving to last detected pedestrian from phase 1")

@@ -33,7 +33,7 @@
 
   <!-- ************ ENG TO HAL (ANTICLOCKWISE / LHS) ************ -->
   <!-- GROUP 1: SPAWN AT 1 then LOOP -->
-  <agent x="1" y="-7" n="2" dx="0.1" dy="0.1" type="0">
+  <agent x="1" y="-7" n="8" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="1"/>
     <addwaypoint id="2"/>
     <addwaypoint id="3"/>
@@ -42,7 +42,7 @@
     <addwaypoint id="6"/>
   </agent>
   <!-- GROUP 2: SPAWN AT 4 then LOOP -->
-  <agent x="-33" y="-120" n="2" dx="0.1" dy="0.1" type="0">
+  <agent x="-33" y="-120" n="8" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="5"/>
     <addwaypoint id="6"/>
     <addwaypoint id="1"/> <!-- GROUP 1 STARTS HERE -->
@@ -53,7 +53,7 @@
 
   <!-- ************ ENG TO HAL (CLOCKWISE / RHS) ************ -->
   <!-- GROUP 1: SPAWN AT 8 then LOOP -->
-  <agent x="32" y="-33" n="4" dx="0.1" dy="0.1" type="0">
+  <agent x="32" y="-33" n="8" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="16"/>
     <addwaypoint id="17"/>
     <addwaypoint id="18"/>
@@ -66,7 +66,7 @@
     <addwaypoint id="8"/>
   </agent>
   <!-- GROUP 2: SPAWN AT 25 then LOOP -->
-  <agent x="5" y="-33" n="4" dx="0.1" dy="0.1" type="0">
+  <agent x="5" y="-33" n="8" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="1"/>
     <addwaypoint id="2"/>
     <addwaypoint id="7"/>
@@ -107,7 +107,7 @@
 
   <!-- ************ ENG TO NEW HORIZONS (ANTICLOCKWISE) ************ -->
   <!-- GROUP 1: SPAWN AT 29 then LOOP -->
-  <agent x="-20" y="70" n="2" dx="0.1" dy="0.1" type="0">
+  <agent x="-20" y="70" n="8" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="3"/>
     <addwaypoint id="2"/>
     <addwaypoint id="1"/>
@@ -120,7 +120,7 @@
     <addwaypoint id="29"/>
   </agent>
   <!-- GROUP 2: SPAWN AT 26 then LOOP -->
-  <agent x="27" y="45" n="2" dx="0.1" dy="0.1" type="0">
+  <agent x="27" y="45" n="8" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="27"/>
     <addwaypoint id="28"/>
     <addwaypoint id="29"/>   <!-- GROUP 1 STARTS HERE -->
@@ -135,7 +135,7 @@
 
   <!-- ************ ENG TO LECTURE ************ -->
   <!-- GROUP 1: SPAWN AT 2 then LOOP -->
-  <agent x="1" y="10" n="4" dx="0.1" dy="0.1" type="0">
+  <agent x="1" y="10" n="8" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="7"/>
     <addwaypoint id="8"/>
     <addwaypoint id="16"/>
@@ -154,7 +154,7 @@
     <addwaypoint id="2"/>
   </agent>
   <!-- GROUP 2: SPAWN AT 24 then LOOP -->
-  <agent x="135" y="-80" n="4" dx="0.1" dy="0.1" type="0">
+  <agent x="135" y="-80" n="8" dx="0.1" dy="0.1" type="0">
     <addwaypoint id="10"/>
     <addwaypoint id="9"/>
     <addwaypoint id="8"/>

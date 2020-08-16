@@ -32,6 +32,7 @@ def movebase_client():
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
     i = 0
+    rec_attempts = 0
 
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
@@ -94,26 +95,73 @@ def movebase_client():
         client.send_goal(goal)
 
         # Recovery behaviour:
-        rb_threshold = 3; rb_smooth = 20
+        rb_threshold = 5; rb_smooth = 10
         robot_xy = get_robot_xy()
         dynamic_params.x_hist.append(robot_xy[0])
         dynamic_params.y_hist.append(robot_xy[1])
         if (i % 5) == 0:
             poi_xy = find_poi(dynamic_params.x_hist[:], dynamic_params.y_hist[:])
             poi_x = poi_xy[0]; poi_y = poi_xy[1]
-            plt.scatter(dynamic_params.x_hist, dynamic_params.y_hist, c='k', marker='.', alpha=1, label='1')
+            plt.grid(b=True, which='major', color='#d6d6d6', linestyle='--')
+            plt.scatter(dynamic_params.x_hist, dynamic_params.y_hist, c='k', marker='.', alpha=0.5, label='1')
             plt.scatter(poi_x, poi_y, c='b', marker='D', s=50, label='-1')
             plt.gca().set_aspect('equal', adjustable='box')
             plt.savefig("/home/ubuntu/Map.png")
-        if i >= rb_smooth:
-            dist_covered = 0
+        if (i >= rb_smooth) and (len(poi_x) > 1):
+            dist_score = 0
+            disp_score = get_distance(dynamic_params.x_hist[i-rb_smooth], dynamic_params.x_hist[i], dynamic_params.y_hist[i-rb_smooth], dynamic_params.y_hist[i],)
             for j in range(rb_smooth):
                 new_dist = get_distance(dynamic_params.x_hist[i-j], dynamic_params.x_hist[i-j-1],dynamic_params.y_hist[i-j], dynamic_params.y_hist[i-j-1])
-                dist_covered = dist_covered + new_dist
-            print("- Recovery score: %d points / Threshold: %d points" % (dist_covered, rb_threshold))
-            if dist_covered < rb_threshold:
-                print("- Initialise recovery behaviour!")
+                dist_score = dist_score + new_dist
+            print("- Displacement score: %dm / Distance score: %dm" % (disp_score, dist_score))
+            print("- Recovery score: %d points / Threshold: %d points" % (dist_score, rb_threshold))
 
+            if dist_score < rb_threshold:
+                rec_attempts += 1
+
+                # Remove points:
+                print("- Robot movement failure! Recovery #%d initiated..." % rec_attempts)
+                remove_xy = remove_points(dynamic_params.x_hist, dynamic_params.y_hist, poi_x[-rec_attempts], poi_y[-rec_attempts], robot_xy[0], robot_xy[1])
+                remove_x = remove_xy[0]; remove_y = remove_xy[1]
+                plt.grid(b=True, which='major', color='#d6d6d6', linestyle='--')
+                plt.scatter(remove_x, remove_y, c='r', marker='x', s=50, label='0')
+                plt.scatter(poi_x[-rec_attempts], poi_y[-rec_attempts], c='green', marker='D', s=100, label='0')
+                plt.gca().set_aspect('equal', adjustable='box')
+                plt.savefig("/home/ubuntu/Map.png")
+
+                # Attempt to move to last POI:
+                dynamic_params.recovery_override = 1
+                robot_xy = get_robot_xy()
+                rec_x = poi_x[-rec_attempts]
+                rec_y = poi_y[-rec_attempts]
+                print("- Last point of interest: " + str([rec_x, rec_y]))
+                print("- Robot position: " + str([robot_xy[0], robot_xy[1]]))
+                while inside_radius(rec_x, rec_y, 3, robot_xy[0], robot_xy[1]) == False:
+                    robot_xy = get_robot_xy()
+                    #print("- Entering recovery loop...")
+                    rec_d = get_distance(rec_x, robot_xy[0], rec_y, robot_xy[1])
+                    rec_goal_x = rec_x
+                    rec_goal_y = rec_y
+                    rec_goal_d = rec_d
+                    if rec_d > 20:
+                        while (rec_goal_d > 20):
+                            rec_goal_x = (rec_goal_x + robot_xy[0]) / 2
+                            rec_goal_y = (rec_goal_y + robot_xy[1]) / 2
+                            rec_goal_d = get_distance(rec_goal_x, robot_xy[0], rec_goal_y, robot_xy[1])
+                    print("- Recovery goal: " + str([rec_goal_x, rec_goal_y]))
+                    goal = MoveBaseGoal()
+                    goal.target_pose.header.frame_id = "odom"
+                    goal.target_pose.header.stamp = rospy.Time.now()
+                    goal.target_pose.pose.position.x = rec_goal_x
+                    goal.target_pose.pose.position.y = rec_goal_y
+                    goal.target_pose.pose.orientation.w = 1.0
+                    client.send_goal(goal)
+                    robot_xy = get_robot_xy()
+                    time.sleep(1)
+                    # Recovery behaviour (finish)
+                print("- Robot has now recovered to last point of interest.")
+                dynamic_params.recovery_override = 0
+                time.sleep(500000)
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:
             print("- Robot navigation complete!")

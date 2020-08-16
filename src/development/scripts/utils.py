@@ -40,7 +40,7 @@ def get_straight_line_pos(target, d):
         target_xy = building_entrance_xy
     else:
         print("Error - invalid parameter in get_straight_line_pos()")
-    
+
     robot_xy = get_robot_xy()
     dist_robot_target = get_distance(robot_xy[0], target_xy[0], robot_xy[1], target_xy[1])
 
@@ -50,6 +50,9 @@ def get_straight_line_pos(target, d):
 
     return [robot_xy[0] + d*unit_x, robot_xy[1] + d*unit_y]
 
+# Check if a point is within a circle
+def inside_radius(x0, y0, r, x_in, y_in):
+    return (x_in-x0)**2+(y_in-y0)**2<=r**2
 
 # Checks if a given point pt is contained within a given polygon A
 def contains_pt(pt, A):
