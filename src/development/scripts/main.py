@@ -34,7 +34,7 @@ def movebase_client():
     i = 0
 
     # Recovery behaviour:
-    rec_attempts = 0
+    rec_attempts = 1
 
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
@@ -114,10 +114,8 @@ def movebase_client():
             print("- Recovery score: %d points / Threshold: %d points" % (dist_score, rb_threshold))
 
             if dist_score < rb_threshold:
-                rec_attempts += 1
-
                 # Remove points:
-                print("- Robot movement failure! Recovery #%d initiated..." % rec_attempts)
+                print("- Robot movement failure! Recovery #%d initiated..." % (rec_attempts+1))
                 robot_xy = get_robot_xy()
                 remove_points(dynamic_params.hist_x, dynamic_params.hist_y, dynamic_params.poi_x[-rec_attempts], dynamic_params.poi_y[-rec_attempts], robot_xy[0], robot_xy[1])
                 update_map()
@@ -155,8 +153,9 @@ def movebase_client():
                     time.sleep(1)
                     # Recovery behaviour (finish)
                 print("- Robot has now moved to the last point of interest.")
+                rec_attempts += 1
                 dynamic_params.recovery_override = 0
-                time.sleep(500000)
+                time.sleep(3)
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:

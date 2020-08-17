@@ -6,8 +6,8 @@ min_dist = 10 # minimum distance to keep points
 max_dev_clean = 4 # maximum deviation from line segment to mark intersection
 max_dev_boundary = 2 # maximum deviation around start and end points
 max_dev_filter = 10 # maximum deviation from line segment to remove points
-x_pth = "/home/ubuntu/Mapping/x_v3.txt"
-y_pth = "/home/ubuntu/Mapping/y_v3.txt"
+x_pth = "/home/ubuntu/Mapping/x_v3-motorsport.txt"
+y_pth = "/home/ubuntu/Mapping/y_v3-motorsport.txt"
 
 # Function definitions:
 def get_distance(x1, x2, y1, y2):
@@ -129,5 +129,13 @@ plt.scatter(x_in, y_in, c='k', marker='.', alpha=.5, label='1')
 plt.scatter(x_poi, y_poi, c='b', marker='D', s=50, label='-1')
 plt.scatter(x_remove, y_remove, c='r', marker='+', label='0')
 plt.gca().set_aspect('equal', adjustable='box')
+
+# Test if a pedestrian is in a remove zone:
+ped_coord = [80, -38]
+for j in range(len(x_remove)):
+    dist = get_distance(ped_coord[0], x_remove[j], ped_coord[1], y_remove[j])
+    if dist < 3:
+        print("BAD")
+        break
 
 plt.show()
