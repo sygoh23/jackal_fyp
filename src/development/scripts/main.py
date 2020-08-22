@@ -10,8 +10,13 @@ from ped_selection import *
 from utils import *
 from movement import *
 from std_msgs.msg import String
-#from tf2_msgs.msg import tfMessage
 
+import tf
+#import tf2_ros
+#from tf2_msgs.msg import TFMessage
+#from tf.msg import tfMessage
+#from tf2_msgs.msg import tfMessage
+listener = 0
 
 """
 Ideas:
@@ -27,6 +32,8 @@ Ideas:
 
 
 def movebase_client():
+    global listener
+
     # Move_base initialisation:
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
@@ -43,7 +50,7 @@ def movebase_client():
         # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity, and if an entrance has/has not been found
         if contains_pt(get_robot_xy(), building_polygon) and (not dynamic_params.entrance_found):
             print("Within building vicinity")
-            select_ped_within_vicinity()
+            #select_ped_within_vicinity()
 
             # Read object detection results
             if process_img:
@@ -96,22 +103,37 @@ def movebase_client():
         if dynamic_params.reached_target == 1:
             print("- Robot navigation complete!")
             break
+        
+
+        
+
+        try:
+            # Transform FROM odom TO base_link
+            # In terminal: rosrun tf tf_echo base_link odom
+            (trans, rot) = listener.lookupTransform('/base_link', '/odom', rospy.Time(0))
+            print(trans)
+            print(rot)
+            print('')
+        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+            print('failed')
+
+
 
         print("----------------------------------------------------------")
         i += 1
         time.sleep(t_delay)
 
 
-import tf2_ros
-from tf2_msgs.msg import TFMessage
+
 
 
 if __name__ == '__main__':
     try:
-        """
+        global listener
         rospy.init_node('movebase_client_py')
+        listener = tf.TransformListener()
         result = movebase_client()
-        """
+        
 
         
         """
@@ -133,13 +155,18 @@ if __name__ == '__main__':
         #rospy.spin()
         """    
 
+        #rospy.init_node('transform_listener')
         
+
+        
+        """
         for i in range(100):
             print("Before transform")
-            transform = rospy.wait_for_message("/tf_static", TFMessage)
+            transform = rospy.wait_for_message("/tf", tfMessage)
             print(transform)
 
             time.sleep(1)
+        """
         
 
 
