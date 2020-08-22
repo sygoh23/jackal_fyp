@@ -24,15 +24,15 @@ def select_ped_within_vicinity():
     # Calculate next goal point
     pointcloud = get_pointcloud()
 
-    with open('/home/chris/Documents/pointcloud.pickle', 'wb') as f:
+    with open('/home/chris/Documents/pointcloud2.pickle', 'wb') as f:
         pickle.dump(pointcloud, f)
     
-    sys.exit()
+    #sys.exit()
     
 
     # If this goal point is outside the building vicinity, generate another point
-    while not contains_pt(dynamic_params.goal_xy, building_polygon):
-        print("--> Current goal is outside vicinity, generating new goal...")
+    #while not contains_pt(dynamic_params.goal_xy, building_polygon):
+        #print("--> Current goal is outside vicinity, generating new goal...")
     
     # Scan for doorways
     print("--> Looking for doorway")

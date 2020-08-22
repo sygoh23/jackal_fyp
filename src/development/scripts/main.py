@@ -12,6 +12,8 @@ from movement import *
 from std_msgs.msg import String
 
 import tf
+from geometry_msgs.msg import PointStamped
+import pickle
 #import tf2_ros
 #from tf2_msgs.msg import TFMessage
 #from tf.msg import tfMessage
@@ -50,7 +52,7 @@ def movebase_client():
         # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity, and if an entrance has/has not been found
         if contains_pt(get_robot_xy(), building_polygon) and (not dynamic_params.entrance_found):
             print("Within building vicinity")
-            #select_ped_within_vicinity()
+            select_ped_within_vicinity()
 
             # Read object detection results
             if process_img:
@@ -110,10 +112,27 @@ def movebase_client():
         try:
             # Transform FROM odom TO base_link
             # In terminal: rosrun tf tf_echo base_link odom
-            (trans, rot) = listener.lookupTransform('/base_link', '/odom', rospy.Time(0))
-            print(trans)
-            print(rot)
-            print('')
+            (trans, rot) = listener.lookupTransform('base_link', 'odom', rospy.Time(0))
+
+            # Original point in odom frame
+            original_pt = PointStamped()
+            original_pt.header.frame_id = "odom"
+            original_pt.header.stamp = rospy.Time(0)
+            original_pt.point.x = building_entrance_xy[0]
+            original_pt.point.y = building_entrance_xy[1]
+            original_pt.point.z = 0.0
+
+            # Transformed point in base_link frame
+            transformed_pt = listener.transformPoint('base_link', original_pt)
+            transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
+            
+            with open('/home/chris/Documents/tf_point.pickle', 'wb') as f:
+                pickle.dump(transformed_pt_xy, f)
+
+            print(trans); print('')
+            print(rot); print('')
+            print(original_pt); print('')
+            print(transformed_pt); print('')
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             print('failed')
 

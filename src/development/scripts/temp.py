@@ -52,8 +52,11 @@ print(img_names_train)
 """
 
 
-with open('/home/chris/Documents/jackal_fyp/plugins/pointcloud.pickle', 'rb') as f:
+with open('/home/chris/Documents/pointcloud2.pickle', 'rb') as f:
     pointcloud = pickle.load(f)
+
+with open('/home/chris/Documents/tf_point.pickle', 'rb') as f:
+    transformed_point_xy = pickle.load(f, encoding='latin1')
 
 dataset = np.array([])
 x = []
@@ -78,14 +81,18 @@ for point in pointcloud:
 #ax = Axes3D(fig)
 #ax.scatter(x, y, z)
 
-"""
-fig = plt.figure(facecolor='k')
+
+fig = plt.figure(facecolor='w')
 ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
-ax.scatter(x, y, color='w', marker=',')
-plt.axis('off')
-fig.savefig('/home/chris/Documents/test4.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
+ax.scatter(x, y)
+ax.scatter(0, 0, color='g', s=100)
+ax.scatter(transformed_point_xy[0], transformed_point_xy[1], color='r', s=100)
+
+#ax.scatter(x, y, color='w', marker=',')
+#plt.axis('off')
+#fig.savefig('/home/chris/Documents/test4.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
 plt.show()
-"""
+
 
 #model = AffinityPropagation(damping=0.9)
 #model.fit(dataset)
@@ -116,6 +123,7 @@ plt.show()
 """
 
 
+"""
 # Read image 
 img = cv2.imread('/home/chris/Documents/test4.jpg', cv2.IMREAD_COLOR)
 #cv2.imshow("Initial", img)
@@ -144,3 +152,4 @@ for line in lines:
 #cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
 #cv2.imshow("Result Image", img)
 #cv2.waitKey()
+"""
