@@ -52,10 +52,10 @@ print(img_names_train)
 """
 
 
-with open('/home/chris/Documents/pointcloud2.pickle', 'rb') as f:
+with open('/home/chris/Documents/jackal_fyp/plugins/pointcloud2.pickle', 'rb') as f:
     pointcloud = pickle.load(f)
 
-with open('/home/chris/Documents/tf_point.pickle', 'rb') as f:
+with open('/home/chris/Documents/jackal_fyp/plugins/tf_point.pickle', 'rb') as f:
     transformed_point_xy = pickle.load(f, encoding='latin1')
 
 dataset = np.array([])

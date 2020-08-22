@@ -52,7 +52,7 @@ def movebase_client():
         # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity, and if an entrance has/has not been found
         if contains_pt(get_robot_xy(), building_polygon) and (not dynamic_params.entrance_found):
             print("Within building vicinity")
-            select_ped_within_vicinity()
+            #select_ped_within_vicinity()
 
             # Read object detection results
             if process_img:
@@ -96,8 +96,8 @@ def movebase_client():
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = "odom"
         goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
-        goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
+        goal.target_pose.pose.position.x = 0
+        goal.target_pose.pose.position.y = 1
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 
@@ -126,8 +126,10 @@ def movebase_client():
             transformed_pt = listener.transformPoint('base_link', original_pt)
             transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
             
+            """
             with open('/home/chris/Documents/tf_point.pickle', 'wb') as f:
                 pickle.dump(transformed_pt_xy, f)
+            """
 
             print(trans); print('')
             print(rot); print('')
