@@ -10,6 +10,7 @@ from ped_selection import *
 from utils import *
 from movement import *
 from std_msgs.msg import String
+#from tf2_msgs.msg import tfMessage
 
 
 """
@@ -101,9 +102,46 @@ def movebase_client():
         time.sleep(t_delay)
 
 
+import tf2_ros
+from tf2_msgs.msg import TFMessage
+
+
 if __name__ == '__main__':
     try:
+        """
         rospy.init_node('movebase_client_py')
         result = movebase_client()
+        """
+
+        
+        """
+        rospy.init_node('transform_listener')
+
+        tfBuffer = tf2_ros.Buffer()
+        listener = tf2_ros.TransformListener(tfBuffer)
+
+        try:
+            # Transform from odom to base_link
+            trans = tfBuffer.lookup_transform('velodyne2_base_link', 'front_mount', rospy.Time())
+            print(trans)
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            print('failed')
+            time.sleep(1)
+
+        #listener.waitForTransform("/frame1", "/frame2", rospy.Time(), rospy.Duration(4.0))
+        #(trans, rot) = listener.lookupTransform("/frame1", "/frame2", rospy.Time(0))
+        #rospy.spin()
+        """    
+
+        
+        for i in range(100):
+            print("Before transform")
+            transform = rospy.wait_for_message("/tf_static", TFMessage)
+            print(transform)
+
+            time.sleep(1)
+        
+
+
     except rospy.ROSInterruptException:
         print("Algorithm finished!")
