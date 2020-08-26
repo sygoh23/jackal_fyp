@@ -1,7 +1,7 @@
 <launch>
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!-- RVIZ CONFIG -->
-  <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_mapping.rviz"/>
+  <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_cartographer.rviz"/>
   <arg name="enable_rviz" default="true"/>
 
   <!--  GAZEBO CONFIG -->
