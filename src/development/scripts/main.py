@@ -96,6 +96,10 @@ def movebase_client():
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 
+        # DEBUG
+        dynamic_params.remove_x.append(-i)
+        dynamic_params.remove_y.append(-i)
+
         # Recovery behaviour:
         rb_threshold = 5; rb_smooth = 10
         save_history()
@@ -153,6 +157,8 @@ def movebase_client():
                     time.sleep(1)
                     # Recovery behaviour (finish)
                 print("- Robot has now moved to the last point of interest.")
+                #dynamic_params.obstacle_x = dynamic_params.remove_x[:]
+                #dynamic_params.obstacle_y = dynamic_params.remove_y[:]
                 rec_attempts += 1
                 dynamic_params.recovery_override = 0
                 time.sleep(3)

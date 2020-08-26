@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-
 import rospy
+import dynamic_params
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 import tf
@@ -22,7 +22,7 @@ while not rospy.is_shutdown():
     scan.angle_max = 6.28
     scan.angle_increment = 6.28 / num_readings
     scan.time_increment = (1.0 / laser_frequency) / (num_readings)
-    scan.range_min = 1.0
+    scan.range_min = 0.0
     scan.range_max = 100.0
     msg = rospy.wait_for_message("/odometry/filtered", Odometry)
     (R, P, Y) = tf.transformations.euler_from_quaternion([msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
@@ -32,8 +32,9 @@ while not rospy.is_shutdown():
         robot_angle = Y
 
     # Set removal points:
-    remove_X = [10, 0, 0, -10]
-    remove_Y = [0, -10, 10, 0]
+    remove_X = dynamic_params.remove_x[:]
+    remove_Y = dynamic_params.remove_y[:]
+    print(remove_X)
 
     # Translate cartesian coordinates:
     delta_X = [A-msg.pose.pose.position.x for A in remove_X]
@@ -75,14 +76,15 @@ while not rospy.is_shutdown():
         for j in range(len(ref_dist)):
             extract_angle = ref_angles[j]
             sample_dist = ref_dist[j]
-            threshold = 1/(sample_dist**(1.5))
+            threshold = 1/(sample_dist**(2))
+            if (threshold < 0.05): threshold = 0.05
             if (abs(extract_angle - ray_angle) < threshold):
                 extract_dist.append(ref_dist[j])
         if len(extract_dist) > 0:
             scan.ranges.append(min(extract_dist))
             scan.intensities.append(1)
         else:
-            scan.ranges.append(0)
+            scan.ranges.append(50)
             scan.intensities.append(0)
 
     scan_pub.publish(scan)
