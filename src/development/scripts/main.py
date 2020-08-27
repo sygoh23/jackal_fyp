@@ -13,6 +13,7 @@ from movement import *
 from std_msgs.msg import String
 import matplotlib
 import matplotlib.pyplot as plt
+import pickle
 matplotlib.use('Agg')
 
 """
@@ -39,6 +40,9 @@ def movebase_client():
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
     dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
+
+    pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
+    pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
 
     # Begin navigation algorithm
     while True:
@@ -96,10 +100,6 @@ def movebase_client():
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 
-        # DEBUG
-        dynamic_params.remove_x.append(-i)
-        dynamic_params.remove_y.append(-i)
-
         # Recovery behaviour:
         rb_threshold = 5; rb_smooth = 10
         save_history()
@@ -152,13 +152,18 @@ def movebase_client():
                     goal.target_pose.pose.orientation.w = 1.0
                     client.send_goal(goal)
 
-                    #update_map()
                     robot_xy = get_robot_xy()
                     time.sleep(1)
                     # Recovery behaviour (finish)
+                pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
+                pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
+
+                # Reset pedestrian following logic:
+                dynamic_params.ped_last = []
+                dynamic_params.following_ped = 0
+                dynamic_params.goal_xy = [robot_xy[0], robot_xy[1]]
                 print("- Robot has now moved to the last point of interest.")
-                #dynamic_params.obstacle_x = dynamic_params.remove_x[:]
-                #dynamic_params.obstacle_y = dynamic_params.remove_y[:]
+
                 rec_attempts += 1
                 dynamic_params.recovery_override = 0
                 time.sleep(3)
@@ -168,6 +173,8 @@ def movebase_client():
             print("- Robot navigation complete!")
             break
 
+        print(dynamic_params.debug_please)
+        dynamic_params.debug_please = []
         print("----------------------------------------------------------")
         i += 1
         time.sleep(t_delay)

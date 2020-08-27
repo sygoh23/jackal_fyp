@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 import rospy
-import dynamic_params
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 import tf
 import numpy as np
 import math
 import time
+import pickle
+
 rospy.init_node('laser_scan_publisher')
 scan_pub = rospy.Publisher('custom/scan', LaserScan, queue_size=50)
-num_readings = 400
+num_readings = 600
 laser_frequency = 40
 count = 0
+time.sleep(3)
 r = rospy.Rate(2)
+
 while not rospy.is_shutdown():
     current_time = rospy.Time.now()
     scan = LaserScan()
@@ -22,7 +25,7 @@ while not rospy.is_shutdown():
     scan.angle_max = 6.28
     scan.angle_increment = 6.28 / num_readings
     scan.time_increment = (1.0 / laser_frequency) / (num_readings)
-    scan.range_min = 0.0
+    scan.range_min = 1.0
     scan.range_max = 100.0
     msg = rospy.wait_for_message("/odometry/filtered", Odometry)
     (R, P, Y) = tf.transformations.euler_from_quaternion([msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
@@ -31,18 +34,16 @@ while not rospy.is_shutdown():
     else:
         robot_angle = Y
 
-    # Set removal points:
-    remove_X = dynamic_params.remove_x[:]
-    remove_Y = dynamic_params.remove_y[:]
-    print(remove_X)
+    remove_X = pickle.load(open("/home/ubuntu/x.pkl", "rb"))
+    remove_Y = pickle.load(open("/home/ubuntu/y.pkl", "rb"))
 
     # Translate cartesian coordinates:
     delta_X = [A-msg.pose.pose.position.x for A in remove_X]
     delta_Y = [A-msg.pose.pose.position.y for A in remove_Y]
-    ref_angles = []
-    ref_dist = []
 
     # Compute ray tracing angle:
+    ref_angles = []
+    ref_dist = []
     for j in range(len(remove_X)):
         del_X = delta_X[j]
         del_Y = delta_Y[j]
@@ -76,8 +77,9 @@ while not rospy.is_shutdown():
         for j in range(len(ref_dist)):
             extract_angle = ref_angles[j]
             sample_dist = ref_dist[j]
-            threshold = 1/(sample_dist**(2))
-            if (threshold < 0.05): threshold = 0.05
+            threshold = 1.5/(2*math.pi*sample_dist)*(600/num_readings)
+            #threshold = 1/(sample_dist**(2))
+            #if (threshold < 0.05): threshold = 0.05
             if (abs(extract_angle - ray_angle) < threshold):
                 extract_dist.append(ref_dist[j])
         if len(extract_dist) > 0:
@@ -86,7 +88,6 @@ while not rospy.is_shutdown():
         else:
             scan.ranges.append(50)
             scan.intensities.append(0)
-
     scan_pub.publish(scan)
     count += 1
     r.sleep()

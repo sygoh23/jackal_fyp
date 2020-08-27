@@ -1,10 +1,11 @@
 from static_params import *
 from utils import *
 from math import sqrt
+import math
 import dynamic_params
 import matplotlib
 import matplotlib.pyplot as plt
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 
 # Parameters:
 min_dist = 3 # Keep points given they are 'min_dist' apart from each other...
@@ -106,10 +107,30 @@ def remove_points(x_in, y_in, x_poi, y_poi, robot_x, robot_y):
     const = linear_const(rb_seg_x[0], rb_seg_x[1], rb_seg_y[0], rb_seg_y[1])
     for i in check_point:
         d = linear_dist(const[0], const[1], const[2], x_in[i], y_in[i])
-        if d < max_dev_remove:# and (inside_radius(rb_seg_x[1], rb_seg_y[1], max_dev_remove, x_in[i], y_in[i]) == False):
+        if d < max_dev_remove and (inside_radius(rb_seg_x[1], rb_seg_y[1], max_dev_remove, x_in[i], y_in[i]) == False):
             remove_point.append(i)
     print("- Points to Remove: " + str(len(remove_point)) + " points")
     x_remove = [x_in[i] for i in remove_point]; y_remove= [y_in[i] for i in remove_point]
-    dynamic_params.remove_x = x_remove[:]
-    dynamic_params.remove_y = y_remove[:]
+
+    x_radius = []
+    y_radius = []
+    for i in range(len(x_remove)):
+        x_now = x_remove[i]
+        y_now = y_remove[i]
+        x_radius.append(x_now)
+        y_radius.append(y_now)
+        for j in range(45):
+            for k in range(2):
+                x_radius.append(x_now+2*k*math.sin(8*j*math.pi/180))
+                y_radius.append(y_now+2*k*math.cos(8*j*math.pi/180))
+
+    x_final = []
+    y_final = []
+    for i in range(len(x_radius)):
+        if (inside_radius(rb_seg_x[1], rb_seg_y[1], 5, x_radius[i], y_radius[i]) == False):
+            x_final.append(x_radius[i])
+            y_final.append(y_radius[i])
+
+    dynamic_params.remove_x = x_final[:]
+    dynamic_params.remove_y = y_final[:]
     return
