@@ -101,36 +101,34 @@ def movebase_client():
         client.send_goal(goal)
 
         # Recovery behaviour:
+        # Every five iterations, update the map:
         rb_threshold = 5; rb_smooth = 10
         save_history()
-
         if (i % 5) == 0:
             find_poi()
             update_map()
 
+        # Check robot movement for recovery:
         if (i >= rb_smooth) and (len(dynamic_params.poi_x) > 1):
             dist_score = 0
-            disp_score = get_distance(dynamic_params.hist_x[i-rb_smooth], dynamic_params.hist_x[i], dynamic_params.hist_y[i-rb_smooth], dynamic_params.hist_y[i],)
             for j in range(rb_smooth):
                 new_dist = get_distance(dynamic_params.hist_x[i-j], dynamic_params.hist_x[i-j-1],dynamic_params.hist_y[i-j], dynamic_params.hist_y[i-j-1])
                 dist_score = dist_score + new_dist
-            print("- Displacement score: %dm / Distance score: %dm" % (disp_score, dist_score))
             print("- Recovery score: %d points / Threshold: %d points" % (dist_score, rb_threshold))
 
             if dist_score < rb_threshold:
-                # Remove points:
+                # Engage recovery behaviour:
                 print("- Robot movement failure! Recovery #%d initiated..." % (rec_attempts+1))
-                robot_xy = get_robot_xy()
-                remove_points(dynamic_params.hist_x, dynamic_params.hist_y, dynamic_params.poi_x[-rec_attempts], dynamic_params.poi_y[-rec_attempts], robot_xy[0], robot_xy[1])
+
+                # Determine points to remove from map:
+                remove_points(rec_attempts)
                 update_map()
 
-                # Move to last point of interest:
+                # Send robot to last point of interest:
                 dynamic_params.recovery_override = 1
                 robot_xy = get_robot_xy()
                 rec_x = dynamic_params.poi_x[-rec_attempts]
                 rec_y = dynamic_params.poi_y[-rec_attempts]
-                dynamic_params.rec_x = rec_x
-                dynamic_params.rec_y = rec_y
                 print("- Last point of interest: " + str([rec_x, rec_y]))
                 print("- Robot position: " + str([robot_xy[0], robot_xy[1]]))
                 while inside_radius(rec_x, rec_y, 3, robot_xy[0], robot_xy[1]) == False:
@@ -143,7 +141,6 @@ def movebase_client():
                             rec_goal_y = (rec_goal_y + robot_xy[1]) / 2
                             rec_goal_d = get_distance(rec_goal_x, robot_xy[0], rec_goal_y, robot_xy[1])
                     print("- Recovery goal: " + str([rec_goal_x, rec_goal_y]))
-
                     goal = MoveBaseGoal()
                     goal.target_pose.header.frame_id = "odom"
                     goal.target_pose.header.stamp = rospy.Time.now()
@@ -151,10 +148,10 @@ def movebase_client():
                     goal.target_pose.pose.position.y = rec_goal_y
                     goal.target_pose.pose.orientation.w = 1.0
                     client.send_goal(goal)
-
                     robot_xy = get_robot_xy()
                     time.sleep(1)
-                    # Recovery behaviour (finish)
+
+                # Send removed points to custom laserscan plugin:
                 pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
                 pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
 
@@ -163,17 +160,14 @@ def movebase_client():
                 dynamic_params.following_ped = 0
                 dynamic_params.goal_xy = [robot_xy[0], robot_xy[1]]
                 print("- Robot has now moved to the last point of interest.")
-
                 rec_attempts += 1
                 dynamic_params.recovery_override = 0
-                time.sleep(3)
+                time.sleep(1)
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:
             print("- Robot navigation complete!")
             break
-
-        print(dynamic_params.debug_please)
         dynamic_params.debug_please = []
         print("----------------------------------------------------------")
         i += 1

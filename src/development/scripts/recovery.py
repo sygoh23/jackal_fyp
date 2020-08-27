@@ -5,6 +5,7 @@ import math
 import dynamic_params
 import matplotlib
 import matplotlib.pyplot as plt
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 #matplotlib.use('Agg')
 
 # Parameters:
@@ -35,7 +36,7 @@ def inside_radius(x0, y0, r, x_in, y_in):
 # Update map file:
 def update_map():
     plt.grid(b=True, which='major', color='#d6d6d6', linestyle='--')
-    plt.scatter(dynamic_params.remove_x, dynamic_params.remove_y, c='r', marker='x', s=50, label='0')
+    plt.scatter(dynamic_params.remove_x, dynamic_params.remove_y, c='r', marker='.', s=50, label='0')
     plt.scatter(dynamic_params.hist_x, dynamic_params.hist_y, c='k', marker='.', alpha=0.5, label='1')
     plt.scatter(dynamic_params.poi_x, dynamic_params.poi_y, c='b', marker='D', s=50, label='-1')
 
@@ -63,7 +64,7 @@ def find_poi():
     y_out = y_in
     p = 0
 
-    # REMOVE POINTS TOO CLOSE:
+    # Remove points which are too close to each other:
     while p < (len(x_out)-1):
         dist = get_distance(x_in[p], x_in[p+1], y_in[p], y_in[p+1])
         if dist < min_dist:
@@ -72,7 +73,8 @@ def find_poi():
         else:
             p += 1
 
-    # DETECT POINTS OF INTEREST:
+    # Detect points of interest:
+    # (Calculates points which deviate too far from a line segment)
     poi = []; i = 0; j = 2
     while True:
         if (j >= (len(x_out)-1)) or (i >= (len(x_out)-1)):
@@ -91,10 +93,15 @@ def find_poi():
     dynamic_params.poi_y = y_poi[:]
     return
 
-# Remove points in dead end:
-def remove_points(x_in, y_in, x_poi, y_poi, robot_x, robot_y):
-    rb_seg_x = [robot_x, x_poi]
-    rb_seg_y = [robot_y, y_poi]
+# Remove points in a dead end:
+def remove_points(rec_attempts):
+    robot_xy = get_robot_xy()
+    x_in = dynamic_params.hist_x; y_in = dynamic_params.hist_y;
+    x_poi = dynamic_params.poi_x[-rec_attempts]; y_poi = dynamic_params.poi_y[-rec_attempts]
+    robot_x = robot_xy[0]; robot_y = robot_xy[1]
+    rb_seg_x = [robot_x, x_poi]; rb_seg_y = [robot_y, y_poi]
+
+    # Highlight points that should be checked for removal:
     check_point = []
     for i in range(len(x_in)):
         if (x_in[i] > (min(rb_seg_x)-max_dev_boundary)) and (x_in[i] < (max(rb_seg_x)+max_dev_boundary)):
@@ -103,6 +110,7 @@ def remove_points(x_in, y_in, x_poi, y_poi, robot_x, robot_y):
     print("- Points to Check: " + str(len(check_point)) + " points")
     x_flag = [x_in[i] for i in check_point]; y_flag = [y_in[i] for i in check_point]
 
+    # Mark points to remove that deviate from line segment:
     remove_point = []
     const = linear_const(rb_seg_x[0], rb_seg_x[1], rb_seg_y[0], rb_seg_y[1])
     for i in check_point:
@@ -112,20 +120,20 @@ def remove_points(x_in, y_in, x_poi, y_poi, robot_x, robot_y):
     print("- Points to Remove: " + str(len(remove_point)) + " points")
     x_remove = [x_in[i] for i in remove_point]; y_remove= [y_in[i] for i in remove_point]
 
-    x_radius = []
-    y_radius = []
+    # Add in additional points at a radius around each removed point:
+    m = const[1]/const[0]
+    x_radius = []; y_radius = []
     for i in range(len(x_remove)):
         x_now = x_remove[i]
         y_now = y_remove[i]
-        x_radius.append(x_now)
-        y_radius.append(y_now)
-        for j in range(45):
-            for k in range(2):
-                x_radius.append(x_now+2*k*math.sin(8*j*math.pi/180))
-                y_radius.append(y_now+2*k*math.cos(8*j*math.pi/180))
+        clear_dist = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
+        for j in range(len(clear_dist)):
+            x_radius.append(x_now + clear_dist[j]*math.cos(math.atan(m)))
+            y_radius.append(y_now + clear_dist[j]*math.sin(math.atan(m)))
 
-    x_final = []
-    y_final = []
+    # Keep points that are close to the robot.
+    # Don't set an obstacle too close to the robot.
+    x_final = []; y_final = []
     for i in range(len(x_radius)):
         if (inside_radius(rb_seg_x[1], rb_seg_y[1], 5, x_radius[i], y_radius[i]) == False):
             x_final.append(x_radius[i])
