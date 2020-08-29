@@ -125,10 +125,10 @@ plt.show()
 """
 
 # Convert to numpy array
-x_min = min(x)
-y_min = min(y)
-w = int(max(x) - x_min) + 2
-h = int(max(y) - y_min) + 2
+x_min = min(x)  # -67.5
+y_min = min(y)  # -100.6
+w = int(max(x) - x_min) + 2     # max x = 61.5
+h = int(max(y) - y_min) + 2     # max y = 95.7
 c = 3
 
 """
@@ -164,19 +164,21 @@ for pt_x, pt_y in zip(x, y):
     print()
     """
 
-    
+    # Translate
     pt_x += abs(x_min)
     pt_y += abs(y_min)
+
     grid[int(pt_x), int(pt_y), :] = [255, 255, 255]
     
 
-    #grid[1, 100, :] = [255, 255, 255]
+# No rotation
+img = grid
 
-img = np.rot90(m=grid, k=1)
-img = img.copy()
+# Rotation
+#img = np.rot90(m=grid, k=1)
+#img = img.copy()
 #img = Image.fromarray(grid, 'RGB').show()
 
-#grid = np.rot90(m=grid, k=-1)  # k = -1 undoes the rotation
 
 
 # Read image 
@@ -198,18 +200,99 @@ edges = cv2.Canny(gray, 50, 200)
 
 # Detect points that form a line
 lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=40, minLineLength=20, maxLineGap=70)
+#print(lines)
 
 # Draw lines on the image
 if lines is not None:
+    lines_list = []     # [np.array[x1, y1, x2, y2], ...]
     for line in lines:
-        print(line)
         x1, y1, x2, y2 = line[0]
         cv2.line(img, (x1, y1), (x2, y2), color=(0, 0, 255), thickness=2)
+        lines_list.append(line[0])
 
     # Show result
     cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
-    cv2.imshow("Result Image", img)
-    cv2.waitKey()
+    #cv2.imshow("Result Image", img)
+    #cv2.waitKey()
+
 else:
     print("No lines found")
 
+
+import math
+
+def rotate(origin, point, angle):
+    """
+    Rotate a point counterclockwise by a given angle around a given origin.
+
+    The angle should be given in radians.
+    """
+    ox, oy = origin
+    px, py = point
+
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    return qx, qy
+
+print("\nImage space:")
+print(lines_list)
+
+lines_tuples = []   # [[(x1, y1), (x2, y2)], ...]
+for line in lines_list:
+    # Rotate back
+    #start_transformed = rotate(origin=(abs(y_min), abs(x_min)), point=(line[0], line[1]), angle=math.radians(90))
+    start_transformed = (line[0], line[1])
+
+    # Translate back
+    start_transformed = (
+        start_transformed[0] - abs(y_min),
+        start_transformed[1] - abs(x_min)
+    )
+    
+    # Reverse coords
+    start_transformed = (start_transformed[1], start_transformed[0])
+
+    # Rotate back
+    #end_transformed = rotate(origin=(abs(y_min), abs(x_min)), point=(line[2], line[3]), angle=math.radians(90))
+    end_transformed = (line[2], line[3])
+
+    # Translate back
+    end_transformed = (
+        end_transformed[0] - abs(y_min),
+        end_transformed[1] - abs(x_min)
+    )
+
+    # Reverse coords
+    end_transformed = (end_transformed[1], end_transformed[0])
+
+    lines_tuples.append([start_transformed, end_transformed])
+
+print("\nTransformed back")
+print(lines_tuples)
+
+"""
+print()
+print(lines_tuples)
+
+print("\nImage space:")
+print(lines_list)
+
+for line in lines_list:
+    line -= np.array([abs(x_min), abs(y_min), abs(x_min), abs(y_min)], dtype='int32')
+
+print("\nRobot frame:")
+print(lines_list)
+"""
+
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
+ax.scatter(x, y)
+ax.scatter(0, 0, color='g', s=100)
+ax.scatter(transformed_point_xy[0], transformed_point_xy[1], color='r', s=100)
+
+for line in lines_tuples:
+    x_pts = [line[0][0], line[1][0]]
+    y_pts = [line[0][1], line[1][1]]
+    ax.plot(x_pts, y_pts)
+
+plt.show()
