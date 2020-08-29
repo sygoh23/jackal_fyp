@@ -11,6 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, Birch, DBSCAN, KMeans
 import numpy as np
 import cv2
+from PIL import Image
 
 """
 old = Image.open("/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/0001.jpg")
@@ -81,17 +82,18 @@ for point in pointcloud:
 #ax = Axes3D(fig)
 #ax.scatter(x, y, z)
 
-
+"""
 fig = plt.figure(facecolor='w')
 ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
 ax.scatter(x, y)
 ax.scatter(0, 0, color='g', s=100)
 ax.scatter(transformed_point_xy[0], transformed_point_xy[1], color='r', s=100)
+"""
 
 #ax.scatter(x, y, color='w', marker=',')
 #plt.axis('off')
 #fig.savefig('/home/chris/Documents/test4.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
-plt.show()
+#plt.show()
 
 
 #model = AffinityPropagation(damping=0.9)
@@ -122,12 +124,66 @@ for cluster in clusters:
 plt.show()
 """
 
+# Convert to numpy array
+x_min = min(x)
+y_min = min(y)
+w = int(max(x) - x_min) + 2
+h = int(max(y) - y_min) + 2
+c = 3
 
 """
+print()
+print(x_min, y_min, max(x), max(y), w, h)
+print()
+"""
+
+grid = np.zeros((w, h, c), dtype=np.uint8)
+
+for pt_x, pt_y in zip(x, y):
+    """
+    print("\nBefore translation:")
+    print(pt_x, pt_y)
+    print()
+    """
+
+    """
+    if (x_min <= 0) and (y_min <= 0):
+        pt_x += abs(x_min)
+        pt_y += abs(y_min)
+
+    elif x_min <= 0:
+        pt_x += abs(x_min)
+
+    elif y_min <= 0:
+        pt_y += abs(y_min)
+    """
+
+    """
+    print("\nAfter translation:")
+    print(pt_x, pt_y)
+    print()
+    """
+
+    
+    pt_x += abs(x_min)
+    pt_y += abs(y_min)
+    grid[int(pt_x), int(pt_y), :] = [255, 255, 255]
+    
+
+    #grid[1, 100, :] = [255, 255, 255]
+
+img = np.rot90(m=grid, k=1)
+img = img.copy()
+#img = Image.fromarray(grid, 'RGB').show()
+
+#grid = np.rot90(m=grid, k=-1)  # k = -1 undoes the rotation
+
+
 # Read image 
-img = cv2.imread('/home/chris/Documents/test4.jpg', cv2.IMREAD_COLOR)
-#cv2.imshow("Initial", img)
+#img = cv2.imread('/home/chris/Documents/test4.jpg', cv2.IMREAD_COLOR)
+#cv2.imshow("Initial", grid)
 #cv2.waitKey()
+
 
 # Convert the image to gray-scale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -139,17 +195,21 @@ edges = cv2.Canny(gray, 50, 200)
 #cv2.imshow("Edges", gray)
 #cv2.waitKey()
 
+
 # Detect points that form a line
-lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=60, minLineLength=160, maxLineGap=250)
+lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=40, minLineLength=20, maxLineGap=70)
 
 # Draw lines on the image
-for line in lines:
-    print(line)
-    x1, y1, x2, y2 = line[0]
-    cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
+if lines is not None:
+    for line in lines:
+        print(line)
+        x1, y1, x2, y2 = line[0]
+        cv2.line(img, (x1, y1), (x2, y2), color=(0, 0, 255), thickness=2)
 
-# Show result
-#cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
-#cv2.imshow("Result Image", img)
-#cv2.waitKey()
-"""
+    # Show result
+    cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
+    cv2.imshow("Result Image", img)
+    cv2.waitKey()
+else:
+    print("No lines found")
+

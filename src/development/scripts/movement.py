@@ -11,10 +11,93 @@ from utils import *
 from pedsim_msgs.msg import AgentStates
 import rospy
 
+import cv2
+import pickle
+import sys
+
 
 # Used once object detection has found a doorway
 def move_to_doorway():
     pass
+
+
+"""
+Movement logic when the robot is within the building vicinity
+--> Assumes there is only one doorway in the defined building vicinity
+"""
+def move_within_vicinity(target_xy):
+    
+    # Retrieve pointcloud scan
+    pointcloud = get_pointcloud()
+
+    # Process data
+    x = []
+    y = []
+    for point in pointcloud:
+        if point[2] > 0.5:
+            x.append(point[0])
+            y.append(point[1])
+    
+    # Scatterplot in robot frame
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
+    ax.scatter(x, y)
+    ax.scatter(0, 0, color='g', s=100)
+    ax.scatter(target_xy[0], target_xy[1], color='r', s=100)
+
+    # Transform robot frame cartesian x/y to image
+
+    # Perform hough transform
+    """
+    # Read image 
+    img = cv2.imread('/home/chris/Documents/test4.jpg', cv2.IMREAD_COLOR)
+    #cv2.imshow("Initial", img)
+    #cv2.waitKey()
+
+    # Convert the image to gray-scale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #cv2.imshow("Gray", gray)
+    #cv2.waitKey()
+
+    # Find the edges in the image using canny detector
+    edges = cv2.Canny(gray, 50, 200)
+    #cv2.imshow("Edges", gray)
+    #cv2.waitKey()
+
+    # Detect points that form a line
+    lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=60, minLineLength=160, maxLineGap=250)
+
+    # Draw lines on the image
+    for line in lines:
+        print(line)
+        x1, y1, x2, y2 = line[0]
+        cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
+
+    # Show result
+    #cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
+    #cv2.imshow("Result Image", img)
+    #cv2.waitKey()
+    """
+
+    # Select line, and a target coordinate
+
+    # Transform point back to robot frame cartesian x/y
+    # return wall_xy
+
+    """
+    with open('/home/chris/Documents/pointcloud2.pickle', 'wb') as f:
+        pickle.dump(pointcloud, f)
+    """
+
+    #sys.exit()
+    
+
+    # If this goal point is outside the building vicinity, generate another point
+    #while not contains_pt(dynamic_params.goal_xy, building_polygon):
+        #print("--> Current goal is outside vicinity, generating new goal...")
+    
+    # Scan for doorways
+    print("--> Looking for doorway")
 
 
 """
