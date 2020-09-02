@@ -58,10 +58,9 @@ def save_history():
 
 # Find points of interest in map:
 def find_poi():
-    x_in = dynamic_params.hist_x[:]
-    y_in =dynamic_params.hist_y[:]
-    x_out = x_in
-    y_out = y_in
+    x_in = dynamic_params.hist_x[:]; y_in =dynamic_params.hist_y[:]
+    x_out = x_in; y_out = y_in
+    prev_len = len(dynamic_params.poi_x)
     p = 0
 
     # Remove points which are too close to each other:
@@ -84,13 +83,14 @@ def find_poi():
             d = linear_dist(const[0], const[1], const[2], x_out[k], y_out[k])
             if d > max_dev_clean:
                 poi.append(j)
-                print("- POI detected at " + str([x_out[j], y_out[j]]))
                 i = j; j = j + 2
                 break
         j += 1
     x_poi = [x_out[i] for i in poi]; y_poi = [y_out[i] for i in poi]
-    dynamic_params.poi_x = x_poi[:]
-    dynamic_params.poi_y = y_poi[:]
+    dynamic_params.poi_x = x_poi[:]; dynamic_params.poi_y = y_poi[:]
+
+    if len(x_poi) > prev_len:
+        print("--- POI detected @ " + str([x_poi[-1], y_poi[-1]]))
     return
 
 # Remove points in a dead end:

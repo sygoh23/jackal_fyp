@@ -36,6 +36,7 @@ def movebase_client():
 
     # Recovery behaviour:
     rec_attempts = 1
+    rec_enable = 1
 
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
@@ -46,26 +47,27 @@ def movebase_client():
 
     # Begin navigation algorithm
     while True:
-        print("\n\n------------------------- i = %d -------------------------" % i)
+        print("\n\n------------------------- i = %d -------------------------\n" % i)
 
         # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity, and if an entrance has/has not been found
         if contains_pt(get_robot_xy(), building_polygon) and (not dynamic_params.entrance_found):
-            print("Within building vicinity")
+            print("- Status: Within building vicinity...")
             select_ped_within_vicinity()
+            rec_enable = 0
 
             # Read object detection results
             if process_img:
                 is_door = rospy.wait_for_message("/detected_objects", String)
-                print("Door detected: %s" % is_door.data)
+                print("--- Door detected: %s" % is_door.data)
 
                 # If entrance was detected, trigger final movement to entrance
                 if is_door.data == "true":
-                    print("Moving to doorway")
+                    print("--- Moving to doorway")
                     dynamic_params.entrance_found = True
                     move_to_doorway()
 
         elif not dynamic_params.entrance_found:
-            print("Outside building vicinity")
+            print("- Status: Outside building vicinity...")
             ped_found, _ = select_ped_outside_vicinity(1, i)
 
             # Phase 1 pedestrian not found:import matplotlib
@@ -104,21 +106,18 @@ def movebase_client():
         # Every five iterations, update the map:
         rb_threshold = 5; rb_smooth = 10
         save_history()
-        if (i % 5) == 0:
-            find_poi()
-            update_map()
 
         # Check robot movement for recovery:
-        if (i >= rb_smooth) and (len(dynamic_params.poi_x) > 1):
+        if (i >= rb_smooth) and (len(dynamic_params.poi_x) > 1) and (rec_enable == 1):
             dist_score = 0
             for j in range(rb_smooth):
                 new_dist = get_distance(dynamic_params.hist_x[i-j], dynamic_params.hist_x[i-j-1],dynamic_params.hist_y[i-j], dynamic_params.hist_y[i-j-1])
                 dist_score = dist_score + new_dist
-            print("- Recovery score: %d points / Threshold: %d points" % (dist_score, rb_threshold))
+            print("- Recovery Score: %d points / Threshold: %d points" % (dist_score, rb_threshold))
 
             if dist_score < rb_threshold:
                 # Engage recovery behaviour:
-                print("- Robot movement failure! Recovery #%d initiated..." % (rec_attempts+1))
+                print("--- Robot movement failure! Recovery #%d initiated..." % (rec_attempts+1))
 
                 # Determine points to remove from map:
                 remove_points(rec_attempts)
@@ -129,8 +128,8 @@ def movebase_client():
                 robot_xy = get_robot_xy()
                 rec_x = dynamic_params.poi_x[-rec_attempts]
                 rec_y = dynamic_params.poi_y[-rec_attempts]
-                print("- Last point of interest: " + str([rec_x, rec_y]))
-                print("- Robot position: " + str([robot_xy[0], robot_xy[1]]))
+                print("--- Last point of interest: " + str([rec_x, rec_y]))
+                print("--- Robot position: " + str([robot_xy[0], robot_xy[1]]))
                 while inside_radius(rec_x, rec_y, 3, robot_xy[0], robot_xy[1]) == False:
                     robot_xy = get_robot_xy()
                     rec_d = get_distance(rec_x, robot_xy[0], rec_y, robot_xy[1])
@@ -140,7 +139,7 @@ def movebase_client():
                             rec_goal_x = (rec_goal_x + robot_xy[0]) / 2
                             rec_goal_y = (rec_goal_y + robot_xy[1]) / 2
                             rec_goal_d = get_distance(rec_goal_x, robot_xy[0], rec_goal_y, robot_xy[1])
-                    print("- Recovery goal: " + str([rec_goal_x, rec_goal_y]))
+                    print("--- Recovery goal: " + str([rec_goal_x, rec_goal_y]))
                     goal = MoveBaseGoal()
                     goal.target_pose.header.frame_id = "odom"
                     goal.target_pose.header.stamp = rospy.Time.now()
@@ -159,17 +158,23 @@ def movebase_client():
                 dynamic_params.ped_last = []
                 dynamic_params.following_ped = 0
                 dynamic_params.goal_xy = [robot_xy[0], robot_xy[1]]
-                print("- Robot has now moved to the last point of interest.")
+                print("--- Robot has now moved to the last point of interest...")
                 rec_attempts += 1
                 dynamic_params.recovery_override = 0
                 time.sleep(1)
+        else:
+            print("- Recovery Score: Unavailable")
+
+        if (i % 5) == 0:
+            find_poi()
+            update_map()
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:
-            print("- Robot navigation complete!")
+            print("-- Robot navigation complete!")
             break
         dynamic_params.debug_please = []
-        print("----------------------------------------------------------")
+        print("\n----------------------------------------------------------")
         i += 1
         time.sleep(t_delay)
 

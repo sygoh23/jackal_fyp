@@ -17,7 +17,7 @@
   <arg name="enable_jackal_robot" default="true"/>
 
   <!-- PEDSIM CONFIG -->
-  <arg name="scene_file" value="$(find development)resources/pedsim/engineering_v3_recovery.xml"/>
+  <arg name="scene_file" value="$(find development)resources/pedsim/engineering_v3_shift_start.xml"/>
   <arg name="simulation_factor" default="2"/> <!-- Simulation rate -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
   <arg name="ped_gazebo_plugin" default="true"/>
