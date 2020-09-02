@@ -9,13 +9,17 @@ import rospy
 import numpy as np
 
 #################### Coordinates ####################
-# X-offset: 105 to test from start point, 63 to test from sticking point, 48 to test from within eng lectures vicinity
-#offset_x = 48
-offset_x = 105
+#offset_x = 48 # within building vicinity (eng lectures)
+#offset_x = 63 # sticking point
+#offset_x = 105 # starting point (building 72)
+#offset_x = 117 # starting point (new horizons)
+#offset_x = -10 # starting point (boiler house)
 
-# Y-offset: 10 to test from start point, 74 to test from sticking point, 148 to test from within eng lectures vicinity
-#offset_y = 148
-offset_y = 10
+#offset_y = 148 # within building vicinity (eng lectures)
+#offset_y = 74 # sticking point
+#offset_y = 10 # starting point (building 72)
+#offset_y = -130 # starting point (new horizons)
+#offset_y = -76 # starting point (boiler house)
 
 building_centers = [
     # Index 0: Eng Faculty

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <!--Waypoints -->
+  <waypoint id="1" x="-114" y="-93" r="1"/>
+  <waypoint id="2" x="-114" y="-76" r="2"/>
+  <waypoint id="3" x="-141" y="-1.5" r="2"/>
+  <waypoint id="4" x="-146" y="-204" r="1"/>
+  <waypoint id="5" x="-100" y="-203" r="1"/>
+  <waypoint id="6" x="-105" y="-186" r="1"/>
+  <waypoint id="7" x="-81" y="-71" r="2"/>
+  <waypoint id="8" x="-83" y="-119" r="1"/>
+  <waypoint id="9" x="-40" y="-124" r="1"/>
+  <waypoint id="10" x="25" y="-126" r="1"/>
+  <waypoint id="11" x="25" y="-18" r="1"/>
+  <waypoint id="12" x="0" y="-13" r="1"/>
+  <waypoint id="13" x="0" y="0" r="1"/>
+  <waypoint id="14" x="-50" y="4" r="1"/>
+  <waypoint id="15" x="-63" y="-76" r="1"/>
+  <waypoint id="16" x="-85" y="-148" r="1"/>
+  <waypoint id="17" x="-75" y="-151" r="1"/>
+  <waypoint id="18" x="-75" y="-183" r="1"/>
+  <waypoint id="19" x="-95" y="-196" r="1"/>
+  <waypoint id="20" x="-88" y="-191" r="1"/>
+  <waypoint id="21" x="-88" y="-214" r="1"/>
+  <waypoint id="22" x="-30" y="-221" r="1"/>
+  <waypoint id="23" x="10" y="-223" r="1"/>
+  <waypoint id="24" x="20" y="-166" r="1"/>
+  <waypoint id="25" x="-110" y="-119" r="1"/>
+  <waypoint id="26" x="-88" y="-41" r="1"/>
+  <waypoint id="27" x="-82" y="54" r="1"/>
+  <waypoint id="28" x="-125" y="54" r="1"/>
+  <waypoint id="29" x="-135" y="-16" r="1"/>
+
+  <!-- ************ 1: ENG TO HAL (ANTICLOCKWISE / LHS) ************ -->
+  <!-- GROUP 1.1: SPAWN AT 1 then LOOP -->
+  <agent x="-114" y="-93" n="3" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="3"/>
+    <addwaypoint id="4"/>
+    <addwaypoint id="5"/>
+    <addwaypoint id="6"/>
+  </agent>
+  <!-- GROUP 1.2: SPAWN AT 3 then LOOP -->
+  <agent x="-140" y="-1.5" n="3" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="4"/>
+    <addwaypoint id="5"/>
+    <addwaypoint id="6"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="3"/>
+  </agent>
+  <!-- GROUP 1.3: SPAWN AT 4 then LOOP -->
+  <agent x="-146" y="-204" n="3" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="5"/>
+    <addwaypoint id="6"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="3"/>
+    <addwaypoint id="4"/>
+  </agent>
+  <!-- GROUP 1.4: SPAWN AT 6 then LOOP -->
+  <agent x="-105" y="-186" n="3" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="3"/>
+    <addwaypoint id="4"/>
+    <addwaypoint id="5"/>
+    <addwaypoint id="6"/>
+  </agent>
+
+  <!-- ************ 2: ENG TO HAL (CLOCKWISE / RHS) ************ -->
+  <!-- GROUP 2.1: SPAWN AT 8 then LOOP -->
+  <agent x="-83" y="-119" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="16"/>
+    <addwaypoint id="17"/>
+    <addwaypoint id="18"/>
+    <addwaypoint id="20"/>
+    <addwaypoint id="6"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+  </agent>
+  <!-- GROUP 2.2: SPAWN AT 18 then LOOP -->
+  <agent x="-75" y="-183" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="20"/>
+    <addwaypoint id="6"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="16"/>
+    <addwaypoint id="17"/>
+    <addwaypoint id="18"/>
+  </agent>
+  <!-- GROUP 2.3: SPAWN AT 6 then LOOP -->
+  <agent x="-105" y="-186" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="16"/>
+    <addwaypoint id="17"/>
+    <addwaypoint id="18"/>
+    <addwaypoint id="20"/>
+    <addwaypoint id="6"/>
+  </agent>
+  <!-- GROUP 2.4: SPAWN AT 1 then LOOP -->
+  <agent x="-114" y="-93" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="2"/>
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="16"/>
+    <addwaypoint id="17"/>
+    <addwaypoint id="18"/>
+    <addwaypoint id="20"/>
+    <addwaypoint id="6"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+  </agent>
+
+  <!-- ************ 3: ENG TO MOTORSPORT (ANTICLOCKWISE) ************ -->
+  <!-- GROUP 3.1: SPAWN AT 7 then LOOP -->
+  <agent x="-81" y="-71" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="8"/>
+    <addwaypoint id="9"/>
+    <addwaypoint id="10"/>
+    <addwaypoint id="11"/>
+    <addwaypoint id="12"/>
+    <addwaypoint id="13"/>
+    <addwaypoint id="14"/>
+    <addwaypoint id="15"/>
+    <addwaypoint id="7"/>
+  </agent>
+  <!-- GROUP 3.2: SPAWN AT 11 then LOOP -->
+  <agent x="25" y="-18" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="12"/>
+    <addwaypoint id="13"/>
+    <addwaypoint id="14"/>
+    <addwaypoint id="15"/>
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="9"/>
+    <addwaypoint id="10"/>
+    <addwaypoint id="11"/>
+  </agent>
+  <!-- GROUP 3.3: SPAWN AT 10 then LOOP -->
+  <agent x="25" y="-126" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="11"/>
+    <addwaypoint id="12"/>
+    <addwaypoint id="13"/>
+    <addwaypoint id="14"/>
+    <addwaypoint id="15"/>
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="9"/>
+    <addwaypoint id="10"/>
+  </agent>
+
+  <!-- ************ 4: ENG TO NEW HORIZONS (ANTICLOCKWISE) ************ -->
+  <!-- GROUP 4.1: SPAWN AT 29 then LOOP -->
+  <agent x="-135" y="-16" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="3"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="26"/>
+    <addwaypoint id="27"/>
+    <addwaypoint id="28"/>
+    <addwaypoint id="29"/>
+  </agent>
+  <!-- GROUP 4.2: SPAWN AT 26 then LOOP -->
+  <agent x="-88" y="-41" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="27"/>
+    <addwaypoint id="28"/>
+    <addwaypoint id="29"/>
+    <addwaypoint id="3"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="26"/>
+  </agent>
+  <!-- GROUP 4.3: SPAWN AT 27 then LOOP -->
+  <agent x="-82" y="54" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="28"/>
+    <addwaypoint id="29"/>
+    <addwaypoint id="3"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="26"/>
+    <addwaypoint id="27"/>
+  </agent>
+  <!-- GROUP 4.4: SPAWN AT 2 (first) then LOOP -->
+  <agent x="-114" y="-76" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="2"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="26"/>
+    <addwaypoint id="27"/>
+    <addwaypoint id="28"/>
+    <addwaypoint id="29"/>
+    <addwaypoint id="3"/>
+  </agent>
+
+  <!-- ************ 5: ENG TO LECTURE ************ -->
+  <!-- GROUP 5.1: SPAWN AT 2 then LOOP -->
+  <agent x="-114" y="-76" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="16"/>
+    <addwaypoint id="17"/>
+    <addwaypoint id="18"/>
+    <addwaypoint id="20"/>
+    <addwaypoint id="21"/>
+    <addwaypoint id="22"/>
+    <addwaypoint id="23"/>
+    <addwaypoint id="24"/>
+    <addwaypoint id="10"/>
+    <addwaypoint id="9"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+  </agent>
+  <!-- GROUP 5.2: SPAWN AT 24 then LOOP -->
+  <agent x="20" y="-166" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="10"/>
+    <addwaypoint id="9"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="16"/>
+    <addwaypoint id="17"/>
+    <addwaypoint id="18"/>
+    <addwaypoint id="20"/>
+    <addwaypoint id="21"/>
+    <addwaypoint id="22"/>
+    <addwaypoint id="23"/>
+    <addwaypoint id="24"/>
+  </agent>
+  <!-- GROUP 5.3: SPAWN AT 8 then LOOP -->
+  <agent x="-83" y="-119" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="16"/>
+    <addwaypoint id="17"/>
+    <addwaypoint id="18"/>
+    <addwaypoint id="20"/>
+    <addwaypoint id="21"/>
+    <addwaypoint id="22"/>
+    <addwaypoint id="23"/>
+    <addwaypoint id="24"/>
+    <addwaypoint id="10"/>
+    <addwaypoint id="9"/>
+    <addwaypoint id="8"/>
+  </agent>
+  <!-- GROUP 5.4: SPAWN AT 18 then LOOP -->
+  <agent x="55" y="-183" n="4" dx="0.1" dy="0.1" type="0">
+    <addwaypoint id="20"/>
+    <addwaypoint id="21"/>
+    <addwaypoint id="22"/>
+    <addwaypoint id="23"/>
+    <addwaypoint id="24"/>
+    <addwaypoint id="10"/>
+    <addwaypoint id="9"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="25"/>
+    <addwaypoint id="1"/>
+    <addwaypoint id="2"/>
+    <addwaypoint id="7"/>
+    <addwaypoint id="8"/>
+    <addwaypoint id="16"/>
+    <addwaypoint id="17"/>
+    <addwaypoint id="18"/>
+  </agent>
+</scenario>

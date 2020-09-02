@@ -5,7 +5,7 @@
   <arg name="enable_rviz" default="true"/>
 
   <!--  GAZEBO CONFIG -->
-  <arg name="world_name" default="$(find development)/resources/gazebo/engineering_shift_within_vicinity.world"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/start_within_vicinity.world"/>
   <arg name="enable_gazebo_gui" default="false"/>
 
   <!-- JACKAL CONFIG -->
@@ -17,7 +17,7 @@
   <arg name="enable_jackal_robot" default="true"/>
 
   <!-- PEDSIM CONFIG -->
-  <arg name="scene_file" value="$(find development)resources/pedsim/engineering_v3_shift_within_vicinity.xml"/>
+  <arg name="scene_file" value="$(find development)resources/pedsim/start_within_vicinity.xml"/>
   <arg name="simulation_factor" default="7"/> <!-- Simulation rate -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
   <arg name="ped_gazebo_plugin" default="true"/>

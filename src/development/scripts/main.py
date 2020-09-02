@@ -104,8 +104,8 @@ def movebase_client():
         client.send_goal(goal)
 
         # Recovery behaviour:
-        # Every five iterations, update the map:
-        rb_threshold = 7.5; rb_smooth = 10
+        rec_threshold = 10;
+        rec_smooth_filter = 10;
         save_history()
 
         building_dist = get_distance(building_center_xy[0], dynamic_params.hist_x[i], building_center_xy[1], dynamic_params.hist_y[i])
@@ -114,26 +114,26 @@ def movebase_client():
 
         # Check robot progress towards building centre:
         avg_building_vel = 0
-        if (i>=rb_smooth):
+        if (i>=rec_smooth_filter):
             avg_building_vel = 0
-            for j in range(rb_smooth):
+            for j in range(rec_smooth_filter):
                 new_vel = last_building_vel[i-j]
                 avg_building_vel = avg_building_vel + new_vel
         if (avg_building_vel < 0):
             avg_building_vel = 0
 
         # Check robot movement for recovery:
-        if (i >= rb_smooth) and (len(dynamic_params.poi_x) > 1) and (rec_enable == 1):
+        if (i >= rec_smooth_filter) and (len(dynamic_params.poi_x) > 1) and (rec_enable == 1):
             robot_disp = 0
-            for j in range(rb_smooth):
+            for j in range(rec_smooth_filter):
                 new_dist = get_distance(dynamic_params.hist_x[i-j], dynamic_params.hist_x[i-j-1],dynamic_params.hist_y[i-j], dynamic_params.hist_y[i-j-1])
                 robot_disp = robot_disp + new_dist
             rec_score = robot_disp + avg_building_vel
-            print("- Recovery Behaviour: %.1f points / %.1f points" % (rec_score, rb_threshold))
+            print("- Recovery Behaviour: %.1f points / %.1f points" % (rec_score, rec_threshold))
             print("--- Building Progress Score: %.1f points" % (avg_building_vel))
             print("--- Robot Displacement Score: %.1f points" % (robot_disp))
 
-            if rec_score < rb_threshold:
+            if rec_score < rec_threshold:
                 # Engage recovery behaviour:
                 print("--- Robot movement failure! Recovery #%d initiated..." % (rec_attempts))
                 # Determine points to remove from map:
@@ -166,7 +166,6 @@ def movebase_client():
                     client.send_goal(goal)
                     robot_xy = get_robot_xy()
                     time.sleep(1)
-
                 # Send removed points to custom laserscan plugin:
                 pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
                 pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
@@ -182,6 +181,7 @@ def movebase_client():
         else:
             print("- Recovery Score: Unavailable")
 
+        # Every five iterations, update the map:
         if (i % 5) == 0:
             find_poi()
             update_map()
