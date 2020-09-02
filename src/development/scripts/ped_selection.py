@@ -160,7 +160,9 @@ def select_ped_outside_vicinity(phase, i):
 
         # Update navigation goal if the selection logic found a pedestrian to follow
         if ped_found:
-            print("- Phase 3: Following ped %d @ %.1fm from pedestrian and %.1fm from building center" % (best_ped_smart, dist_robot_ped, dist_robot_building_center))
+            print("- Phase 3: Following ped %d:" % (best_ped_smart))
+            print("--- Ped %d is %.2fm from the robot" % (best_ped_smart, dist_robot_ped))
+            print("--- Ped %d is %.1fm from the building center" % (best_ped_smart, dist_robot_building_center))
             dynamic_params.goal_xy = [ped.agent_states[best_ped_smart].pose.position.x, ped.agent_states[best_ped_smart].pose.position.y]
             #dynamic_params.ped_last = dynamic_params.goal_xy
             #dynamic_params.debug_please.append("I")

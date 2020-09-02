@@ -37,6 +37,7 @@ def movebase_client():
     # Recovery behaviour:
     rec_attempts = 1
     rec_enable = 1
+    last_building_vel = []
 
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
@@ -104,21 +105,37 @@ def movebase_client():
 
         # Recovery behaviour:
         # Every five iterations, update the map:
-        rb_threshold = 5; rb_smooth = 10
+        rb_threshold = 7.5; rb_smooth = 10
         save_history()
+
+        building_dist = get_distance(building_center_xy[0], dynamic_params.hist_x[i], building_center_xy[1], dynamic_params.hist_y[i])
+        building_vel = get_distance(building_center_xy[0], dynamic_params.hist_x[i-1], building_center_xy[1], dynamic_params.hist_y[i-1]) - building_dist
+        last_building_vel.append(building_vel)
+
+        # Check robot progress towards building centre:
+        avg_building_vel = 0
+        if (i>=rb_smooth):
+            avg_building_vel = 0
+            for j in range(rb_smooth):
+                new_vel = last_building_vel[i-j]
+                avg_building_vel = avg_building_vel + new_vel
+        if (avg_building_vel < 0):
+            avg_building_vel = 0
 
         # Check robot movement for recovery:
         if (i >= rb_smooth) and (len(dynamic_params.poi_x) > 1) and (rec_enable == 1):
-            dist_score = 0
+            robot_disp = 0
             for j in range(rb_smooth):
                 new_dist = get_distance(dynamic_params.hist_x[i-j], dynamic_params.hist_x[i-j-1],dynamic_params.hist_y[i-j], dynamic_params.hist_y[i-j-1])
-                dist_score = dist_score + new_dist
-            print("- Recovery Score: %d points / Threshold: %d points" % (dist_score, rb_threshold))
+                robot_disp = robot_disp + new_dist
+            rec_score = robot_disp + avg_building_vel
+            print("- Recovery Behaviour: %.1f points / %.1f points" % (rec_score, rb_threshold))
+            print("--- Building Progress Score: %.1f points" % (avg_building_vel))
+            print("--- Robot Displacement Score: %.1f points" % (robot_disp))
 
-            if dist_score < rb_threshold:
+            if rec_score < rb_threshold:
                 # Engage recovery behaviour:
-                print("--- Robot movement failure! Recovery #%d initiated..." % (rec_attempts+1))
-
+                print("--- Robot movement failure! Recovery #%d initiated..." % (rec_attempts))
                 # Determine points to remove from map:
                 remove_points(rec_attempts)
                 update_map()

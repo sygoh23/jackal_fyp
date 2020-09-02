@@ -26,7 +26,7 @@ while not rospy.is_shutdown():
     scan.angle_increment = 6.28 / num_readings
     scan.time_increment = (1.0 / laser_frequency) / (num_readings)
     scan.range_min = 1.0
-    scan.range_max = 100.0
+    scan.range_max = 50.0
     msg = rospy.wait_for_message("/odometry/filtered", Odometry)
     (R, P, Y) = tf.transformations.euler_from_quaternion([msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
     if Y < 0:
@@ -86,7 +86,7 @@ while not rospy.is_shutdown():
             scan.ranges.append(min(extract_dist))
             scan.intensities.append(1)
         else:
-            scan.ranges.append(50)
+            scan.ranges.append(100)
             scan.intensities.append(0)
     scan_pub.publish(scan)
     count += 1
