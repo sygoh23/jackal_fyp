@@ -2,9 +2,15 @@
 Temporary file for testing ideas. Not used by the main code and will be deleted at some point.
 """
 
-from obj_utils import *
-from PIL import Image, ImageDraw
-import torch
+#from obj_utils import *
+#from PIL import Image, ImageDraw
+#import torch
+import pickle
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, Birch, DBSCAN, KMeans
+import numpy as np
+import cv2
 
 """
 old = Image.open("/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/0001.jpg")
@@ -20,6 +26,7 @@ draw_new.rectangle(((new_box[0][0], new_box[0][1]), (new_box[0][2], new_box[0][3
 new.show()
 """
 
+"""
 # Label map
 voc_labels = ('entrance')
 label_map = {k: v + 1 for v, k in enumerate(voc_labels)}    # {"aeroplane": 1, "bicycle": 2, ...}
@@ -42,3 +49,98 @@ img_names_train = sorted(os.listdir("/home/chris/Documents/jackal_fyp/src/develo
 print(img_names_train)
 img_names_train.remove("README.md")  # remove readme file
 print(img_names_train)
+"""
+
+
+with open('/home/chris/Documents/jackal_fyp/plugins/pointcloud.pickle', 'rb') as f:
+    pointcloud = pickle.load(f)
+
+dataset = np.array([])
+x = []
+y = []
+z = []
+first = True
+for point in pointcloud:
+    if point[2] > 0.5:
+        if first:
+            dataset = np.array([point[0], point[1]])
+            first = False
+        else:
+            new_point = np.array([point[0], point[1]])
+            dataset = np.vstack((dataset, new_point))
+
+        x.append(point[0])
+        y.append(point[1])
+        #z.append(point[2])
+
+
+#fig = plt.figure()
+#ax = Axes3D(fig)
+#ax.scatter(x, y, z)
+
+"""
+fig = plt.figure(facecolor='k')
+ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
+ax.scatter(x, y, color='w', marker=',')
+plt.axis('off')
+fig.savefig('/home/chris/Documents/test4.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
+plt.show()
+"""
+
+#model = AffinityPropagation(damping=0.9)
+#model.fit(dataset)
+#yhat = model.predict(dataset)
+
+#model = AgglomerativeClustering(n_clusters=3)
+#yhat = model.fit_predict(dataset)
+
+#model = Birch(threshold=0.01, n_clusters=3)
+#model.fit(dataset)
+#yhat = model.predict(dataset)
+
+#model = DBSCAN(eps=0.60, min_samples=9)
+#yhat = model.fit_predict(dataset)
+
+#model = KMeans(n_clusters=3)
+#model.fit(dataset)
+#yhat = model.predict(dataset)
+
+"""
+clusters = np.unique(yhat)
+for cluster in clusters:
+	# get row indexes for samples with this cluster
+	row_ix = np.where(yhat == cluster)
+	plt.scatter(dataset[row_ix, 0], dataset[row_ix, 1])
+
+plt.show()
+"""
+
+
+# Read image 
+img = cv2.imread('/home/chris/Documents/test4.jpg', cv2.IMREAD_COLOR)
+#cv2.imshow("Initial", img)
+#cv2.waitKey()
+
+# Convert the image to gray-scale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#cv2.imshow("Gray", gray)
+#cv2.waitKey()
+
+# Find the edges in the image using canny detector
+edges = cv2.Canny(gray, 50, 200)
+#cv2.imshow("Edges", gray)
+#cv2.waitKey()
+
+# Detect points that form a line
+lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=60, minLineLength=160, maxLineGap=250)
+
+# Draw lines on the image
+for line in lines:
+    print(line)
+    x1, y1, x2, y2 = line[0]
+    cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
+
+# Show result
+#cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
+#cv2.imshow("Result Image", img)
+#cv2.waitKey()

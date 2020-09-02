@@ -10,6 +10,8 @@ from pedsim_msgs.msg import AgentStates
 from static_params import *
 import dynamic_params
 from utils import *
+import pickle
+import sys
 
 def ped_in_remove_zone(ped_coord):
     outcome = False
@@ -25,14 +27,25 @@ Selects a pedestrian to follow when the robot is within the building vicinity
 --> Assumes there is only one doorway in the defined building vicinity
 --> Currently doesn't use pedestrians at all, but kept the name because following pedestrians may be a better option. Depends how well the current idea performs
 """
+chris_path = "/home/chris/Documents/pointcloud.pickle"
 def select_ped_within_vicinity():
-
     # While the goal point is outside the building vicinity
     while not contains_pt(dynamic_params.goal_xy, building_polygon):
         print("--> Current goal is outside vicinity, generating new goal...")
 
         # Generate new goal point that is close to a wall, and in the direction of the target
         pointcloud = get_pointcloud()
+    
+    # Calculate next goal point
+    pointcloud = get_pointcloud()
+
+    with open(chris_path, 'wb') as f:
+        pickle.dump(pointcloud, f)
+    sys.exit()    
+
+    # If this goal point is outside the building vicinity, generate another point
+    while not contains_pt(dynamic_params.goal_xy, building_polygon):
+        print("--> Current goal is outside vicinity, generating new goal...")
 
     print("--> Looking for doorway")
 
