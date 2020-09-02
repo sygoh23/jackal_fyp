@@ -18,8 +18,8 @@ plugins:
 - {name: inflater_layer, type: "costmap_2d::InflationLayer"}
 
 obstacles_layer:
-  observation_sources: scan
-  #scan: {sensor_frame: front_laser, data_type: LaserScan, topic: front/scan, marking: true, clearing: true, min_obstacle_height: -2.0, max_obstacle_height: 2.0, obstacle_range: 2.5, raytrace_range: 3.0}
+  observation_sources: scan custom_scan
+  custom_scan: {sensor_frame: base_link, data_type: LaserScan, topic: custom/scan, marking: true, clearing: true, min_obstacle_height: -2.0, max_obstacle_height: 2.0, obstacle_range: 10, raytrace_range: 10.0}
   scan: {sensor_frame: velodyne2, data_type: PointCloud2, topic: /velodyne_points2, expected_update_rate: 20, marking: true, clearing: true, min_obstacle_height: 0.2, max_obstacle_height: 1.0, obstacle_range: 4.0, raytrace_range: 6.0}
 
 inflater_layer:

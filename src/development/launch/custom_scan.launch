@@ -1,0 +1,5 @@
+<launch>
+  <!--<node pkg="tf" type="static_transform_publisher" name="custom_laser_tf" args="0.0 0.0 0.0 0.0 0.0 0.0 /odom /custom_laser_frame 1000"/>-->
+  <node pkg="tf" type="static_transform_publisher" name="custom_laser_tf" args="0.0 0.0 0.0 0.0 0.0 0.0 /base_link /custom_laser_frame 1000"/>
+  <node pkg="development" type="custom_laser.py" name="custom_laser" output="screen"/>
+</launch>

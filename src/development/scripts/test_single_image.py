@@ -39,6 +39,7 @@ import sys
 ##########################
 # SAMUEL DIRECTORY:
 img_pth = "/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/Images/Test/0105.jpg"
+img_pth = "/home/ubuntu/monash19.jpg"
 model_pth = "/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/Models/iter8000_ssd300_epoch158.pth.tar"
 font_pth = "/home/ubuntu/ws/jackal_fyp/src/development/resources/obj_detection/OpenSans-Regular.ttf"
 
