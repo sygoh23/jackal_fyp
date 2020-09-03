@@ -35,8 +35,11 @@ def movebase_client():
     i = 0
 
     # Recovery behaviour:
-    rec_attempts = 1
-    rec_enable = 1
+    rec_attempts = 1 # Number of recovery attempts
+    rec_enable = 1 # Enable recovery
+    rec_last_i = 0 # Last time recovery was initiated
+    rec_smooth_filter = 10; # Amount of mean smoothing for recovery scores
+    rec_threshold = 10; # Score threshold to activate recovery behaviour
     last_building_vel = []
 
     # Set exclusion zone around starting point
@@ -104,10 +107,7 @@ def movebase_client():
         client.send_goal(goal)
 
         # Recovery behaviour:
-        rec_threshold = 10;
-        rec_smooth_filter = 10;
         save_history()
-
         building_dist = get_distance(building_center_xy[0], dynamic_params.hist_x[i], building_center_xy[1], dynamic_params.hist_y[i])
         building_vel = get_distance(building_center_xy[0], dynamic_params.hist_x[i-1], building_center_xy[1], dynamic_params.hist_y[i-1]) - building_dist
         last_building_vel.append(building_vel)
@@ -133,7 +133,7 @@ def movebase_client():
             print("--- Building Progress Score: %.1f points" % (avg_building_vel))
             print("--- Robot Displacement Score: %.1f points" % (robot_disp))
 
-            if rec_score < rec_threshold:
+            if (rec_score < rec_threshold) and (i - rec_last_i > rec_smooth_filter):
                 # Engage recovery behaviour:
                 print("--- Robot movement failure! Recovery #%d initiated..." % (rec_attempts))
                 # Determine points to remove from map:
@@ -141,6 +141,7 @@ def movebase_client():
                 update_map()
 
                 # Send robot to last point of interest:
+                rec_last_i = i
                 dynamic_params.recovery_override = 1
                 robot_xy = get_robot_xy()
                 rec_x = dynamic_params.poi_x[-rec_attempts]
