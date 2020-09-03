@@ -2,7 +2,7 @@
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!-- RVIZ CONFIG -->
   <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_cartographer.rviz"/>
-  <arg name="enable_rviz" default="false"/>
+  <arg name="enable_rviz" default="true"/>
 
   <!--  GAZEBO CONFIG -->
   <arg name="world_name" default="$(find development)/resources/gazebo/start_at_boiler_house.world"/>
@@ -18,7 +18,7 @@
 
   <!-- PEDSIM CONFIG -->
   <arg name="scene_file" value="$(find development)resources/pedsim/start_at_boiler_house.xml"/>
-  <arg name="simulation_factor" default="2"/> <!-- Simulation rate -->
+  <arg name="simulation_factor" default="1.5"/> <!-- Simulation rate -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
   <arg name="ped_gazebo_plugin" default="true"/>
   <arg name="enable_pedsim" default="true"/>
