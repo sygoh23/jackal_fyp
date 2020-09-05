@@ -304,6 +304,14 @@ print(lines_list)
 
 
 ##########################################################################
+# Duplicates
+##########################################################################
+
+#for line in lines_tuples:
+
+
+
+##########################################################################
 # Analysis
 ##########################################################################
 
@@ -319,7 +327,7 @@ best_line = [(8725, 8725), (8725, 8725)]
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
 
-for line in reversed(lines_tuples):
+for line in lines_tuples:
     # [(x1, y1), (x2, y2)]
 
     # Generate x/y points that lie on the line
