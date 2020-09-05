@@ -313,30 +313,45 @@ import sys
 def get_distance(x1, x2, y1, y2):
     return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
-duplicate_threshold = 1 # if start and end points are within this distance of each other, considered duplicate
+duplicate_threshold = 4 # if start and end points are within this distance of each other, considered duplicate
+
+print('Before:')
+print(lines_tuples); print()
 
 # Detect duplicates based on start/end points
-for line1, line2 in itertools.combinations(lines_tuples, 2):
+duplicates = []
+for line1, line2 in itertools.combinations(enumerate(lines_tuples), 2):
+    # Don't compare an already identified duplicate
+    if (line1[0] in duplicates) or (line2[0] in duplicates):
+        continue
+
     same_start = False
     same_end = False
-
+    
     # Compare start points
-    start1 = line1[0]
-    start2 = line2[0]
+    start1 = line1[1][0]
+    start2 = line2[1][0]
 
-    if get_distance(start1[0], start2[0], start1[1], start2[1]) < duplicate_threshold:
+    if get_distance(start1[0], start2[0], start1[1], start2[1]) <= duplicate_threshold:
+        print('same start')
         same_start = True
 
     # Compare end points
-    end1 = line1[1]
-    end2 = line2[1]
+    end1 = line1[1][1]
+    end2 = line2[1][1]
 
-    if get_distance(end1[0], end2[0], end1[1], end2[1]) < duplicate_threshold:
-        same_start = True
+    if get_distance(end1[0], end2[0], end1[1], end2[1]) <= duplicate_threshold:
+        print('same end')
+        same_end = True
 
-    #
+    # Check if lines start and end at same points
     if same_start and same_end:
-        # remove
+        duplicates.append(line2[0])
+        del lines_tuples[line2[0]]
+        print('Deleted')
+    
+print('After:')
+print(lines_tuples)
 
 sys.exit()
 
