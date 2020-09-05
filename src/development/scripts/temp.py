@@ -13,6 +13,8 @@ import numpy as np
 import cv2
 from PIL import Image
 import math
+import itertools
+import sys
 #from utils import get_distance
 
 """
@@ -307,9 +309,6 @@ print(lines_list)
 # Duplicates
 ##########################################################################
 
-import itertools
-import sys
-
 def get_distance(x1, x2, y1, y2):
     return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
@@ -353,7 +352,7 @@ for line1, line2 in itertools.combinations(enumerate(lines_tuples), 2):
 print('After:')
 print(lines_tuples)
 
-sys.exit()
+#sys.exit()
 
 
 ##########################################################################
