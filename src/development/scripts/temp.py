@@ -307,16 +307,43 @@ print(lines_list)
 # Duplicates
 ##########################################################################
 
-#for line in lines_tuples:
+import itertools
+import sys
 
+def get_distance(x1, x2, y1, y2):
+    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+
+duplicate_threshold = 1 # if start and end points are within this distance of each other, considered duplicate
+
+# Detect duplicates based on start/end points
+for line1, line2 in itertools.combinations(lines_tuples, 2):
+    same_start = False
+    same_end = False
+
+    # Compare start points
+    start1 = line1[0]
+    start2 = line2[0]
+
+    if get_distance(start1[0], start2[0], start1[1], start2[1]) < duplicate_threshold:
+        same_start = True
+
+    # Compare end points
+    end1 = line1[1]
+    end2 = line2[1]
+
+    if get_distance(end1[0], end2[0], end1[1], end2[1]) < duplicate_threshold:
+        same_start = True
+
+    #
+    if same_start and same_end:
+        # remove
+
+sys.exit()
 
 
 ##########################################################################
 # Analysis
 ##########################################################################
-
-def get_distance(x1, x2, y1, y2):
-    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
 step = 2
 start_offset = 30 # How far before start point to start
