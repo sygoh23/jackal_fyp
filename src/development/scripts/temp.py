@@ -12,6 +12,8 @@ from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, Birch,
 import numpy as np
 import cv2
 from PIL import Image
+import math
+#from utils import get_distance
 
 """
 old = Image.open("/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/0001.jpg")
@@ -58,6 +60,11 @@ with open('/home/chris/Documents/jackal_fyp/plugins/pointcloud2.pickle', 'rb') a
 
 with open('/home/chris/Documents/jackal_fyp/plugins/tf_point.pickle', 'rb') as f:
     transformed_point_xy = pickle.load(f, encoding='latin1')
+
+
+##########################################################################
+# Point cloud filtering
+##########################################################################
 
 dataset = np.array([])
 x = []
@@ -124,6 +131,11 @@ for cluster in clusters:
 plt.show()
 """
 
+
+##########################################################################
+# Create image
+##########################################################################
+
 # Convert to numpy array
 x_min = min(x)  # -67.5
 y_min = min(y)  # -100.6
@@ -170,6 +182,10 @@ for pt_x, pt_y in zip(x, y):
 
     grid[int(pt_x), int(pt_y), :] = [255, 255, 255]
     
+
+##########################################################################
+# Hough transform
+##########################################################################
 
 # No rotation
 img = grid
@@ -219,7 +235,9 @@ else:
     print("No lines found")
 
 
-import math
+##########################################################################
+# Reverse transform
+##########################################################################
 
 def rotate(origin, point, angle):
     """
@@ -234,8 +252,8 @@ def rotate(origin, point, angle):
     qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
     return qx, qy
 
-print("\nImage space:")
-print(lines_list)
+#print("\nImage space:")
+#print(lines_list)
 
 lines_tuples = []   # [[(x1, y1), (x2, y2)], ...]
 for line in lines_list:
@@ -267,8 +285,8 @@ for line in lines_list:
 
     lines_tuples.append([start_transformed, end_transformed])
 
-print("\nTransformed back")
-print(lines_tuples)
+#print("\nTransformed back")
+#print(lines_tuples)
 
 """
 print()
@@ -284,6 +302,92 @@ print("\nRobot frame:")
 print(lines_list)
 """
 
+
+##########################################################################
+# Analysis
+##########################################################################
+
+def get_distance(x1, x2, y1, y2):
+    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+
+step = 2
+start_offset = 30 # How far before start point to start
+end_offset = 30  # How far after end point to finish
+endpoint_threshold = 1.1  # How close to the endpoint for the iteration to stop. Should be > step/2
+min_dist = 999999999    # Init to large number
+best_line = [(8725, 8725), (8725, 8725)]
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
+
+for line in reversed(lines_tuples):
+    # [(x1, y1), (x2, y2)]
+
+    # Generate x/y points that lie on the line
+    start = line[0] # (x1, y1)
+    end = line[1]   # (x2, y2)
+    line_dist = get_distance(start[0], end[0], start[1], end[1])
+    #print('Line length: {}'.format(line_dist))
+
+    # Unit vector in direction of target
+    unit_x = (end[0] - start[0])/line_dist
+    unit_y = (end[1] - start[1])/line_dist
+    #print('Unit x: {}'.format(unit_x))
+    #print('Unit y: {}'.format(unit_y))
+
+    current_pt = (start[0] - start_offset*unit_x, start[1] - start_offset*unit_y)
+    end_pt = (end[0] + end_offset*unit_x, end[1] + end_offset*unit_y)
+    #x_points = [start[0]]
+    #y_points = [start[1]]
+
+    
+    while get_distance(current_pt[0], end_pt[0], current_pt[1], end_pt[1]) > endpoint_threshold:
+        # Get distance to target
+        target_dist = get_distance(current_pt[0], transformed_point_xy[0], current_pt[1], transformed_point_xy[1])
+        #print('Current point: {}'.format(current_pt))
+        #print('Dist to target point: {}'.format(target_dist))
+        #print('Current min distance: {}'.format(min_dist))
+
+        if target_dist < min_dist:
+            min_dist = target_dist
+            best_line = line
+            #print('New best line')
+
+        ax.clear()
+
+        # Velodyne points
+        ax.scatter(x, y, color='b', s=10)
+
+        # Target point
+        ax.scatter(transformed_point_xy[0], transformed_point_xy[1], color='r', s=100)
+
+        # Detected lines
+        for endpoints in lines_tuples:
+            x_pts = [endpoints[0][0], endpoints[1][0]]
+            y_pts = [endpoints[0][1], endpoints[1][1]]
+            ax.plot(x_pts, y_pts, linewidth=2)
+        
+        # Best line
+        ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
+
+        # Current point
+        ax.scatter(current_pt[0], current_pt[1], color='g', s=120)
+
+        plt.pause(0.1)
+
+        
+        # Generate next point
+        current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
+        #x_points.append(current_pt[0])
+        #y_points.append(current_pt[1])
+    
+
+#plt.show()
+
+
+
+
+
+"""
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
 ax.scatter(x, y)
@@ -296,3 +400,4 @@ for line in lines_tuples:
     ax.plot(x_pts, y_pts)
 
 plt.show()
+"""
