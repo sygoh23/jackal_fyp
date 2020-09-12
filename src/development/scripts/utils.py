@@ -3,7 +3,7 @@ Contains helper functions for other parts of the program.
 Import this file as 'from utils import *', then all functions will be added to the file namespace.
 """
 
-from math import sqrt
+from math import sqrt, sin, cos
 import matplotlib.path as mpltPath
 import rospy
 from pedsim_msgs.msg import AgentStates
@@ -85,6 +85,6 @@ def rotate(origin, point, angle):
     ox, oy = origin
     px, py = point
 
-    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
-    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    qx = ox + cos(angle) * (px - ox) - sin(angle) * (py - oy)
+    qy = oy + sin(angle) * (px - ox) + cos(angle) * (py - oy)
     return qx, qy
