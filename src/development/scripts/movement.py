@@ -52,8 +52,9 @@ def move_within_vicinity(target_xy):
     ax.scatter(0, 0, color='g', s=100)
     ax.scatter(target_xy[0], target_xy[1], color='r', s=100)
 
+
     ##########################################################################
-    # Create image
+    # Robot frame -> image space
     ##########################################################################
 
     # Convert to numpy array
@@ -103,6 +104,9 @@ def move_within_vicinity(target_xy):
         print("No lines found")
 
 
+    ##########################################################################
+    # Image space -> robot frame
+    ##########################################################################
 
 
     """
