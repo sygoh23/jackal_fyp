@@ -167,7 +167,7 @@ def move_within_vicinity(target_xy):
     ax.scatter(x, y, color='b', s=10)                           # Pointcloud
     ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
 
-    # Detected lines
+    # Detected lines (contains duplicates at this point)
     for endpoints in lines_tuples:
         x_pts = [endpoints[0][0], endpoints[1][0]]
         y_pts = [endpoints[0][1], endpoints[1][1]]
@@ -219,30 +219,87 @@ def move_within_vicinity(target_xy):
         
     #print('\nAfter duplicate removal:\n{}\n'.format(lines_tuples))
 
+    # Display transformed lines with removed duplicates in robot frame
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
+    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+
+    # Detected lines without duplicates
+    for endpoints in lines_tuples:
+        x_pts = [endpoints[0][0], endpoints[1][0]]
+        y_pts = [endpoints[0][1], endpoints[1][1]]
+        ax.plot(x_pts, y_pts, linewidth=2)
+
 
     ##########################################################################
     # Wall selection
     ##########################################################################
 
-    step = 2
-    start_offset = 30 # How far before start point to start
-    end_offset = 30  # How far after end point to finish
-    endpoint_threshold = 1.1  # How close to the endpoint for the iteration to stop. Should be > step/2
-    min_dist = 999999999    # Init to large number
-    best_line = [(8725, 8725), (8725, 8725)]
+    step = 2                                    # The interval along the line for which distance to target should be calculated
+    start_offset = 30                           # How far before start point to start
+    end_offset = 30                             # How far after end point to finish
+    endpoint_threshold = 1.1                    # How close to the endpoint for the iteration to stop. Should be > step/2
+    min_dist = 999999999                        # Init to large number
+    best_line = [(8725, 8725), (8725, 8725)]    # Init to anything, values will be replaced in first iteration
+
+    # Outer loop iterates over each line [(x1, y1), (x2, y2)]
+    for line in lines_tuples:
+
+        # Generate x/y points that lie on the line
+        start = line[0] # (x1, y1)
+        end = line[1]   # (x2, y2)
+        line_dist = get_distance(start[0], end[0], start[1], end[1])
+        #print('\nLine length: {}\n'.format(line_dist))
+
+        # Generate unit vector in direction of target
+        unit_x = (end[0] - start[0])/line_dist
+        unit_y = (end[1] - start[1])/line_dist
+        #print('\nUnit x: {}\n'.format(unit_x))
+        #print('\nUnit y: {}\n'.format(unit_y))
+
+        # Generate start and end points for the iteration
+        current_pt = (start[0] - start_offset*unit_x, start[1] - start_offset*unit_y)
+        end_pt = (end[0] + end_offset*unit_x, end[1] + end_offset*unit_y)
+
+        # Inner loop iterates over each generated point in the current line
+        while get_distance(current_pt[0], end_pt[0], current_pt[1], end_pt[1]) > endpoint_threshold:
+            
+            # Get distance from current point to target
+            target_dist = get_distance(current_pt[0], transformed_point_xy[0], current_pt[1], transformed_point_xy[1])
+            #print('\nCurrent point: {}\n'.format(current_pt))
+            #print('\nDist to target point: {}\n'.format(target_dist))
+            #print('\nCurrent min distance: {}\n'.format(min_dist))
+
+            # Check if this point is the new closest point to the target
+            if target_dist < min_dist:
+                min_dist = target_dist
+                best_line = line
+                #print('New best line')
+            
+            # Generate next point
+            current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
+
+    # Display selected line in robot frame
     fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
+    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
+    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+
+    # Detected lines without duplicates
+    for endpoints in lines_tuples:
+        x_pts = [endpoints[0][0], endpoints[1][0]]
+        y_pts = [endpoints[0][1], endpoints[1][1]]
+        ax.plot(x_pts, y_pts, linewidth=2)
+
+    # Best line
+    ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
 
 
 
 
 
-
-
-
-
-
-    # Select line, and a target coordinate
+    # Select a target coordinate
 
     # Transform point back to robot frame cartesian x/y
     # return wall_xy
