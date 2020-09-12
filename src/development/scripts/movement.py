@@ -48,10 +48,9 @@ def move_within_vicinity(target_xy):
     
     # Display points in robot frame
     fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
-    ax.scatter(x, y)
-    ax.scatter(0, 0, color='g', s=100)
-    ax.scatter(target_xy[0], target_xy[1], color='r', s=100)
+    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
+    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
 
 
     ##########################################################################
@@ -104,31 +103,34 @@ def move_within_vicinity(target_xy):
     # Save lines
     if lines is not None:
 
-        print('\nDetected lines:\n{}\n'.format(lines))
-
         # [np.array[x1, y1, x2, y2], ...]
         lines_list = []     
 
         for line in lines:
             x1, y1, x2, y2 = line[0]
             lines_list.append(line[0])
-            #cv2.line(img, (x1, y1), (x2, y2), color=(0, 0, 255), thickness=2)
+            cv2.line(img, (x1, y1), (x2, y2), color=(0, 0, 255), thickness=2)
             
         # Show/save result
         #cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
-        #cv2.imshow("Result Image", img)
-        #cv2.waitKey()
+        cv2.imshow("Detected Lines", img)
+        cv2.waitKey()
 
     else:
         print("No lines found")
         sys.exit()
+
+    #print('\nDetected lines:\n{}\n'.format(lines_list))
 
 
     ##########################################################################
     # Image space -> robot frame
     ##########################################################################
 
+    #print("\nLines in image space:\n{}\n".format(lines_list))
+
     lines_tuples = []   # [[(x1, y1), (x2, y2)], ...]
+
     for line in lines_list:
         # Init
         start_transformed = (line[0], line[1])
@@ -157,8 +159,79 @@ def move_within_vicinity(target_xy):
         # Collect transformed points
         lines_tuples.append([start_transformed, end_transformed])
 
+    #print("\nLines in robot frame:\n{}\n".format(lines_tuples))
+
+    # Display transformed lines in robot frame
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
+    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+
+    # Detected lines
+    for endpoints in lines_tuples:
+        x_pts = [endpoints[0][0], endpoints[1][0]]
+        y_pts = [endpoints[0][1], endpoints[1][1]]
+        ax.plot(x_pts, y_pts, linewidth=2)
 
 
+    ##########################################################################
+    # Duplicate removal
+    ##########################################################################
+
+    # If start and end points are within this distance of each other, considered duplicate
+    duplicate_threshold = 4
+
+    #print('\nBefore duplicate removal:\n{}\n'.format(lines_tuples))
+
+    # Detect duplicates
+    duplicates = []
+
+    for line1, line2 in itertools.combinations(enumerate(lines_tuples), 2):
+        # Don't compare an already identified duplicate
+        if (line1[0] in duplicates) or (line2[0] in duplicates):
+            continue
+        
+        # Start by assuming the lines are not duplicates
+        same_start = False
+        same_end = False
+        
+        # Compare start points
+        start1 = line1[1][0]
+        start2 = line2[1][0]
+
+        if get_distance(start1[0], start2[0], start1[1], start2[1]) <= duplicate_threshold:
+            #print('Same start')
+            same_start = True
+
+        # Compare end points
+        end1 = line1[1][1]
+        end2 = line2[1][1]
+
+        if get_distance(end1[0], end2[0], end1[1], end2[1]) <= duplicate_threshold:
+            #print('Same end')
+            same_end = True
+
+        # Check if lines start and end at same points
+        if same_start and same_end:
+            duplicates.append(line2[0])
+            del lines_tuples[line2[0]]
+            #print('Deleted')
+        
+    #print('\nAfter duplicate removal:\n{}\n'.format(lines_tuples))
+
+
+    ##########################################################################
+    # Wall selection
+    ##########################################################################
+
+    step = 2
+    start_offset = 30 # How far before start point to start
+    end_offset = 30  # How far after end point to finish
+    endpoint_threshold = 1.1  # How close to the endpoint for the iteration to stop. Should be > step/2
+    min_dist = 999999999    # Init to large number
+    best_line = [(8725, 8725), (8725, 8725)]
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
 
 
 
