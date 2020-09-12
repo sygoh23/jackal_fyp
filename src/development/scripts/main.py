@@ -54,11 +54,11 @@ def movebase_client():
             print("Within building vicinity")
 
             try:
-                ##### Transform building entrance FROM odom TO base_link #####
+                ##### Transform building entrance FROM odom (world frame) TO base_link (robot frame) #####
                 # In terminal: rosrun tf tf_echo base_link odom
                 #(trans, rot) = listener.lookupTransform('base_link', 'odom', rospy.Time(0))
 
-                # Building entrance in odom frame
+                # Building entrance in odom (world) frame
                 original_pt = PointStamped()
                 original_pt.header.frame_id = "odom"
                 original_pt.header.stamp = rospy.Time(0)
@@ -66,14 +66,16 @@ def movebase_client():
                 original_pt.point.y = building_entrance_xy[1]
                 original_pt.point.z = 0.0
 
-                # Building_entrance in base_link frame
+                # Building_entrance in base_link (robot) frame
                 transformed_pt = listener.transformPoint('base_link', original_pt)
                 transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
 
-                #goal_xy_robot_frame = move_within_vicinity(transformed_pt_xy)
-                ##### Transform FROM base_link BACK TO odom #####
-                #original_pt = listener.transformPoint('odom', goal_xy_robot_frame)
-                #original_pt_xy = [original_pt.point.x, original_pt.point.y]
+                # Get wall following goal point in base_link (robot) frame
+                goal_xy_robot_frame = move_within_vicinity(transformed_pt_xy)
+
+                ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
+                original_pt = listener.transformPoint('odom', goal_xy_robot_frame)
+                dynamic_params.goal_xy = [original_pt.point.x, original_pt.point.y]
 
                 """
                 with open('/home/chris/Documents/tf_point.pickle', 'wb') as f:
@@ -88,7 +90,7 @@ def movebase_client():
                 
 
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                print('failed')
+                print('Transform failed')
 
             # Read object detection results
             if process_img:
@@ -132,8 +134,8 @@ def movebase_client():
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = "odom"
         goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = -10
-        goal.target_pose.pose.position.y = 7
+        goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
+        goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 

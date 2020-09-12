@@ -1,6 +1,5 @@
 """
-Contains movement logic.
-Currently all functions are for when the robot is in stage 1 and there are no detected phase 1 pedestrians. Nothing in here for stage 2 (yet).
+Contains movement logic for stages 1 and 2
 """
 
 from ped_selection import *
@@ -91,10 +90,10 @@ def move_within_vicinity(target_xy):
     # Hough transform
     ##########################################################################
 
-    # Convert image to gray-scale
+    # Convert image to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Find edges in the image using canny detector
+    # Find edges using canny detector
     edges = cv2.Canny(gray, 50, 200)
 
     # Run the Hough transform
@@ -180,12 +179,11 @@ def move_within_vicinity(target_xy):
 
     # If start and end points are within this distance of each other, considered duplicate
     duplicate_threshold = 4
+    duplicates = []
 
     #print('\nBefore duplicate removal:\n{}\n'.format(lines_tuples))
 
-    # Detect duplicates
-    duplicates = []
-
+    # Iterate over all line combinations
     for line1, line2 in itertools.combinations(enumerate(lines_tuples), 2):
         # Don't compare an already identified duplicate
         if (line1[0] in duplicates) or (line2[0] in duplicates):
@@ -296,28 +294,25 @@ def move_within_vicinity(target_xy):
     ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
 
 
+    ##########################################################################
+    # Wall following
+    ##########################################################################
 
+    # Return a coordinate close to best wall and in direction of target
 
+    # If this goal point is outside the building vicinity, generate another point
+    #while not contains_pt(dynamic_params.goal_xy, building_polygon):
+        #print("--> Current goal is outside vicinity, generating new goal...")
 
-    # Select a target coordinate
-
-    # Transform point back to robot frame cartesian x/y
-    # return wall_xy
 
     """
     with open('/home/chris/Documents/pointcloud2.pickle', 'wb') as f:
         pickle.dump(pointcloud, f)
     """
 
-    #sys.exit()
+    goal_xy_robot_frame = [0, 0]
+    return goal_xy_robot_frame
     
-
-    # If this goal point is outside the building vicinity, generate another point
-    #while not contains_pt(dynamic_params.goal_xy, building_polygon):
-        #print("--> Current goal is outside vicinity, generating new goal...")
-    
-    # Scan for doorways
-    print("--> Looking for doorway")
 
 
 """
