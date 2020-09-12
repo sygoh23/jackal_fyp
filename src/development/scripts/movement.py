@@ -14,6 +14,9 @@ import rospy
 import cv2
 import pickle
 import sys
+import numpy as np
+import itertools
+import matplotlib.pyplot as plt
 
 
 # Used once object detection has found a doorway
@@ -27,6 +30,10 @@ Movement logic when the robot is within the building vicinity
 """
 def move_within_vicinity(target_xy):
     
+    ##########################################################################
+    # Point cloud filtering
+    ##########################################################################
+
     # Retrieve pointcloud scan
     pointcloud = get_pointcloud()
 
@@ -45,9 +52,59 @@ def move_within_vicinity(target_xy):
     ax.scatter(0, 0, color='g', s=100)
     ax.scatter(target_xy[0], target_xy[1], color='r', s=100)
 
-    # Transform robot frame cartesian x/y to image
+    ##########################################################################
+    # Create image
+    ##########################################################################
 
-    # Perform hough transform
+    # Convert to numpy array
+    x_min = min(x)  # -67.5
+    y_min = min(y)  # -100.6
+    w = int(max(x) - x_min) + 2     # max x = 61.5
+    h = int(max(y) - y_min) + 2     # max y = 95.7
+    c = 3
+
+    img = np.zeros((w, h, c), dtype=np.uint8)
+
+    for pt_x, pt_y in zip(x, y):
+        # Translate
+        pt_x += abs(x_min)
+        pt_y += abs(y_min)
+
+        img[int(pt_x), int(pt_y), :] = [255, 255, 255]
+
+
+    ##########################################################################
+    # Hough transform
+    ##########################################################################
+
+    # Convert image to gray-scale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Find edges in the image using canny detector
+    edges = cv2.Canny(gray, 50, 200)
+
+    # Run the Hough transform
+    lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=40, minLineLength=20, maxLineGap=70)
+
+    # Save lines
+    if lines is not None:
+        lines_list = []     # [np.array[x1, y1, x2, y2], ...]
+        for line in lines:
+            x1, y1, x2, y2 = line[0]
+            lines_list.append(line[0])
+            #cv2.line(img, (x1, y1), (x2, y2), color=(0, 0, 255), thickness=2)
+            
+        # Show/save result
+        #cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
+        #cv2.imshow("Result Image", img)
+        #cv2.waitKey()
+
+    else:
+        print("No lines found")
+
+
+
+
     """
     # Read image 
     img = cv2.imread('/home/chris/Documents/test4.jpg', cv2.IMREAD_COLOR)
