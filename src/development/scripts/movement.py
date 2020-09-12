@@ -17,6 +17,7 @@ import sys
 import numpy as np
 import itertools
 import matplotlib.pyplot as plt
+from PIL import Image
 
 
 # Used once object detection has found a doorway
@@ -45,7 +46,7 @@ def move_within_vicinity(target_xy):
             x.append(point[0])
             y.append(point[1])
     
-    # Scatterplot in robot frame
+    # Display points in robot frame
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
     ax.scatter(x, y)
@@ -64,14 +65,27 @@ def move_within_vicinity(target_xy):
     h = int(max(y) - y_min) + 2     # max y = 95.7
     c = 3
 
+    print('\nMin x: {}\nMin y: {}\nMax x: {}\nMax y: {}\nWidth: {}\nHeight: {}\n'.format(
+        x_min,
+        y_min,
+        max(x),
+        max(y),
+        w,
+        h
+    ))
+
+    # Create grid
     img = np.zeros((w, h, c), dtype=np.uint8)
 
+    # Transform all points onto grid
     for pt_x, pt_y in zip(x, y):
-        # Translate
         pt_x += abs(x_min)
         pt_y += abs(y_min)
 
         img[int(pt_x), int(pt_y), :] = [255, 255, 255]
+
+    # Display points in image space
+    Image.fromarray(img, 'RGB').show()
 
 
     ##########################################################################
@@ -89,7 +103,12 @@ def move_within_vicinity(target_xy):
 
     # Save lines
     if lines is not None:
-        lines_list = []     # [np.array[x1, y1, x2, y2], ...]
+
+        print('\nDetected lines:\n{}\n'.format(lines))
+
+        # [np.array[x1, y1, x2, y2], ...]
+        lines_list = []     
+
         for line in lines:
             x1, y1, x2, y2 = line[0]
             lines_list.append(line[0])
@@ -137,6 +156,16 @@ def move_within_vicinity(target_xy):
 
         # Collect transformed points
         lines_tuples.append([start_transformed, end_transformed])
+
+
+
+
+
+
+
+
+
+
 
 
 
