@@ -30,6 +30,8 @@ Movement logic when the robot is within the building vicinity
 """
 def move_within_vicinity(target_xy):
     
+    # Graps should cascade throughout the function
+
     ##########################################################################
     # Point cloud filtering
     ##########################################################################
@@ -50,6 +52,7 @@ def move_within_vicinity(target_xy):
     ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
     ax.scatter(x, y, color='b', s=10)                           # Pointcloud
     ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+    plt.show()
 
 
     ##########################################################################
@@ -83,7 +86,7 @@ def move_within_vicinity(target_xy):
         img[int(pt_x), int(pt_y), :] = [255, 255, 255]
 
     # Display points in image space
-    Image.fromarray(img, 'RGB').show()
+    #Image.fromarray(img, 'RGB').show()
 
 
     ##########################################################################
@@ -108,12 +111,12 @@ def move_within_vicinity(target_xy):
         for line in lines:
             x1, y1, x2, y2 = line[0]
             lines_list.append(line[0])
-            cv2.line(img, (x1, y1), (x2, y2), color=(0, 0, 255), thickness=2)
+            #cv2.line(img, (x1, y1), (x2, y2), color=(0, 0, 255), thickness=2)
             
         # Show/save result
         #cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
-        cv2.imshow("Detected Lines", img)
-        cv2.waitKey()
+        #cv2.imshow("Detected Lines", img)
+        #cv2.waitKey()
 
     else:
         print("No lines found")
@@ -172,6 +175,8 @@ def move_within_vicinity(target_xy):
         y_pts = [endpoints[0][1], endpoints[1][1]]
         ax.plot(x_pts, y_pts, linewidth=2)
 
+    plt.show()
+
 
     ##########################################################################
     # Duplicate removal
@@ -228,6 +233,8 @@ def move_within_vicinity(target_xy):
         x_pts = [endpoints[0][0], endpoints[1][0]]
         y_pts = [endpoints[0][1], endpoints[1][1]]
         ax.plot(x_pts, y_pts, linewidth=2)
+
+    plt.show()
 
 
     ##########################################################################
@@ -292,6 +299,8 @@ def move_within_vicinity(target_xy):
 
     # Best line
     ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
+
+    plt.show()
 
 
     ##########################################################################
