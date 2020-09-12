@@ -264,7 +264,7 @@ def move_within_vicinity(target_xy):
         while get_distance(current_pt[0], end_pt[0], current_pt[1], end_pt[1]) > endpoint_threshold:
             
             # Get distance from current point to target
-            target_dist = get_distance(current_pt[0], transformed_point_xy[0], current_pt[1], transformed_point_xy[1])
+            target_dist = get_distance(current_pt[0], target_xy[0], current_pt[1], target_xy[1])
             #print('\nCurrent point: {}\n'.format(current_pt))
             #print('\nDist to target point: {}\n'.format(target_dist))
             #print('\nCurrent min distance: {}\n'.format(min_dist))
