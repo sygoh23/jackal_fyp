@@ -102,43 +102,43 @@ def move_within_vicinity(target_xy):
 
     else:
         print("No lines found")
+        sys.exit()
 
 
     ##########################################################################
     # Image space -> robot frame
     ##########################################################################
 
+    lines_tuples = []   # [[(x1, y1), (x2, y2)], ...]
+    for line in lines_list:
+        # Init
+        start_transformed = (line[0], line[1])
 
-    """
-    # Read image 
-    img = cv2.imread('/home/chris/Documents/test4.jpg', cv2.IMREAD_COLOR)
-    #cv2.imshow("Initial", img)
-    #cv2.waitKey()
+        # Translate back
+        start_transformed = (
+            start_transformed[0] - abs(y_min),
+            start_transformed[1] - abs(x_min)
+        )
+        
+        # Coord flip
+        start_transformed = (start_transformed[1], start_transformed[0])
 
-    # Convert the image to gray-scale
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    #cv2.imshow("Gray", gray)
-    #cv2.waitKey()
+        # Init
+        end_transformed = (line[2], line[3])
 
-    # Find the edges in the image using canny detector
-    edges = cv2.Canny(gray, 50, 200)
-    #cv2.imshow("Edges", gray)
-    #cv2.waitKey()
+        # Translate back
+        end_transformed = (
+            end_transformed[0] - abs(y_min),
+            end_transformed[1] - abs(x_min)
+        )
 
-    # Detect points that form a line
-    lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=60, minLineLength=160, maxLineGap=250)
+        # Coord flip
+        end_transformed = (end_transformed[1], end_transformed[0])
 
-    # Draw lines on the image
-    for line in lines:
-        print(line)
-        x1, y1, x2, y2 = line[0]
-        cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
+        # Collect transformed points
+        lines_tuples.append([start_transformed, end_transformed])
 
-    # Show result
-    #cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
-    #cv2.imshow("Result Image", img)
-    #cv2.waitKey()
-    """
+
 
     # Select line, and a target coordinate
 
