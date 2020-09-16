@@ -126,7 +126,7 @@ def movebase_client():
         if (i >= rec_smooth_filter) and (len(dynamic_params.poi_x) > 1) and (rec_enable == 1):
             robot_disp = 0
             for j in range(rec_smooth_filter):
-                new_dist = get_distance(dynamic_params.hist_x[i-j], dynamic_params.hist_x[i-j-1],dynamic_params.hist_y[i-j], dynamic_params.hist_y[i-j-1])
+                new_dist = 1.5*get_distance(dynamic_params.hist_x[i-j], dynamic_params.hist_x[i-j-1],dynamic_params.hist_y[i-j], dynamic_params.hist_y[i-j-1])
                 robot_disp = robot_disp + new_dist
             rec_score = robot_disp + avg_building_vel
             print("- Recovery Behaviour: %.1f points / %.1f points" % (rec_score, rec_threshold))
