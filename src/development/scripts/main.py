@@ -98,13 +98,15 @@ def movebase_client():
                     dynamic_params.out_of_range = 0
 
         # Send navigation goal to navigation stack:
-        goal = MoveBaseGoal()
-        goal.target_pose.header.frame_id = "odom"
-        goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
-        goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
-        goal.target_pose.pose.orientation.w = 1.0
-        client.send_goal(goal)
+        manual_navigation = False
+        if manual_navigation == False:
+            goal = MoveBaseGoal()
+            goal.target_pose.header.frame_id = "odom"
+            goal.target_pose.header.stamp = rospy.Time.now()
+            goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
+            goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
+            goal.target_pose.pose.orientation.w = 1.0
+            client.send_goal(goal)
 
         # Recovery behaviour:
         save_history()
@@ -138,7 +140,7 @@ def movebase_client():
                 print("--- Robot movement failure! Recovery #%d initiated..." % (rec_attempts))
                 # Determine points to remove from map:
                 remove_points(rec_attempts)
-                update_map()
+                #update_map()
 
                 # Send robot to last point of interest:
                 rec_last_i = i
@@ -185,7 +187,7 @@ def movebase_client():
         # Every five iterations, update the map:
         if (i % 5) == 0:
             find_poi()
-            update_map()
+            #update_map()
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:
