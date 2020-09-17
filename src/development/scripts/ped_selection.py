@@ -20,7 +20,7 @@ import time
 import tf
 import tf2_ros
 import sys
-
+matplotlib.use('Agg')
 
 # Additional function definitions:
 # Will be moved to separate file later.
@@ -50,14 +50,14 @@ def linear_dist(A, B, C, x, y):
 
 # Line of sight parameters:
 # Will be moved to separate file later.
-robot_range = 75
-#ped_tol = 1.5
+robot_range = 30
+#ped_tol = 1.5 # Increase ped tolerance when using gazebo plugin...
 ped_tol = 0.1
-robot_tol = 2
+robot_tol = 0.1
 los_dev = 2
 map_range = 100
-z_min = 0.1
-z_max = 2
+z_min = 0.5
+z_max = 3
 
 """
 Selects a pedestrian to follow when the robot is within the building vicinity
@@ -224,7 +224,7 @@ def select_ped_outside_vicinity(phase, i):
     plt.grid(b=True, which='major', color='#d6d6d6', linestyle='--')
 
     # Plot robot history:
-    plt.scatter(dynamic_params.remove_x, dynamic_params.remove_y, c='r', marker='.', s=50, label='0')
+    plt.scatter(dynamic_params.remove_x, dynamic_params.remove_y, c='y', marker='x', s=50, label='0')
     plt.plot(dynamic_params.hist_x, dynamic_params.hist_y, c='c', alpha=0.5, label='1')
     plt.scatter(dynamic_params.poi_x, dynamic_params.poi_y, c='b', marker='D', s=50, label='-1')
 
@@ -235,9 +235,9 @@ def select_ped_outside_vicinity(phase, i):
     plt.scatter(ped_x_los, ped_y_los, c='g', marker='.', s=30)
 
     map_scale = get_distance(robot[0], 0, robot[1], 0)
-    map_range = 100 + map_scale / 4
-    plt.xlim((robot[0]-map_range/2, robot[0]+map_range/2))
-    plt.ylim((robot[1]-map_range/2, robot[1]+map_range/2))
+    map_range = 50 + map_scale/2.5
+    plt.xlim((robot[0]-map_range, robot[0]+map_range))
+    plt.ylim((robot[1]-map_range, robot[1]+map_range))
     plt.gca().set_aspect('equal', adjustable='box')
     plt.savefig("/home/ubuntu/Map.png")
     plt.clf()
@@ -259,7 +259,6 @@ def select_ped_outside_vicinity(phase, i):
                 for k in range(len(ped_num_los)):
                     if idx == ped_num_los[k]:
                         ped_in_los = True
-                ped_in_los = False # override
 
                 # Only follow a pedestrian if it is within range of robot (i.e. simulate the fact that we can only detect pedestrians in our immediate vicinity in real life)
                 #if dist_robot_ped_list[idx] < robot_range:
