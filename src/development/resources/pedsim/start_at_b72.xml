@@ -3,7 +3,7 @@
   <!--Waypoints -->
   <waypoint id="1" x="1" y="-7" r="1"/>
   <waypoint id="2" x="1" y="10" r="2"/>
-  <waypoint id="3" x="-130.5" y="-1.5" r="2"/>
+  <waypoint id="3" x="-26" y="8.5" r="2"/>
   <waypoint id="4" x="-33" y="-120" r="1"/>
   <waypoint id="5" x="15" y="-117" r="1"/>
   <waypoint id="6" x="10" y="-100" r="1"/>

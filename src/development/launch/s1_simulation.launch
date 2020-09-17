@@ -13,7 +13,7 @@
   <!-- fyp_laser: Generates Jackal model with 2D laser scanner (fast) -->
   <!-- fyp_velodyne: Generates Jackal model with 3D Velodyne at low resolution (slower) -->
   <!-- fyp_velodyne_hd: Generates Jackal model with 3D Velodyne at high resolution (slowest) -->
-  <arg name="jackal_config" default="fyp_velodyne"/>
+  <arg name="jackal_config" default="fyp_velodyne_hd"/>
   <arg name="enable_jackal_robot" default="true"/>
 
   <!-- PEDSIM CONFIG -->

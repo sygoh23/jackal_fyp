@@ -30,8 +30,8 @@
       name="velodyne2"
       topic="/velodyne_points2"
       hz="20"
-      samples="330"
-      lasers="32"
+      samples="440"
+      lasers="20"
       gpu="false" >
       <origin xyz="0 0 0" rpy="0 0 0" />
     </xacro:HDL-32E>
