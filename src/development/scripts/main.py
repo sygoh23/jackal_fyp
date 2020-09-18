@@ -141,7 +141,8 @@ def movebase_client():
                     rec_goal_x = rec_x; rec_goal_y = rec_y; rec_goal_d = rec_d;
                     if rec_d > 20:
                         while (rec_goal_d > 20):
-                            rec_goal_x = (rec_goal_x + robot_xy[0]) / 2; rec_goal_y = (rec_goal_y + robot_xy[1]) / 2;
+                            rec_goal_x = (rec_goal_x + robot_xy[0]) / 2
+                            rec_goal_y = (rec_goal_y + robot_xy[1]) / 2
                             rec_goal_d = get_distance(rec_goal_x, robot_xy[0], rec_goal_y, robot_xy[1])
                     print("--- Recovery goal: " + str([rec_goal_x, rec_goal_y]))
                     client.send_goal(setup_goal(rec_goal_x, rec_goal_y))

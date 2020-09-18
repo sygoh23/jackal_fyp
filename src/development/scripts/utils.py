@@ -39,8 +39,8 @@ def setup_goal(x,y):
     goal = MoveBaseGoal()
     goal.target_pose.header.frame_id = "odom"
     goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
-    goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
+    goal.target_pose.pose.position.x = x
+    goal.target_pose.pose.position.y = y
     goal.target_pose.pose.orientation.w = 1.0
     return goal
 
