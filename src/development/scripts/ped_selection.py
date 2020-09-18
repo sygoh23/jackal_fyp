@@ -169,7 +169,6 @@ def select_ped_outside_vicinity(phase, i):
     # Line of sight detection:
     # For every single pedestrian, check if obstacles are blocking the way
     ped_x_los = []; ped_y_los = []; ped_num_los = []
-    print("\nRESULTS:")
     for k in range(len(ped_x_in_range)):
         current_ped_x = ped_x_in_range[k];
         current_ped_y = ped_y_in_range[k];
@@ -221,6 +220,7 @@ def select_ped_outside_vicinity(phase, i):
     print("- Available Peds: %d / %d" % (len(ped_x_los), len(ped_x_all)))
 
     # Mapping:
+    plt.clf()
     plt.grid(b=True, which='major', color='#d6d6d6', linestyle='--')
 
     # Plot robot history:
@@ -240,7 +240,6 @@ def select_ped_outside_vicinity(phase, i):
     plt.ylim((robot[1]-map_range, robot[1]+map_range))
     plt.gca().set_aspect('equal', adjustable='box')
     plt.savefig("/home/ubuntu/Map.png")
-    plt.clf()
 
     ###################################################
     ############### Ped Selection Logic ###############
@@ -261,26 +260,22 @@ def select_ped_outside_vicinity(phase, i):
                         ped_in_los = True
 
                 # Only follow a pedestrian if it is within range of robot (i.e. simulate the fact that we can only detect pedestrians in our immediate vicinity in real life)
-                #if dist_robot_ped_list[idx] < robot_range:
                 if (ped_in_los == True):
-
                     # Only follow a pedestrian if it is not within the problem area outside eng faculty (usually not needed, but there are situations where if the navigation is started at a poor time the algorithm can fail)
                     # Recovery behaviour extra - make sure pedestrian is not in a removed zone.
+                    print("- Checking Ped %d: Velocity: %d" % (idx, vel[idx]))
                     ped_coord = [ped.agent_states[idx].pose.position.x, ped.agent_states[idx].pose.position.y]
-                    #if not contains_pt(ped_coord, dynamic_params.exclusion_zones[0]):
                     if (not contains_pt(ped_coord, dynamic_params.exclusion_zones[0])) and (not ped_in_remove_zone(ped_coord)):
                         # Only follow a pedestrian if it is not in the dynamically created exclusion zone around the robot's starting point
                         if (not contains_pt(ped_coord, dynamic_params.exclusion_zones[1])) or (contains_pt(robot_xy, dynamic_params.exclusion_zones[1])):
-
                             # Only follow a pedestrian if they are closer to the building center than the robot currently is
-                            if dist_robot_building_center > dist_ped_building_center_list[idx]:
-
-                                # Only follow a pedestrian if their velocity is -ve (distance is decreasing)
-                                if vel[idx] < 0:
-                                    best_ped_smart = idx
-                                    dist_robot_ped = dist_robot_ped_list[idx]
-                                    ped_found = 1
-                                    break
+                            #if dist_robot_building_center > dist_ped_building_center_list[idx]: # <<< Samuel: THIS IS BUGGY!
+                            # Only follow a pedestrian if their velocity is -ve (distance is decreasing)
+                            if vel[idx] < 0:
+                                best_ped_smart = idx
+                                dist_robot_ped = dist_robot_ped_list[idx]
+                                ped_found = 1
+                                break
 
             # Update navigation goal if the selection logic found a pedestrian to follow
             if ped_found:
@@ -303,8 +298,14 @@ def select_ped_outside_vicinity(phase, i):
         # Loop through pedestrians from closest to furthest from building center
         for idx in dist_index:
 
+            # Check if pedestrian is in line of sight:
+            ped_in_los = False
+            for k in range(len(ped_num_los)):
+                if idx == ped_num_los[k]:
+                    ped_in_los = True
+
             # Only follow a pedestrian if it is within range of robot but not already within the threshold (otherwise the program will believe the robot has already reached the goal and will reset for another loop)
-            if (dist_robot_ped_list[idx] < robot_range) and (dist_robot_ped_list[idx] > target_threshold):
+            if (ped_in_los == True) and (dist_robot_ped_list[idx] > target_threshold):
 
                 # Only follow a pedestrian if it is not within the problem area outside eng faculty (usually not needed, but there are situations where if the navigation is started at a poor time the algorithm can fail)
                 ped_coord = [ped.agent_states[idx].pose.position.x, ped.agent_states[idx].pose.position.y]

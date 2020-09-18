@@ -11,10 +11,10 @@ from recovery import *
 from utils import *
 from movement import *
 from std_msgs.msg import String
-import matplotlib
-import matplotlib.pyplot as plt
+#import matplotlib
+#import matplotlib.pyplot as plt
 import pickle
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 
 """
 Ideas:
