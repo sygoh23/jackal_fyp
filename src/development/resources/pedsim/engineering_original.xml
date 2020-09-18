@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
   <!--Waypoints -->
+  <!-- MAKE SURE ALL VALUES ARE INTEGERS -->
   <waypoint id="1" x="-104" y="-17" r="1"/>
   <waypoint id="2" x="-104" y="0" r="2"/>
-  <waypoint id="3" x="-131" y="-1.5" r="2"/>
+  <waypoint id="3" x="-131" y="-2" r="2"/>
   <waypoint id="4" x="-136" y="-128" r="1"/>
   <waypoint id="5" x="-90" y="-127" r="1"/>
   <waypoint id="6" x="-95" y="-110" r="1"/>
