@@ -119,9 +119,16 @@ process_img = rospy.get_param("/move_base/img_process")     # Do not need to cha
 
 #################### Algorithm ####################
 t_delay = 1                 # Seconds between iterations (lower = more responsive)
-robot_range = 15            # Radius around the robot in which pedestrians must be in order to be 'detected'
 target_threshold = 1        # Radius threshold to determine when the robot has reached a given target point
 straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point
 movement_pause = 8          # Seconds that the robot should wait in between movements
 phase3_dist = 10            # Distance that the robot should follow a pedestrian for in phase 3
-zone_length = 3             # Side length of a generated square, which is currently used as a no-go zone
+zone_length = 5             # Side length of a generated square, which is currently used as a no-go zone
+
+#################### Line of Sight  ####################
+robot_range = 25            # Radius around the robot in which pedestrians must be in order to be 'detected'
+ped_tol = 0.1               # Line of sight pedestrian x/y tolerance
+robot_tol = 0.1             # Line of sight robot x/y tolerance
+los_dev = 2                 # Remove pedestrian ifmain obstacle is in the way up to this linear deviation
+z_min = 0.5                 # Obstacle marking minimum
+z_max = 3                   # Obstacle marking maximum

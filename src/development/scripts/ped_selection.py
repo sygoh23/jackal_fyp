@@ -13,8 +13,6 @@ from tf2_sensor_msgs.tf2_sensor_msgs import do_transform_cloud
 from sensor_msgs.msg import PointCloud2
 from sensor_msgs import point_cloud2
 from utils import *
-import matplotlib
-import matplotlib.pyplot as plt
 import pickle
 import time
 import tf
@@ -22,42 +20,6 @@ import tf2_ros
 import sys
 matplotlib.use('Agg')
 
-# Additional function definitions:
-# Will be moved to separate file later.
-def ped_in_remove_zone(ped_coord):
-    outcome = False
-    for j in range(len(dynamic_params.remove_x)):
-        dist = get_distance(ped_coord[0], dynamic_params.remove_x[j], ped_coord[1], dynamic_params.remove_y[j])
-        if dist < dynamic_params.remove_radius:
-            outcome = True
-            break
-    return outcome
-
-def extract_x(list):
-    return [item[0] for item in list]
-
-def extract_y(list):
-    return [item[1] for item in list]
-
-def extract_z(list):
-    return [item[2] for item in list]
-
-def linear_const(x1, x2, y1, y2):
-            return (y1-y2), (x2-x1), (x1*y2-x2*y1)
-
-def linear_dist(A, B, C, x, y):
-            return abs(A*x+B*y+C)/sqrt(A**2+B**2)
-
-# Line of sight parameters:
-# Will be moved to separate file later.
-robot_range = 30
-#ped_tol = 1.5 # Increase ped tolerance when using gazebo plugin...
-ped_tol = 0.1
-robot_tol = 0.1
-los_dev = 2
-map_range = 100
-z_min = 0.5
-z_max = 3
 
 """
 Selects a pedestrian to follow when the robot is within the building vicinity
@@ -119,7 +81,6 @@ def select_ped_outside_vicinity(phase, i):
         # Calculate pedestrian velocity
         if i > 0:
             vel.append((dist_ped_building_center_list[j]-dynamic_params.dist_last[j])/t_delay)
-            #print("- Ped: %d | Pose: (%.1f, %.1f) | Dist (Target): %.1f | Vel (Target): %.1f | Dist (Robot): %.1f" % (j, ped_xy[0], ped_xy[1], dist_ped_building_center_list[j], vel[j], dist_robot_ped))
 
     dynamic_params.dist_last = dist_ped_building_center_list # Save distance for next iteration
     dist_index = np.argsort(dist_ped_building_center_list)   # Indices of pedestrians, from closest to furthest from building center
@@ -127,8 +88,6 @@ def select_ped_outside_vicinity(phase, i):
     ###############################################
     ############### LINE OF SIGHT   ###############
     ###############################################
-    #rospy.init_node('los_detection', anonymous=True)
-
     # Transform point cloud data:
     tf_buffer = tf2_ros.Buffer()
     tf_listener = tf2_ros.TransformListener(tf_buffer)
@@ -140,7 +99,7 @@ def select_ped_outside_vicinity(phase, i):
     cloud = []
     for point in generator:
         cloud.append(point)
-    x = extract_x(cloud); y = extract_y(cloud); z = extract_z(cloud);
+    x = extract_xyz(cloud, 0); y = extract_xyz(cloud, 1); z = extract_xyz(cloud, 2);
 
     # Filter point cloud information by z:
     cloud_x = []; cloud_y = [];
@@ -153,22 +112,18 @@ def select_ped_outside_vicinity(phase, i):
     ped_x_in_range = []; ped_y_in_range = []; ped_num_in_range = [];
 
     # Check if pedestrians are in range:
-    robot = robot_xy[:]
     for j in range(len(ped.agent_states)):
         current_ped_x = ped.agent_states[j].pose.position.x
         current_ped_y = ped.agent_states[j].pose.position.y
-        ped_x_all.append(current_ped_x)
-        ped_y_all.append(current_ped_y)
-        dist_robot_ped = get_distance(robot[0], current_ped_x, robot[1], current_ped_y)
-
+        ped_x_all.append(current_ped_x); ped_y_all.append(current_ped_y)
+        dist_robot_ped = get_distance(robot_xy[0], current_ped_x, robot_xy[1], current_ped_y)
         if dist_robot_ped < robot_range:
-            ped_x_in_range.append(current_ped_x)
-            ped_y_in_range.append(current_ped_y)
+            ped_x_in_range.append(current_ped_x); ped_y_in_range.append(current_ped_y);
             ped_num_in_range.append(j)
 
     # Line of sight detection:
     # For every single pedestrian, check if obstacles are blocking the way
-    ped_x_los = []; ped_y_los = []; ped_num_los = []
+    dynamic_params.ped_x_los = []; dynamic_params.ped_y_los = []; dynamic_params.ped_num_los = []
     for k in range(len(ped_x_in_range)):
         current_ped_x = ped_x_in_range[k];
         current_ped_y = ped_y_in_range[k];
@@ -179,21 +134,21 @@ def select_ped_outside_vicinity(phase, i):
         export_point = False
         cloud_x_in_boundary = []; cloud_y_in_boundary = [];
         for j in range(len(cloud_x)):
-            if (current_ped_x > robot[0]) and (current_ped_y > robot[1]):
-                if (robot[0] - robot_tol) < cloud_x[j] < (current_ped_x - ped_tol):
-                    if (robot[1] - robot_tol) < cloud_y[j] < (current_ped_y - ped_tol):
+            if (current_ped_x > robot_xy[0]) and (current_ped_y > robot_xy[1]):
+                if (robot_xy[0] - robot_tol) < cloud_x[j] < (current_ped_x - ped_tol):
+                    if (robot_xy[1] - robot_tol) < cloud_y[j] < (current_ped_y - ped_tol):
                         export_point = True
-            elif (current_ped_x > robot[0]) and (current_ped_y < robot[1]):
-                if (robot[0] - robot_tol) < cloud_x[j] < (current_ped_x - ped_tol):
-                    if (current_ped_y + ped_tol) < cloud_y[j] < (robot[1] + robot_tol):
+            elif (current_ped_x > robot_xy[0]) and (current_ped_y < robot_xy[1]):
+                if (robot_xy[0] - robot_tol) < cloud_x[j] < (current_ped_x - ped_tol):
+                    if (current_ped_y + ped_tol) < cloud_y[j] < (robot_xy[1] + robot_tol):
                         export_point = True
-            elif (current_ped_x < robot[0]) and (current_ped_y > robot[1]):
-                if (current_ped_x + ped_tol) < cloud_x[j] < (robot[0] + robot_tol):
-                    if (robot[1] - robot_tol) < cloud_y[j] < (current_ped_y - ped_tol):
+            elif (current_ped_x < robot_xy[0]) and (current_ped_y > robot_xy[1]):
+                if (current_ped_x + ped_tol) < cloud_x[j] < (robot_xy[0] + robot_tol):
+                    if (robot_xy[1] - robot_tol) < cloud_y[j] < (current_ped_y - ped_tol):
                         export_point = True
-            elif (current_ped_x < robot[0]) and (current_ped_y < robot[1]):
-                if (current_ped_x + ped_tol) < cloud_x[j] < (robot[0] + robot_tol):
-                    if (current_ped_y + ped_tol) < cloud_y[j] < (robot[1] + robot_tol):
+            elif (current_ped_x < robot_xy[0]) and (current_ped_y < robot_xy[1]):
+                if (current_ped_x + ped_tol) < cloud_x[j] < (robot_xy[0] + robot_tol):
+                    if (current_ped_y + ped_tol) < cloud_y[j] < (robot_xy[1] + robot_tol):
                         export_point = True
             if export_point == True:
                 cloud_x_in_boundary.append(current_ped_x)
@@ -201,45 +156,28 @@ def select_ped_outside_vicinity(phase, i):
 
         allow_pedestrian = True
         for j in range(len(cloud_x_in_boundary)):
-            ABC = linear_const(robot[0], current_ped_x, robot[1], current_ped_y)
+            ABC = linear_const(robot_xy[0], current_ped_x, robot_xy[1], current_ped_y)
             dist = linear_dist(ABC[0], ABC[1], ABC[2], cloud_x_in_boundary[j], cloud_y_in_boundary[j])
             if dist < los_dev:
                 allow_pedestrian = False
 
         if (allow_pedestrian == True):
-            ped_x_los.append(current_ped_x)
-            ped_y_los.append(current_ped_y)
-            ped_num_los.append(current_ped_num)
+            dynamic_params.ped_x_los.append(current_ped_x)
+            dynamic_params.ped_y_los.append(current_ped_y)
+            dynamic_params.ped_num_los.append(current_ped_num)
 
-    ped_x_excl = ped_x_all[:]
-    ped_y_excl = ped_y_all[:]
-    for k in reversed(ped_num_los):
-        del ped_x_excl[k]
-        del ped_y_excl[k]
+    dynamic_params.ped_x_excl = ped_x_all[:]
+    dynamic_params.ped_y_excl = ped_y_all[:]
+    for k in reversed(dynamic_params.ped_num_los):
+        del dynamic_params.ped_x_excl[k]
+        del dynamic_params.ped_y_excl[k]
 
-    print("- Available Peds: %d / %d" % (len(ped_x_los), len(ped_x_all)))
+    dynamic_params.robot_xy = robot_xy[:]
+    dynamic_params.cloud_x = cloud_x[:]
+    dynamic_params.cloud_y = cloud_y[:]
+    dynamic_params.map_range = 50 + get_distance(robot_xy[0], 0, robot_xy[1], 0)
+    print("- Available Peds: %d / %d" % (len(dynamic_params.ped_x_los), len(ped_x_all)))
 
-    # Mapping:
-    plt.clf()
-    plt.grid(b=True, which='major', color='#d6d6d6', linestyle='--')
-
-    # Plot robot history:
-    plt.scatter(dynamic_params.remove_x, dynamic_params.remove_y, c='y', marker='x', s=50, label='0')
-    plt.plot(dynamic_params.hist_x, dynamic_params.hist_y, c='c', alpha=0.5, label='1')
-    plt.scatter(dynamic_params.poi_x, dynamic_params.poi_y, c='b', marker='D', s=50, label='-1')
-
-    # Plot pedestrian LOS detection:
-    plt.scatter(robot[0], robot[1], c='b', marker='x', s=50)
-    plt.scatter(cloud_x, cloud_y, c='dimgray', marker='.', s=10)
-    plt.scatter(ped_x_excl, ped_y_excl, c='r', marker='.', s=20)
-    plt.scatter(ped_x_los, ped_y_los, c='g', marker='.', s=30)
-
-    map_scale = get_distance(robot[0], 0, robot[1], 0)
-    map_range = 50 + map_scale/2.5
-    plt.xlim((robot[0]-map_range, robot[0]+map_range))
-    plt.ylim((robot[1]-map_range, robot[1]+map_range))
-    plt.gca().set_aspect('equal', adjustable='box')
-    plt.savefig("/home/ubuntu/Map.png")
 
     ###################################################
     ############### Ped Selection Logic ###############
@@ -255,15 +193,14 @@ def select_ped_outside_vicinity(phase, i):
 
                 # Check if pedestrian is in line of sight:
                 ped_in_los = False
-                for k in range(len(ped_num_los)):
-                    if idx == ped_num_los[k]:
+                for k in range(len(dynamic_params.ped_num_los)):
+                    if idx == dynamic_params.ped_num_los[k]:
                         ped_in_los = True
 
                 # Only follow a pedestrian if it is within range of robot (i.e. simulate the fact that we can only detect pedestrians in our immediate vicinity in real life)
                 if (ped_in_los == True):
                     # Only follow a pedestrian if it is not within the problem area outside eng faculty (usually not needed, but there are situations where if the navigation is started at a poor time the algorithm can fail)
                     # Recovery behaviour extra - make sure pedestrian is not in a removed zone.
-                    print("- Checking Ped %d: Velocity: %d" % (idx, vel[idx]))
                     ped_coord = [ped.agent_states[idx].pose.position.x, ped.agent_states[idx].pose.position.y]
                     if (not contains_pt(ped_coord, dynamic_params.exclusion_zones[0])) and (not ped_in_remove_zone(ped_coord)):
                         # Only follow a pedestrian if it is not in the dynamically created exclusion zone around the robot's starting point
@@ -300,8 +237,8 @@ def select_ped_outside_vicinity(phase, i):
 
             # Check if pedestrian is in line of sight:
             ped_in_los = False
-            for k in range(len(ped_num_los)):
-                if idx == ped_num_los[k]:
+            for k in range(len(dynamic_params.ped_num_los)):
+                if idx == dynamic_params.ped_num_los[k]:
                     ped_in_los = True
 
             # Only follow a pedestrian if it is within range of robot but not already within the threshold (otherwise the program will believe the robot has already reached the goal and will reset for another loop)

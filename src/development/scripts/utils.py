@@ -12,6 +12,53 @@ from static_params import *
 import dynamic_params
 from sensor_msgs.msg import PointCloud2
 from sensor_msgs import point_cloud2
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('Agg')
+
+# Updates the map file
+def update_map():
+    plt.clf()
+    plt.grid(b=True, which='major', color='#d6d6d6', linestyle='--')
+    plt.scatter(dynamic_params.remove_x, dynamic_params.remove_y, c='y', marker='x', s=50, label='0')
+    plt.plot(dynamic_params.hist_x, dynamic_params.hist_y, c='c', alpha=0.5, label='1')
+    plt.scatter(dynamic_params.poi_x, dynamic_params.poi_y, c='b', marker='D', s=25, label='-1')
+    plt.scatter(dynamic_params.robot_xy[0], dynamic_params.robot_xy[1], c='b', marker='x', s=50)
+    plt.scatter(dynamic_params.cloud_x, dynamic_params.cloud_y, c='dimgray', marker='.', s=10)
+    plt.scatter(dynamic_params.ped_x_excl, dynamic_params.ped_y_excl, c='r', marker='.', s=20)
+    plt.scatter(dynamic_params.ped_x_los, dynamic_params.ped_y_los, c='g', marker='.', s=30)
+    plt.xlim((dynamic_params.robot_xy[0]-dynamic_params.map_range, dynamic_params.robot_xy[0]+dynamic_params.map_range))
+    plt.ylim((dynamic_params.robot_xy[1]-dynamic_params.map_range, dynamic_params.robot_xy[1]+dynamic_params.map_range))
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.savefig("/home/ubuntu/Map.png")
+
+
+# Sets up a move base goal object to be sent to client
+def setup_goal(x,y):
+    goal = MoveBaseGoal()
+    goal.target_pose.header.frame_id = "odom"
+    goal.target_pose.header.stamp = rospy.Time.now()
+    goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
+    goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
+    goal.target_pose.pose.orientation.w = 1.0
+    return goal
+
+
+# Checks if pedestrian is in a zone removed by recovery behaviour
+def ped_in_remove_zone(ped_coord):
+    outcome = False
+    for j in range(len(dynamic_params.remove_x)):
+        dist = get_distance(ped_coord[0], dynamic_params.remove_x[j], ped_coord[1], dynamic_params.remove_y[j])
+        if dist < dynamic_params.remove_radius:
+            outcome = True
+            break
+    return outcome
+
+
+# Extracts x/y/z coordinates from point cloud
+def extract_xyz(list, num):
+    return [item[num] for item in list]
 
 
 # Returns the total number of pedsim pedestrians
@@ -30,6 +77,13 @@ def get_robot_xy():
 def get_distance(x1, x2, y1, y2):
     return sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
+# Finds constants for linear equation given 2 coordinates
+def linear_const(x1, x2, y1, y2):
+    return (y1-y2), (x2-x1), (x1*y2-x2*y1)
+
+# Finds minimum linear distance from linear equation using constants
+def linear_dist(A, B, C, x, y):
+    return abs(A*x+B*y+C)/sqrt(A**2+B**2)
 
 # Returns the x-y coordinate that is d metres in the straight line direction of the specified target
 def get_straight_line_pos(target, d):
