@@ -24,10 +24,27 @@ max_dev_remove = 3 # Maximum deviation from robot-POI line segment to remove poi
 # This value can be set close to 'max_dev_clean'
 
 # Save robot history:
-def save_history():
+def save_history(i):
     robot_xy = get_robot_xy()
     dynamic_params.hist_x.append(robot_xy[0])
     dynamic_params.hist_y.append(robot_xy[1])
+
+    # Extract most recent points up to certain distance
+    # Used to ensure robot isn't moving backwards
+    if i > 1:
+        dynamic_params.recent_x = []
+        dynamic_params.recent_y = []
+
+        reverse_x = dynamic_params.hist_x[:]; reverse_y = dynamic_params.hist_y[:];
+        reverse_x.reverse(); reverse_y.reverse()
+        total_dist = 0
+        for p in range(len(dynamic_params.hist_x)-1):
+            recent_dist = get_distance(reverse_x[p], reverse_x[p+1], reverse_y[p], reverse_y[p+1])
+            total_dist = total_dist + recent_dist
+            dynamic_params.recent_x.append(reverse_x[p])
+            dynamic_params.recent_y.append(reverse_y[p])
+            if total_dist > robot_range:
+                break
 
 # Find points of interest in map:
 def find_poi():

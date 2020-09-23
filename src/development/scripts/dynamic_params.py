@@ -41,6 +41,8 @@ remove_x = []               # Removed points due to recovery behaviour
 remove_y = []
 poi_x = []                  # Points of interest
 poi_y = []
+recent_x = []               # Most recent coordinates
+recent_y = []
 
 ########## Mapping ##########
 map_range = [];             # Robot mapping range

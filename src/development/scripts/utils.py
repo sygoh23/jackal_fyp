@@ -24,7 +24,9 @@ def update_map():
     plt.scatter(dynamic_params.remove_x, dynamic_params.remove_y, c='y', marker='x', s=50, label='0')
     plt.plot(dynamic_params.hist_x, dynamic_params.hist_y, c='c', alpha=0.5, label='1')
     plt.scatter(dynamic_params.poi_x, dynamic_params.poi_y, c='b', marker='D', s=25, label='-1')
-    plt.scatter(dynamic_params.robot_xy[0], dynamic_params.robot_xy[1], c='b', marker='x', s=50)
+    #plt.scatter(dynamic_params.robot_xy[0], dynamic_params.robot_xy[1], c='b', marker='x', s=50)
+    plt.scatter(dynamic_params.goal_xy[0], dynamic_params.goal_xy[1], c='fuchsia', marker='x', s=50)
+    plt.scatter(dynamic_params.robot_xy[0], dynamic_params.robot_xy[1], c='k', marker='h', s=50)
     plt.scatter(dynamic_params.cloud_x, dynamic_params.cloud_y, c='dimgray', marker='.', s=10)
     plt.scatter(dynamic_params.ped_x_excl, dynamic_params.ped_y_excl, c='r', marker='.', s=20)
     plt.scatter(dynamic_params.ped_x_los, dynamic_params.ped_y_los, c='g', marker='.', s=30)
@@ -55,6 +57,15 @@ def ped_in_remove_zone(ped_coord):
             break
     return outcome
 
+# Checks if pedestrian is in robot recent history
+def ped_in_recent_hist(ped_coord, recent_radius):
+    outcome = False
+    for j in range(len(dynamic_params.recent_x)):
+        dist = get_distance(ped_coord[0], dynamic_params.recent_x[j], ped_coord[1], dynamic_params.recent_y[j])
+        if dist < recent_radius:
+            outcome = True
+            break
+    return outcome
 
 # Extracts x/y/z coordinates from point cloud
 def extract_xyz(list, num):

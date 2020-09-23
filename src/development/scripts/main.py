@@ -38,7 +38,8 @@ def movebase_client():
     rec_enable = 1 # Enable recovery
     rec_last_i = 0 # Last time recovery was initiated
     rec_smooth_filter = 10; # Amount of mean smoothing for recovery scores
-    rec_threshold = 10; # Score threshold to activate recovery behaviour
+    rec_threshold = 1; # Score threshold to activate recovery behaviour
+    # Default: 10
     last_building_vel = []
 
     # Set exclusion zone around starting point
@@ -101,7 +102,7 @@ def movebase_client():
             client.send_goal(setup_goal(dynamic_params.goal_xy[0], dynamic_params.goal_xy[1]))
 
         # Recovery behaviour:
-        save_history()
+        save_history(i)
         building_dist = get_distance(building_center_xy[0], dynamic_params.hist_x[i], building_center_xy[1], dynamic_params.hist_y[i])
         building_vel = get_distance(building_center_xy[0], dynamic_params.hist_x[i-1], building_center_xy[1], dynamic_params.hist_y[i-1]) - building_dist
         last_building_vel.append(building_vel)

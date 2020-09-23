@@ -154,13 +154,14 @@ def select_ped_outside_vicinity(phase, i):
                 cloud_x_in_boundary.append(current_ped_x)
                 cloud_y_in_boundary.append(current_ped_y)
 
+        # Check if a point cloud point lies between ped and robot
+        # within a straight line deviation tolerance
         allow_pedestrian = True
         for j in range(len(cloud_x_in_boundary)):
             ABC = linear_const(robot_xy[0], current_ped_x, robot_xy[1], current_ped_y)
             dist = linear_dist(ABC[0], ABC[1], ABC[2], cloud_x_in_boundary[j], cloud_y_in_boundary[j])
             if dist < los_dev:
                 allow_pedestrian = False
-
         if (allow_pedestrian == True):
             dynamic_params.ped_x_los.append(current_ped_x)
             dynamic_params.ped_y_los.append(current_ped_y)
@@ -177,7 +178,6 @@ def select_ped_outside_vicinity(phase, i):
     dynamic_params.cloud_y = cloud_y[:]
     dynamic_params.map_range = 50 + get_distance(robot_xy[0], 0, robot_xy[1], 0)
     print("- Available Peds: %d / %d" % (len(dynamic_params.ped_x_los), len(ped_x_all)))
-
 
     ###################################################
     ############### Ped Selection Logic ###############
@@ -198,23 +198,31 @@ def select_ped_outside_vicinity(phase, i):
                         ped_in_los = True
 
                 if (ped_in_los == True):
+                    # Additional flags for ped location:
                     ped_coord = [ped.agent_states[idx].pose.position.x, ped.agent_states[idx].pose.position.y]
                     ped_not_excl_zone_0 = (not contains_pt(ped_coord, dynamic_params.exclusion_zones[0]))
                     ped_not_excl_zone_1 = (not contains_pt(ped_coord, dynamic_params.exclusion_zones[1]))
                     ped_not_remove_zone = (not ped_in_remove_zone(ped_coord))
+                    ped_not_recent_hist = (not ped_in_recent_hist(ped_coord, 3))
                     robot_in_excl_zone = (contains_pt(robot_xy, dynamic_params.exclusion_zones[1]))
 
+                    if (ped_not_recent_hist == False):
+                        print("--- Ped %d is in recent history. Skipped!" % idx)
+
                     # Only follow a pedestrian if it is not within the problem area outside eng faculty
-                    if (ped_not_excl_zone_0 == True) and (ped_not_remove_zone == True):
+                    if (ped_not_excl_zone_0 == True) and (ped_not_remove_zone == True) and (ped_not_recent_hist == True):
+
                         # Only follow a pedestrian if it is not in the dynamically created exclusion zone around the robot's starting point
                         if (ped_not_excl_zone_1 == True) or (robot_in_excl_zone == True):
+                            dist_ped_building = dist_ped_building_center = get_distance(building_center_xy[0], ped_coord[0], building_center_xy[1], ped_coord[1])
 
-                            # Only follow a pedestrian if their velocity is -ve (distance is decreasing)
-                            if vel[idx] < 0:
-                                best_ped_smart = idx
-                                dist_robot_ped = dist_robot_ped_list[idx]
-                                ped_found = 1
-                                break
+                            if dist_ped_building < dist_robot_building_center:
+                                # Only follow a pedestrian if their velocity is -ve (distance is decreasing)
+                                if vel[idx] < 0:
+                                    best_ped_smart = idx
+                                    dist_robot_ped = dist_robot_ped_list[idx]
+                                    ped_found = 1
+                                    break
 
             # Update navigation goal if the selection logic found a pedestrian to follow
             if ped_found:
@@ -248,12 +256,19 @@ def select_ped_outside_vicinity(phase, i):
 
                 # Only follow a pedestrian if it is not within the problem area outside eng faculty (usually not needed, but there are situations where if the navigation is started at a poor time the algorithm can fail)
                 ped_coord = [ped.agent_states[idx].pose.position.x, ped.agent_states[idx].pose.position.y]
-                if (not contains_pt(ped_coord, dynamic_params.exclusion_zones[0])) and (not ped_in_remove_zone(ped_coord)):
+                ped_not_excl_zone_0 = (not contains_pt(ped_coord, dynamic_params.exclusion_zones[0]))
+                ped_not_excl_zone_1 = (not contains_pt(ped_coord, dynamic_params.exclusion_zones[1]))
+                ped_not_remove_zone = (not ped_in_remove_zone(ped_coord))
+                ped_not_recent_hist = (not ped_in_recent_hist(ped_coord, 2))
+                robot_in_excl_zone = (contains_pt(robot_xy, dynamic_params.exclusion_zones[1]))
+
+                if (ped_not_recent_hist == False):
+                    print("--- Ped %d is in recent history. Skipped!" % idx)
+
+                if (ped_not_excl_zone_0 == True) and (ped_not_remove_zone == True) and (ped_not_recent_hist == True):
 
                     # Only follow a pedestrian if it is not in the dynamically created exclusion zone around the robot's starting point
-                    if (not contains_pt(ped_coord, dynamic_params.exclusion_zones[1])) or (contains_pt(robot_xy, dynamic_params.exclusion_zones[1])):
-                        #dynamic_params.debug_please.append("F")
-
+                    if (ped_not_excl_zone_1 == True) or (robot_in_excl_zone == True):
                         # Only follow a pedestrian if they are closer to the robot than the previously checked pedestrian
                         if ped_found == 0:  # found the first potential ped, so there is no previous ped to compare to
                             best_ped_smart = idx

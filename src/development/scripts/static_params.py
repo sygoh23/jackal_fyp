@@ -11,14 +11,14 @@ import numpy as np
 #################### Coordinates ####################
 #offset_x = 48 # within building vicinity (eng lectures)
 #offset_x = 63 # sticking point
-offset_x = 105 # starting point (building 72)
-#offset_x = 117 # starting point (new horizons)
+#offset_x = 105 # starting point (building 72)
+offset_x = 117 # starting point (new horizons)
 #offset_x = -10 # starting point (boiler house)
 
 #offset_y = 148 # within building vicinity (eng lectures)
 #offset_y = 74 # sticking point
-offset_y = 10 # starting point (building 72)
-#offset_y = -130 # starting point (new horizons)
+#offset_y = 10 # starting point (building 72)
+offset_y = -130 # starting point (new horizons)
 #offset_y = -76 # starting point (boiler house)
 
 building_centers = [
@@ -121,12 +121,13 @@ process_img = rospy.get_param("/move_base/img_process")     # Do not need to cha
 t_delay = 1                 # Seconds between iterations (lower = more responsive)
 target_threshold = 1        # Radius threshold to determine when the robot has reached a given target point
 straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point
-movement_pause = 8          # Seconds that the robot should wait in between movements
+#movement_pause = 8          # Seconds that the robot should wait in between movements
+movement_pause = 1          # Seconds that the robot should wait in between movements
 phase3_dist = 10            # Distance that the robot should follow a pedestrian for in phase 3
 zone_length = 5             # Side length of a generated square, which is currently used as a no-go zone
 
 #################### Line of Sight  ####################
-robot_range = 25            # Radius around the robot in which pedestrians must be in order to be 'detected'
+robot_range = 35            # Radius around the robot in which pedestrians must be in order to be 'detected'
 ped_tol = 0.1               # Line of sight pedestrian x/y tolerance
 robot_tol = 0.1             # Line of sight robot x/y tolerance
 los_dev = 2                 # Remove pedestrian ifmain obstacle is in the way up to this linear deviation
