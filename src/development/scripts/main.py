@@ -14,6 +14,7 @@ from std_msgs.msg import String
 import tf
 from geometry_msgs.msg import PointStamped
 import pickle
+import matplotlib.pyplot as plt
 #import tf2_ros
 #from tf2_msgs.msg import TFMessage
 #from tf.msg import tfMessage
@@ -45,6 +46,9 @@ def movebase_client():
     start_point = get_robot_xy()
     dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
 
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
+
     # Begin navigation algorithm
     while True:
         print("\n\n------------------------- i = %d -------------------------" % i)
@@ -71,7 +75,7 @@ def movebase_client():
                 transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
 
                 # Get wall following goal point in base_link (robot) frame
-                goal_xy_robot_frame = move_within_vicinity(transformed_pt_xy)   # this either needs to be returned as a PointStamped(), or converted here
+                goal_xy_robot_frame = move_within_vicinity(transformed_pt_xy, ax)   # this either needs to be returned as a PointStamped(), or converted here
 
                 ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
                 #original_pt = listener.transformPoint('odom', goal_xy_robot_frame)
@@ -134,8 +138,8 @@ def movebase_client():
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = "odom"
         goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = -10
-        goal.target_pose.pose.position.y = 6
+        goal.target_pose.pose.position.x = 30
+        goal.target_pose.pose.position.y = 0
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 

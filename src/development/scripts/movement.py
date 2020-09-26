@@ -28,9 +28,9 @@ def move_to_doorway():
 Movement logic when the robot is within the building vicinity
 --> Assumes there is only one doorway in the defined building vicinity
 """
-def move_within_vicinity(target_xy):
+def move_within_vicinity(target_xy, ax):
     
-    # Graps should cascade throughout the function
+    # Graphs should cascade throughout the function
 
     ##########################################################################
     # Point cloud filtering
@@ -47,12 +47,14 @@ def move_within_vicinity(target_xy):
             x.append(point[0])
             y.append(point[1])
     
+    """
     # Display points in robot frame
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
     ax.scatter(x, y, color='b', s=10)                           # Pointcloud
     ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
     plt.show()
+    """
 
 
     ##########################################################################
@@ -120,7 +122,7 @@ def move_within_vicinity(target_xy):
 
     else:
         print("No lines found")
-        sys.exit()
+        return get_robot_xy()
 
     #print('\nDetected lines:\n{}\n'.format(lines_list))
 
@@ -163,6 +165,7 @@ def move_within_vicinity(target_xy):
 
     #print("\nLines in robot frame:\n{}\n".format(lines_tuples))
 
+    """
     # Display transformed lines in robot frame
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
@@ -176,6 +179,7 @@ def move_within_vicinity(target_xy):
         ax.plot(x_pts, y_pts, linewidth=2)
 
     plt.show()
+    """
 
 
     ##########################################################################
@@ -222,6 +226,7 @@ def move_within_vicinity(target_xy):
         
     #print('\nAfter duplicate removal:\n{}\n'.format(lines_tuples))
 
+    """
     # Display transformed lines with removed duplicates in robot frame
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
@@ -235,6 +240,7 @@ def move_within_vicinity(target_xy):
         ax.plot(x_pts, y_pts, linewidth=2)
 
     plt.show()
+    """
 
 
     ##########################################################################
@@ -245,7 +251,7 @@ def move_within_vicinity(target_xy):
     start_offset = 30                           # How far before start point to start
     end_offset = 30                             # How far after end point to finish
     endpoint_threshold = 1.1                    # How close to the endpoint for the iteration to stop. Should be > step/2
-    min_dist = 999999999                        # Init to large number
+    min_dist = float('inf')                     # Init to large number
     best_line = [(8725, 8725), (8725, 8725)]    # Init to anything, values will be replaced in first iteration
 
     # Outer loop iterates over each line [(x1, y1), (x2, y2)]
@@ -286,8 +292,9 @@ def move_within_vicinity(target_xy):
             current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
 
     # Display selected line in robot frame
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    #fig = plt.figure()
+    #ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    ax.clear()
     ax.scatter(x, y, color='b', s=10)                           # Pointcloud
     ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
 
@@ -300,7 +307,8 @@ def move_within_vicinity(target_xy):
     # Best line
     ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
 
-    plt.show()
+    plt.pause(0.1)
+    #plt.show()
 
 
     ##########################################################################
