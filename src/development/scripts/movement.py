@@ -1,6 +1,5 @@
 """
-Contains movement logic.
-Currently all functions are for when the robot is in stage 1 and there are no detected phase 1 pedestrians. Nothing in here for stage 2 (yet).
+Contains movement logic for stages 1 and 2
 """
 
 from ped_selection import *
@@ -11,10 +10,331 @@ from utils import *
 from pedsim_msgs.msg import AgentStates
 import rospy
 
+import cv2
+import pickle
+import sys
+import numpy as np
+import itertools
+import matplotlib.pyplot as plt
+from PIL import Image
+
 
 # Used once object detection has found a doorway
 def move_to_doorway():
     pass
+
+
+"""
+Movement logic when the robot is within the building vicinity
+--> Assumes there is only one doorway in the defined building vicinity
+"""
+def move_within_vicinity(target_xy, ax, plot_results):
+    
+    # Graphs should cascade throughout the function
+
+    ##########################################################################
+    # Point cloud filtering
+    ##########################################################################
+
+    # Retrieve pointcloud scan
+    pointcloud = get_pointcloud()
+
+    # Process data
+    x = []
+    y = []
+    for point in pointcloud:
+        if point[2] > 0.5:
+            x.append(point[0])
+            y.append(point[1])
+    
+    """
+    # Display points in robot frame
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
+    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+    plt.show()
+    """
+
+
+    ##########################################################################
+    # Robot frame -> image space
+    ##########################################################################
+
+    # Convert to numpy array
+    x_min = min(x)  # -67.5
+    y_min = min(y)  # -100.6
+    w = int(max(x) - x_min) + 2     # max x = 61.5
+    h = int(max(y) - y_min) + 2     # max y = 95.7
+    c = 3
+
+    print('\nMin x: {}\nMin y: {}\nMax x: {}\nMax y: {}\nWidth: {}\nHeight: {}\n'.format(
+        x_min,
+        y_min,
+        max(x),
+        max(y),
+        w,
+        h
+    ))
+
+    # Create grid
+    img = np.zeros((w, h, c), dtype=np.uint8)
+
+    # Transform all points onto grid
+    for pt_x, pt_y in zip(x, y):
+        pt_x += abs(x_min)
+        pt_y += abs(y_min)
+
+        img[int(pt_x), int(pt_y), :] = [255, 255, 255]
+
+    # Display points in image space
+    #Image.fromarray(img, 'RGB').show()
+
+
+    ##########################################################################
+    # Hough transform
+    ##########################################################################
+
+    # Convert image to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Find edges using canny detector
+    edges = cv2.Canny(gray, 50, 200)
+
+    # Run the Hough transform
+    lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=40, minLineLength=20, maxLineGap=70)
+
+    # Save lines
+    if lines is not None:
+
+        # [np.array[x1, y1, x2, y2], ...]
+        lines_list = []     
+
+        for line in lines:
+            x1, y1, x2, y2 = line[0]
+            lines_list.append(line[0])
+            #cv2.line(img, (x1, y1), (x2, y2), color=(0, 0, 255), thickness=2)
+            
+        # Show/save result
+        #cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
+        #cv2.imshow("Detected Lines", img)
+        #cv2.waitKey()
+
+    else:
+        print("No lines found")
+        return get_robot_xy()
+
+    #print('\nDetected lines:\n{}\n'.format(lines_list))
+
+
+    ##########################################################################
+    # Image space -> robot frame
+    ##########################################################################
+
+    #print("\nLines in image space:\n{}\n".format(lines_list))
+
+    lines_tuples = []   # [[(x1, y1), (x2, y2)], ...]
+
+    for line in lines_list:
+        # Init
+        start_transformed = (line[0], line[1])
+
+        # Translate back
+        start_transformed = (
+            start_transformed[0] - abs(y_min),
+            start_transformed[1] - abs(x_min)
+        )
+        
+        # Coord flip
+        start_transformed = (start_transformed[1], start_transformed[0])
+
+        # Init
+        end_transformed = (line[2], line[3])
+
+        # Translate back
+        end_transformed = (
+            end_transformed[0] - abs(y_min),
+            end_transformed[1] - abs(x_min)
+        )
+
+        # Coord flip
+        end_transformed = (end_transformed[1], end_transformed[0])
+
+        # Collect transformed points
+        lines_tuples.append([start_transformed, end_transformed])
+
+    #print("\nLines in robot frame:\n{}\n".format(lines_tuples))
+
+    """
+    # Display transformed lines in robot frame
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
+    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+
+    # Detected lines (contains duplicates at this point)
+    for endpoints in lines_tuples:
+        x_pts = [endpoints[0][0], endpoints[1][0]]
+        y_pts = [endpoints[0][1], endpoints[1][1]]
+        ax.plot(x_pts, y_pts, linewidth=2)
+
+    plt.show()
+    """
+
+
+    ##########################################################################
+    # Duplicate removal
+    ##########################################################################
+
+    # If start and end points are within this distance of each other, considered duplicate
+    duplicate_threshold = 4
+    duplicates = []
+
+    #print('\nBefore duplicate removal:\n{}\n'.format(lines_tuples))
+
+    # Iterate over all line combinations
+    for line1, line2 in itertools.combinations(enumerate(lines_tuples), 2):
+        # Don't compare an already identified duplicate
+        if (line1[0] in duplicates) or (line2[0] in duplicates):
+            continue
+        
+        # Start by assuming the lines are not duplicates
+        same_start = False
+        same_end = False
+        
+        # Compare start points
+        start1 = line1[1][0]
+        start2 = line2[1][0]
+
+        if get_distance(start1[0], start2[0], start1[1], start2[1]) <= duplicate_threshold:
+            #print('Same start')
+            same_start = True
+
+        # Compare end points
+        end1 = line1[1][1]
+        end2 = line2[1][1]
+
+        if get_distance(end1[0], end2[0], end1[1], end2[1]) <= duplicate_threshold:
+            #print('Same end')
+            same_end = True
+
+        # Check if lines start and end at same points
+        if same_start and same_end:
+            duplicates.append(line2[0])
+            #del lines_tuples[line2[0]]
+            #print('Deleted')
+    
+    duplicates.sort(reverse=True)
+    for idx in duplicates:
+        del lines_tuples[idx]
+
+    #print('\nAfter duplicate removal:\n{}\n'.format(lines_tuples))
+
+    """
+    # Display transformed lines with removed duplicates in robot frame
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
+    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+
+    # Detected lines without duplicates
+    for endpoints in lines_tuples:
+        x_pts = [endpoints[0][0], endpoints[1][0]]
+        y_pts = [endpoints[0][1], endpoints[1][1]]
+        ax.plot(x_pts, y_pts, linewidth=2)
+
+    plt.show()
+    """
+
+
+    ##########################################################################
+    # Wall selection
+    ##########################################################################
+
+    step = 2                                    # The interval along the line for which distance to target should be calculated
+    start_offset = 30                           # How far before start point to start
+    end_offset = 30                             # How far after end point to finish
+    endpoint_threshold = 1.1                    # How close to the endpoint for the iteration to stop. Should be > step/2
+    min_dist = float('inf')                     # Init to large number
+    best_line = [(8725, 8725), (8725, 8725)]    # Init to anything, values will be replaced in first iteration
+
+    # Outer loop iterates over each line [(x1, y1), (x2, y2)]
+    for line in lines_tuples:
+
+        # Generate x/y points that lie on the line
+        start = line[0] # (x1, y1)
+        end = line[1]   # (x2, y2)
+        line_dist = get_distance(start[0], end[0], start[1], end[1])
+        #print('\nLine length: {}\n'.format(line_dist))
+
+        # Generate unit vector in direction of target
+        unit_x = (end[0] - start[0])/line_dist
+        unit_y = (end[1] - start[1])/line_dist
+        #print('\nUnit x: {}\n'.format(unit_x))
+        #print('\nUnit y: {}\n'.format(unit_y))
+
+        # Generate start and end points for the iteration
+        current_pt = (start[0] - start_offset*unit_x, start[1] - start_offset*unit_y)
+        end_pt = (end[0] + end_offset*unit_x, end[1] + end_offset*unit_y)
+
+        # Inner loop iterates over each generated point in the current line
+        while get_distance(current_pt[0], end_pt[0], current_pt[1], end_pt[1]) > endpoint_threshold:
+            
+            # Get distance from current point to target
+            target_dist = get_distance(current_pt[0], target_xy[0], current_pt[1], target_xy[1])
+            #print('\nCurrent point: {}\n'.format(current_pt))
+            #print('\nDist to target point: {}\n'.format(target_dist))
+            #print('\nCurrent min distance: {}\n'.format(min_dist))
+
+            # Check if this point is the new closest point to the target
+            if target_dist < min_dist:
+                min_dist = target_dist
+                best_line = line
+                #print('New best line')
+            
+            # Generate next point
+            current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
+
+    # Display selected line in robot frame
+    #fig = plt.figure()
+    #ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
+    if plot_results:
+        ax.clear()
+        ax.scatter(x, y, color='b', s=10)                           # Pointcloud
+        ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+
+        # Detected lines without duplicates
+        for endpoints in lines_tuples:
+            x_pts = [endpoints[0][0], endpoints[1][0]]
+            y_pts = [endpoints[0][1], endpoints[1][1]]
+            ax.plot(x_pts, y_pts, linewidth=2)
+
+        # Best line
+        ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
+
+        plt.pause(0.1)
+        #plt.show()
+
+
+    ##########################################################################
+    # Wall following
+    ##########################################################################
+
+    # Return a coordinate close to best wall and in direction of target
+
+    # If this goal point is outside the building vicinity, generate another point
+    #while not contains_pt(dynamic_params.goal_xy, building_polygon):
+        #print("--> Current goal is outside vicinity, generating new goal...")
+
+
+    """
+    with open('/home/chris/Documents/pointcloud2.pickle', 'wb') as f:
+        pickle.dump(pointcloud, f)
+    """
+
+    goal_xy_robot_frame = [0, 0]
+    return goal_xy_robot_frame
+    
 
 
 """
