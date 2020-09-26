@@ -221,9 +221,13 @@ def move_within_vicinity(target_xy, ax):
         # Check if lines start and end at same points
         if same_start and same_end:
             duplicates.append(line2[0])
-            del lines_tuples[line2[0]]
+            #del lines_tuples[line2[0]]
             #print('Deleted')
-        
+    
+    duplicates.sort(reverse=True)
+    for idx in duplicates:
+        del lines_tuples[idx]
+
     #print('\nAfter duplicate removal:\n{}\n'.format(lines_tuples))
 
     """

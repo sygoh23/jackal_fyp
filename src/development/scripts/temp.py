@@ -320,6 +320,9 @@ print(lines_tuples); print()
 # Detect duplicates based on start/end points
 duplicates = []
 for line1, line2 in itertools.combinations(enumerate(lines_tuples), 2):
+    print(line1)
+    print(line2)
+
     # Don't compare an already identified duplicate
     if (line1[0] in duplicates) or (line2[0] in duplicates):
         continue
@@ -346,9 +349,15 @@ for line1, line2 in itertools.combinations(enumerate(lines_tuples), 2):
     # Check if lines start and end at same points
     if same_start and same_end:
         duplicates.append(line2[0])
-        del lines_tuples[line2[0]]
-        print('Deleted')
-    
+        #del lines_tuples[line2[0]]
+        print('Marked for deletion')
+
+duplicates.sort(reverse=True)
+print(duplicates)
+for idx in duplicates:
+    print(idx)
+    del lines_tuples[idx]
+
 print('After:')
 print(lines_tuples)
 
@@ -358,7 +367,7 @@ print(lines_tuples)
 ##########################################################################
 # Analysis
 ##########################################################################
-
+"""
 step = 2
 start_offset = 30 # How far before start point to start
 end_offset = 30  # How far after end point to finish
@@ -432,7 +441,7 @@ for line in lines_tuples:
 
 #plt.show()
 
-
+"""
 
 
 
