@@ -48,7 +48,7 @@ def update_map():
         dynamic_params.rec_plot == False
 
     plt.gca().set_aspect('equal', adjustable='box')
-    plt.savefig("/home/ubuntu/Map.png")
+    #plt.savefig("/home/ubuntu/Map.png")
 
 # Save robot history:
 def save_history():

@@ -14,7 +14,7 @@ from std_msgs.msg import String
 import matplotlib
 import matplotlib.pyplot as plt
 import pickle
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 
 import tf
 from geometry_msgs.msg import PointStamped
@@ -56,8 +56,8 @@ def movebase_client():
     start_point = get_robot_xy()
     dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
 
-    pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
-    pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
+    #pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
+    #pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
     
     # Axes to plot wall detection
     fig = plt.figure()
@@ -153,8 +153,8 @@ def movebase_client():
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = "odom"
         goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = 40
-        goal.target_pose.pose.position.y = 0
+        goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
+        goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
         goal.target_pose.pose.orientation.w = 1.0
         client.send_goal(goal)
 

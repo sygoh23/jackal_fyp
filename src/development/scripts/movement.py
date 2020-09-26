@@ -302,6 +302,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
         ax.clear()
         ax.scatter(x, y, color='b', s=10)                           # Pointcloud
         ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+        ax.scatter(0, 0, color='r', s=100)                          # Robot
 
         # Detected lines without duplicates
         for endpoints in lines_tuples:

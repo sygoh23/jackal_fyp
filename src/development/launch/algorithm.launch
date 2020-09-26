@@ -5,7 +5,7 @@
   <arg name="use_webcam" default="false"/>
 
   <!-- Include custom laser scan -->
-  <include file="$(find development)/launch/custom_scan.launch"/>
+  <!--<include file="$(find development)/launch/custom_scan.launch"/>-->
 
   <!-- ******************** MOVE BASE NAVIGATION ******************** -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
