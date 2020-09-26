@@ -46,6 +46,7 @@ def movebase_client():
     start_point = get_robot_xy()
     dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
 
+    # Axes to plot wall detection
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
 
@@ -75,7 +76,7 @@ def movebase_client():
                 transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
 
                 # Get wall following goal point in base_link (robot) frame
-                goal_xy_robot_frame = move_within_vicinity(transformed_pt_xy, ax)   # this either needs to be returned as a PointStamped(), or converted here
+                goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=True)   # this either needs to be returned as a PointStamped(), or converted here
 
                 ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
                 #original_pt = listener.transformPoint('odom', goal_xy_robot_frame)
