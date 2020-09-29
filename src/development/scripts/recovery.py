@@ -23,6 +23,34 @@ max_dev_boundary = 1 # Maximum deviation around robot and POI point...
 max_dev_remove = 3 # Maximum deviation from robot-POI line segment to remove points...
 # This value can be set close to 'max_dev_clean'
 
+
+# Function definitions:
+def linear_const(x1, x2, y1, y2):
+    return (y1-y2), (x2-x1), (x1*y2-x2*y1)
+
+def linear_dist(A, B, C, x, y):
+    return abs(A*x+B*y+C)/sqrt(A**2+B**2)
+
+def inside_radius(x0, y0, r, x_in, y_in):
+    return (x_in-x0)**2+(y_in-y0)**2<=r**2
+
+# Update map file:
+def update_map_old():
+    plt.grid(b=True, which='major', color='#d6d6d6', linestyle='--')
+    plt.scatter(dynamic_params.remove_x, dynamic_params.remove_y, c='r', marker='.', s=50, label='0')
+    plt.scatter(dynamic_params.hist_x, dynamic_params.hist_y, c='k', marker='.', alpha=0.5, label='1')
+    plt.scatter(dynamic_params.poi_x, dynamic_params.poi_y, c='b', marker='D', s=50, label='-1')
+
+    if (dynamic_params.rec_plot == False) and (dynamic_params.recovery_override == 1):
+        plt.scatter(dynamic_params.rec_x, dynamic_params.rec_y, c='b', marker='D', s=50, label='0')
+        dynamic_params.rec_plot == True
+    elif (dynamic_params.rec_plot == True) and (dynamic_params.recovery_override == 1):
+        plt.scatter(dynamic_params.rec_x, dynamic_params.rec_y, c='green', marker='D', s=50, label='0')
+        dynamic_params.rec_plot == False
+
+    plt.gca().set_aspect('equal', adjustable='box')
+    #plt.savefig("/home/ubuntu/Map.png")
+
 # Save robot history:
 def save_history(i):
     robot_xy = get_robot_xy()

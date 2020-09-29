@@ -13,7 +13,15 @@ from std_msgs.msg import String
 import matplotlib
 import matplotlib.pyplot as plt
 import pickle
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
+
+import tf
+from geometry_msgs.msg import PointStamped
+#import tf2_ros
+#from tf2_msgs.msg import TFMessage
+#from tf.msg import tfMessage
+#from tf2_msgs.msg import tfMessage
+listener = 0
 
 """
 Ideas:
@@ -28,6 +36,8 @@ Ideas:
 """
 
 def movebase_client():
+    global listener
+
     # Move_base initialisation:
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
@@ -45,8 +55,16 @@ def movebase_client():
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
     dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
-    pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
-    pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
+
+    #pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
+    #pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
+
+    #pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
+    #pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
+    
+    # Axes to plot wall detection
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
 
     # Begin navigation algorithm
     while True:
@@ -55,8 +73,46 @@ def movebase_client():
         # Choose pedestrian selection logic based on whether the robot is inside/outside building vicinity, and if an entrance has/has not been found
         if contains_pt(get_robot_xy(), building_polygon) and (not dynamic_params.entrance_found):
             print("- Status: Within building vicinity...")
-            select_ped_within_vicinity()
             rec_enable = 0
+
+            try:
+                ##### Transform building entrance FROM odom (world frame) TO base_link (robot frame) #####
+                # In terminal: rosrun tf tf_echo base_link odom
+                #(trans, rot) = listener.lookupTransform('base_link', 'odom', rospy.Time(0))
+
+                # Building entrance in odom (world) frame
+                original_pt = PointStamped()
+                original_pt.header.frame_id = "odom"
+                original_pt.header.stamp = rospy.Time(0)
+                original_pt.point.x = building_entrance_xy[0]
+                original_pt.point.y = building_entrance_xy[1]
+                original_pt.point.z = 0.0
+
+                # Building_entrance in base_link (robot) frame
+                transformed_pt = listener.transformPoint('base_link', original_pt)
+                transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
+
+                # Get wall following goal point in base_link (robot) frame
+                goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=True)   # this either needs to be returned as a PointStamped(), or converted here
+
+                ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
+                #original_pt = listener.transformPoint('odom', goal_xy_robot_frame)
+                #dynamic_params.goal_xy = [original_pt.point.x, original_pt.point.y]
+
+                """
+                with open('/home/chris/Documents/tf_point.pickle', 'wb') as f:
+                    pickle.dump(transformed_pt_xy, f)
+                """
+
+                #print(trans); print('')
+                #print(rot); print('')
+                #print(original_pt); print('')
+                #print(transformed_pt); print('')
+
+                
+
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                print('Transform failed')
 
             # Read object detection results
             if process_img:
@@ -175,7 +231,46 @@ def movebase_client():
 
 if __name__ == '__main__':
     try:
+        global listener
         rospy.init_node('movebase_client_py')
+        listener = tf.TransformListener()
         result = movebase_client()
+        
+
+        
+        """
+        rospy.init_node('transform_listener')
+
+        tfBuffer = tf2_ros.Buffer()
+        listener = tf2_ros.TransformListener(tfBuffer)
+
+        try:
+            # Transform from odom to base_link
+            trans = tfBuffer.lookup_transform('velodyne2_base_link', 'front_mount', rospy.Time())
+            print(trans)
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            print('failed')
+            time.sleep(1)
+
+        #listener.waitForTransform("/frame1", "/frame2", rospy.Time(), rospy.Duration(4.0))
+        #(trans, rot) = listener.lookupTransform("/frame1", "/frame2", rospy.Time(0))
+        #rospy.spin()
+        """    
+
+        #rospy.init_node('transform_listener')
+        
+
+        
+        """
+        for i in range(100):
+            print("Before transform")
+            transform = rospy.wait_for_message("/tf", tfMessage)
+            print(transform)
+
+            time.sleep(1)
+        """
+        
+
+
     except rospy.ROSInterruptException:
         print("Algorithm finished!")
