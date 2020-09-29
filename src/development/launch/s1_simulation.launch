@@ -6,21 +6,21 @@
 
   <!--  GAZEBO CONFIG -->
   <arg name="world_name" default="$(find development)/resources/gazebo/start_at_boiler_house.world"/>
-  <arg name="enable_gazebo_gui" default="true"/>
+  <arg name="enable_gazebo_gui" default="false"/>
 
   <!-- JACKAL CONFIG -->
   <!-- base: Generates Jackal model only (faster) -->
   <!-- fyp_laser: Generates Jackal model with 2D laser scanner (fast) -->
   <!-- fyp_velodyne: Generates Jackal model with 3D Velodyne at low resolution (slower) -->
   <!-- fyp_velodyne_hd: Generates Jackal model with 3D Velodyne at high resolution (slowest) -->
-  <arg name="jackal_config" default="fyp_velodyne"/>
+  <arg name="jackal_config" default="fyp_velodyne_hd"/>
   <arg name="enable_jackal_robot" default="true"/>
 
   <!-- PEDSIM CONFIG -->
   <arg name="scene_file" value="$(find development)resources/pedsim/start_at_boiler_house.xml"/>
-  <arg name="simulation_factor" default="1.5"/> <!-- Simulation rate -->
+  <arg name="simulation_factor" default="1.5"/> <!-- Simulation rate - DEFAULT: 1.5 -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
-  <arg name="ped_gazebo_plugin" default="true"/>
+  <arg name="ped_gazebo_plugin" default="false"/>
   <arg name="enable_pedsim" default="true"/>
 
   <!--  **************************************************************  -->

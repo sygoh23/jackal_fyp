@@ -23,6 +23,7 @@ max_dev_boundary = 1 # Maximum deviation around robot and POI point...
 max_dev_remove = 3 # Maximum deviation from robot-POI line segment to remove points...
 # This value can be set close to 'max_dev_clean'
 
+
 # Function definitions:
 def linear_const(x1, x2, y1, y2):
     return (y1-y2), (x2-x1), (x1*y2-x2*y1)
@@ -34,7 +35,7 @@ def inside_radius(x0, y0, r, x_in, y_in):
     return (x_in-x0)**2+(y_in-y0)**2<=r**2
 
 # Update map file:
-def update_map():
+def update_map_old():
     plt.grid(b=True, which='major', color='#d6d6d6', linestyle='--')
     plt.scatter(dynamic_params.remove_x, dynamic_params.remove_y, c='r', marker='.', s=50, label='0')
     plt.scatter(dynamic_params.hist_x, dynamic_params.hist_y, c='k', marker='.', alpha=0.5, label='1')
@@ -51,10 +52,27 @@ def update_map():
     #plt.savefig("/home/ubuntu/Map.png")
 
 # Save robot history:
-def save_history():
+def save_history(i):
     robot_xy = get_robot_xy()
     dynamic_params.hist_x.append(robot_xy[0])
     dynamic_params.hist_y.append(robot_xy[1])
+
+    # Extract most recent points up to certain distance
+    # Used to ensure robot isn't moving backwards
+    if i > 1:
+        dynamic_params.recent_x = []
+        dynamic_params.recent_y = []
+
+        reverse_x = dynamic_params.hist_x[:]; reverse_y = dynamic_params.hist_y[:];
+        reverse_x.reverse(); reverse_y.reverse()
+        total_dist = 0
+        for p in range(len(dynamic_params.hist_x)-1):
+            recent_dist = get_distance(reverse_x[p], reverse_x[p+1], reverse_y[p], reverse_y[p+1])
+            total_dist = total_dist + recent_dist
+            dynamic_params.recent_x.append(reverse_x[p])
+            dynamic_params.recent_y.append(reverse_y[p])
+            if total_dist > robot_range:
+                break
 
 # Find points of interest in map:
 def find_poi():

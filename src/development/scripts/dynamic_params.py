@@ -32,16 +32,27 @@ exclusion_zones = [         # List of polygons in which the robot should not set
     ])
 ]
 
-# Recovery behaviour:
-recovery_override = 0
-rec_plot = False
-remove_radius = 5
-hist_x = []
+########## Recovery Behaviour ##########
+recovery_override = 0       # Prevents other code running during recovery
+remove_radius = 5           # Radius around points to prevent goal setting
+hist_x = [];                # Robot location history
 hist_y = []
-remove_x = []
+remove_x = []               # Removed points due to recovery behaviour
 remove_y = []
-rec_x = []
-rec_y = []
-poi_x = []
+poi_x = []                  # Points of interest
 poi_y = []
+recent_x = []               # Most recent coordinates
+recent_y = []
+
+########## Mapping ##########
+map_range = [];             # Robot mapping range
+robot_xy = [];              # Robot current position
+cloud_x = [];               # Point cloud
+cloud_y = []
+ped_x_excl = [];            # Excluded pedestrians
+ped_y_excl = []
+ped_x_los = [];             # Allowed pedestrians
+ped_y_los = []
+
+# Debugging:
 debug_please = []

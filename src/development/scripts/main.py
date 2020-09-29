@@ -5,7 +5,6 @@ import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from static_params import *
 import dynamic_params
-from static_params import *
 from ped_selection import *
 from recovery import *
 from utils import *
@@ -49,12 +48,16 @@ def movebase_client():
     rec_enable = 1 # Enable recovery
     rec_last_i = 0 # Last time recovery was initiated
     rec_smooth_filter = 10; # Amount of mean smoothing for recovery scores
-    rec_threshold = 10; # Score threshold to activate recovery behaviour
+    rec_threshold = 20; # Score threshold to activate recovery behaviour
+    # Default: 10
     last_building_vel = []
 
     # Set exclusion zone around starting point
     start_point = get_robot_xy()
     dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
+
+    #pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
+    #pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
 
     #pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
     #pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
@@ -126,7 +129,7 @@ def movebase_client():
             print("- Status: Outside building vicinity...")
             ped_found, _ = select_ped_outside_vicinity(1, i)
 
-            # Phase 1 pedestrian not found:import matplotlib
+            # Phase 1 pedestrian not found:
             if ped_found == 0:
                 move_without_peds_outside_vicinity()
 
@@ -150,23 +153,19 @@ def movebase_client():
                     dynamic_params.out_of_range = 0
 
         # Send navigation goal to navigation stack:
-        goal = MoveBaseGoal()
-        goal.target_pose.header.frame_id = "odom"
-        goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = dynamic_params.goal_xy[0]
-        goal.target_pose.pose.position.y = dynamic_params.goal_xy[1]
-        goal.target_pose.pose.orientation.w = 1.0
-        client.send_goal(goal)
+        manual_navigation = False # Use to control robot directly in RViz
+        if manual_navigation == False:
+            client.send_goal(setup_goal(dynamic_params.goal_xy[0], dynamic_params.goal_xy[1]))
 
         # Recovery behaviour:
-        save_history()
+        save_history(i)
         building_dist = get_distance(building_center_xy[0], dynamic_params.hist_x[i], building_center_xy[1], dynamic_params.hist_y[i])
         building_vel = get_distance(building_center_xy[0], dynamic_params.hist_x[i-1], building_center_xy[1], dynamic_params.hist_y[i-1]) - building_dist
         last_building_vel.append(building_vel)
 
         # Check robot progress towards building centre:
         avg_building_vel = 0
-        if (i>=rec_smooth_filter):
+        if (i >= rec_smooth_filter):
             avg_building_vel = 0
             for j in range(rec_smooth_filter):
                 new_vel = last_building_vel[i-j]
@@ -185,59 +184,41 @@ def movebase_client():
             print("--- Building Progress Score: %.1f points" % (avg_building_vel))
             print("--- Robot Displacement Score: %.1f points" % (robot_disp))
 
-            if (rec_score < rec_threshold) and (i - rec_last_i > rec_smooth_filter):
-                # Engage recovery behaviour:
+            if (rec_score < rec_threshold) and (i-rec_last_i > rec_smooth_filter):
+                # Engage recovery behaviour, send robot to last POI:
                 print("--- Robot movement failure! Recovery #%d initiated..." % (rec_attempts))
-                # Determine points to remove from map:
-                remove_points(rec_attempts)
-                update_map()
-
-                # Send robot to last point of interest:
-                rec_last_i = i
-                dynamic_params.recovery_override = 1
-                robot_xy = get_robot_xy()
-                rec_x = dynamic_params.poi_x[-rec_attempts]
-                rec_y = dynamic_params.poi_y[-rec_attempts]
+                remove_points(rec_attempts); rec_last_i = i;
+                dynamic_params.recovery_override = 1; robot_xy = get_robot_xy()
+                rec_x = dynamic_params.poi_x[-rec_attempts]; rec_y = dynamic_params.poi_y[-rec_attempts]
                 print("--- Last point of interest: " + str([rec_x, rec_y]))
                 print("--- Robot position: " + str([robot_xy[0], robot_xy[1]]))
                 while inside_radius(rec_x, rec_y, 3, robot_xy[0], robot_xy[1]) == False:
                     robot_xy = get_robot_xy()
                     rec_d = get_distance(rec_x, robot_xy[0], rec_y, robot_xy[1])
-                    rec_goal_x = rec_x; rec_goal_y = rec_y; rec_goal_d = rec_d
+                    rec_goal_x = rec_x; rec_goal_y = rec_y; rec_goal_d = rec_d;
                     if rec_d > 20:
                         while (rec_goal_d > 20):
                             rec_goal_x = (rec_goal_x + robot_xy[0]) / 2
                             rec_goal_y = (rec_goal_y + robot_xy[1]) / 2
                             rec_goal_d = get_distance(rec_goal_x, robot_xy[0], rec_goal_y, robot_xy[1])
                     print("--- Recovery goal: " + str([rec_goal_x, rec_goal_y]))
-                    goal = MoveBaseGoal()
-                    goal.target_pose.header.frame_id = "odom"
-                    goal.target_pose.header.stamp = rospy.Time.now()
-                    goal.target_pose.pose.position.x = rec_goal_x
-                    goal.target_pose.pose.position.y = rec_goal_y
-                    goal.target_pose.pose.orientation.w = 1.0
-                    client.send_goal(goal)
-                    robot_xy = get_robot_xy()
-                    time.sleep(1)
+                    client.send_goal(setup_goal(rec_goal_x, rec_goal_y))
+                    robot_xy = get_robot_xy(); time.sleep(1)
                 # Send removed points to custom laserscan plugin:
                 pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
                 pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
 
                 # Reset pedestrian following logic:
-                dynamic_params.ped_last = []
-                dynamic_params.following_ped = 0
+                dynamic_params.ped_last = []; dynamic_params.following_ped = 0;
                 dynamic_params.goal_xy = [robot_xy[0], robot_xy[1]]
                 print("--- Robot has now moved to the last point of interest...")
-                rec_attempts += 1
-                dynamic_params.recovery_override = 0
+                rec_attempts += 1; dynamic_params.recovery_override = 0
                 time.sleep(1)
         else:
             print("- Recovery Score: Unavailable")
 
-        # Every five iterations, update the map:
-        if (i % 5) == 0:
-            find_poi()
-            update_map()
+        find_poi()
+        update_map()
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:
