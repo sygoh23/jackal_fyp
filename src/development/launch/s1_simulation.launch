@@ -5,7 +5,7 @@
   <arg name="enable_rviz" default="true"/>
 
   <!--  GAZEBO CONFIG -->
-  <arg name="world_name" default="$(find development)/resources/gazebo/start_at_new_horizons.world"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/start_at_boiler_house.world"/>
   <arg name="enable_gazebo_gui" default="false"/>
 
   <!-- JACKAL CONFIG -->
@@ -17,7 +17,7 @@
   <arg name="enable_jackal_robot" default="true"/>
 
   <!-- PEDSIM CONFIG -->
-  <arg name="scene_file" value="$(find development)resources/pedsim/start_at_new_horizons.xml"/>
+  <arg name="scene_file" value="$(find development)resources/pedsim/start_at_boiler_house.xml"/>
   <arg name="simulation_factor" default="1.5"/> <!-- Simulation rate - DEFAULT: 1.5 -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
   <arg name="ped_gazebo_plugin" default="false"/>

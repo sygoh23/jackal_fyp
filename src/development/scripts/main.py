@@ -38,7 +38,7 @@ def movebase_client():
     rec_enable = 1 # Enable recovery
     rec_last_i = 0 # Last time recovery was initiated
     rec_smooth_filter = 10; # Amount of mean smoothing for recovery scores
-    rec_threshold = 1; # Score threshold to activate recovery behaviour
+    rec_threshold = 20; # Score threshold to activate recovery behaviour
     # Default: 10
     last_building_vel = []
 
@@ -121,7 +121,7 @@ def movebase_client():
         if (i >= rec_smooth_filter) and (len(dynamic_params.poi_x) > 1) and (rec_enable == 1):
             robot_disp = 0
             for j in range(rec_smooth_filter):
-                new_dist = 1.5*get_distance(dynamic_params.hist_x[i-j], dynamic_params.hist_x[i-j-1],dynamic_params.hist_y[i-j], dynamic_params.hist_y[i-j-1])
+                new_dist = get_distance(dynamic_params.hist_x[i-j], dynamic_params.hist_x[i-j-1],dynamic_params.hist_y[i-j], dynamic_params.hist_y[i-j-1])
                 robot_disp = robot_disp + new_dist
             rec_score = robot_disp + avg_building_vel
             print("- Recovery Behaviour: %.1f points / %.1f points" % (rec_score, rec_threshold))
