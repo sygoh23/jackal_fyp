@@ -263,7 +263,7 @@ def select_ped_outside_vicinity(phase, i):
                 robot_in_excl_zone = (contains_pt(robot_xy, dynamic_params.exclusion_zones[1]))
 
                 if (ped_not_recent_hist == False):
-                    print("--- Ped %d is in recent history. Skipped!" % idx)
+                    #print("--- Ped %d is in recent history. Skipped!" % idx)
 
                 if (ped_not_excl_zone_0 == True) and (ped_not_remove_zone == True) and (ped_not_recent_hist == True):
 

@@ -43,6 +43,7 @@ poi_x = []                  # Points of interest
 poi_y = []
 recent_x = []               # Most recent coordinates
 recent_y = []
+recovery_prev_poi = []
 
 ########## Mapping ##########
 map_range = [];             # Robot mapping range

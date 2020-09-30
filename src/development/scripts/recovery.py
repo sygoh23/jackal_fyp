@@ -143,3 +143,41 @@ def remove_points(rec_attempts):
     dynamic_params.remove_x = x_final[:]
     dynamic_params.remove_y = y_final[:]
     return
+
+def select_rec_poi(rec_attempts):
+    # One very niche set of scenarios this function should aim to fix is:
+    # Suppose the robot detects waypoints 1,2,3,4,5.
+    # Waypoint 5 has a few pathways.
+    # The robot gets stuck then recovers back to Waypoint 5.
+    # The robot takes a new pathway.
+    # The robot get stuck, it should recover back to Waypoint 5.
+    # What if the robot recovers back to 4... then makes more progress?
+    # What if it detects Waypoint 6... and after Waypoint 6 gets stuck?
+    # The robot should go back to Waypoint 4, and not Waypoint 5.
+    # The algorithm would need to exclude certain groups of waypoints
+    # if they combined contribute to a dead end.
+    # This functionality isn't working yet.
+
+    #print(dynamic_params.recovery_prev_poi)
+    available_poi = []
+    if len(dynamic_params.recovery_prev_poi) == 0:
+        rec_poi_num = len(dynamic_params.poi_x)-1
+        #print("--- DEBUG: First recovery! Using last POI: %d..." % (rec_poi_num+1))
+        dynamic_params.recovery_prev_poi.append(rec_poi_num)
+
+    elif len(dynamic_params.recovery_prev_poi) > 0:
+        for q in range(len(dynamic_params.poi_x)):
+            skip_this_poi = 0
+
+            for r in range(len(dynamic_params.recovery_prev_poi)):
+                if q == dynamic_params.recovery_prev_poi[r]:
+                    skip_this_poi = 1
+
+            if skip_this_poi == 0:
+                available_poi.append(q)
+
+        #print(available_poi)
+        rec_poi_num = available_poi[-1]
+
+    #return rec_poi_num
+    return (-rec_attempts)

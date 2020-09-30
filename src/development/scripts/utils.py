@@ -28,7 +28,7 @@ def update_map():
     plt.scatter(dynamic_params.goal_xy[0], dynamic_params.goal_xy[1], c='fuchsia', marker='x', s=50)
     plt.scatter(dynamic_params.robot_xy[0], dynamic_params.robot_xy[1], c='k', marker='h', s=50)
     plt.scatter(dynamic_params.cloud_x, dynamic_params.cloud_y, c='dimgray', marker='.', s=10)
-    plt.scatter(dynamic_params.ped_x_excl, dynamic_params.ped_y_excl, c='r', marker='.', s=20)
+    plt.scatter(dynamic_params.ped_x_excl, dynamic_params.ped_y_excl, c='r', alpha=0.3, marker='.', s=10)
     plt.scatter(dynamic_params.ped_x_los, dynamic_params.ped_y_los, c='g', marker='.', s=30)
     plt.xlim((dynamic_params.robot_xy[0]-dynamic_params.map_range, dynamic_params.robot_xy[0]+dynamic_params.map_range))
     plt.ylim((dynamic_params.robot_xy[1]-dynamic_params.map_range, dynamic_params.robot_xy[1]+dynamic_params.map_range))
