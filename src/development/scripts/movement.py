@@ -29,7 +29,7 @@ Movement logic when the robot is within the building vicinity
 --> Assumes there is only one doorway in the defined building vicinity
 """
 def move_within_vicinity(target_xy, ax, plot_results):
-    
+
     # Graphs should cascade throughout the function
 
     ##########################################################################
@@ -46,7 +46,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
         if point[2] > 0.5:
             x.append(point[0])
             y.append(point[1])
-    
+
     """
     # Display points in robot frame
     fig = plt.figure()
@@ -108,13 +108,13 @@ def move_within_vicinity(target_xy, ax, plot_results):
     if lines is not None:
 
         # [np.array[x1, y1, x2, y2], ...]
-        lines_list = []     
+        lines_list = []
 
         for line in lines:
             x1, y1, x2, y2 = line[0]
             lines_list.append(line[0])
             #cv2.line(img, (x1, y1), (x2, y2), color=(0, 0, 255), thickness=2)
-            
+
         # Show/save result
         #cv2.imwrite("/home/chris/Documents/HoughTransform.jpg", img)
         #cv2.imshow("Detected Lines", img)
@@ -144,7 +144,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
             start_transformed[0] - abs(y_min),
             start_transformed[1] - abs(x_min)
         )
-        
+
         # Coord flip
         start_transformed = (start_transformed[1], start_transformed[0])
 
@@ -197,11 +197,11 @@ def move_within_vicinity(target_xy, ax, plot_results):
         # Don't compare an already identified duplicate
         if (line1[0] in duplicates) or (line2[0] in duplicates):
             continue
-        
+
         # Start by assuming the lines are not duplicates
         same_start = False
         same_end = False
-        
+
         # Compare start points
         start1 = line1[1][0]
         start2 = line2[1][0]
@@ -223,7 +223,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
             duplicates.append(line2[0])
             #del lines_tuples[line2[0]]
             #print('Deleted')
-    
+
     duplicates.sort(reverse=True)
     for idx in duplicates:
         del lines_tuples[idx]
@@ -279,7 +279,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
 
         # Inner loop iterates over each generated point in the current line
         while get_distance(current_pt[0], end_pt[0], current_pt[1], end_pt[1]) > endpoint_threshold:
-            
+
             # Get distance from current point to target
             target_dist = get_distance(current_pt[0], target_xy[0], current_pt[1], target_xy[1])
             #print('\nCurrent point: {}\n'.format(current_pt))
@@ -291,7 +291,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
                 min_dist = target_dist
                 best_line = line
                 #print('New best line')
-            
+
             # Generate next point
             current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
 
@@ -328,15 +328,11 @@ def move_within_vicinity(target_xy, ax, plot_results):
         #print("--> Current goal is outside vicinity, generating new goal...")
 
 
-    """
-    with open('/home/chris/Documents/pointcloud2.pickle', 'wb') as f:
+    with open(simulation_setup.pointcloud2_pth, 'wb') as f:
         pickle.dump(pointcloud, f)
-    """
 
     goal_xy_robot_frame = [0, 0]
     return goal_xy_robot_frame
-    
-
 
 """
 Used in phase 3. Sets the robot goal as the closest pedestrian to the robot, regardless of their direction of movement or other constraints imposed in phase 1

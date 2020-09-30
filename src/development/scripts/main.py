@@ -56,8 +56,11 @@ def movebase_client():
     start_point = get_robot_xy()
     dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
 
+    # Initialisation for recovery beheaviour:
     pickle.dump(dynamic_params.remove_x, open(simulation_setup.remove_x_pth,"w"))
     pickle.dump(dynamic_params.remove_y, open(simulation_setup.remove_y_pth,"w"))
+    dynamic_params.robot_xy = get_robot_xy()
+    dynamic_params.map_range = 50
 
     # Axes to plot wall detection
     fig = plt.figure()
@@ -91,6 +94,7 @@ def movebase_client():
 
                 # Get wall following goal point in base_link (robot) frame
                 goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=True)   # this either needs to be returned as a PointStamped(), or converted here
+                time.sleep(5) # Slow things down to debug!
 
                 ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
                 #original_pt = listener.transformPoint('odom', goal_xy_robot_frame)

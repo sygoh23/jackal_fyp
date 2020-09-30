@@ -1,5 +1,5 @@
 # STEP 1: CHOOSE ROBOT STARTING LOCATION:
-starting_location = 2
+starting_location = 0
 # 0: Within Vicinity (ENG Lecture Theatres)
 # 1: Sticking Point
 # 2: ENG Faculty (B72)
@@ -39,6 +39,7 @@ remove_y_ext = "/live/remove_y.pkl"
 map_ext = "/live/map.png"
 hough_ext = "/live/hough.jpg"
 pointcloud_ext = "/live/pointcloud.pickle"
+pointcloud2_ext = "/live/pointcloud2.pickle"
 
 # Full file paths:
 model_pth = base_pth + model_ext
@@ -48,3 +49,4 @@ remove_y_pth = base_pth + remove_y_ext
 map_pth = base_pth + map_ext
 hough_pth = base_pth + hough_ext
 pointcloud_pth = base_pth + pointcloud_ext
+pointcloud2_pth = base_pth + pointcloud2_ext
