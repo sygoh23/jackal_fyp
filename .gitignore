@@ -1,6 +1,7 @@
 # Build folders
 build/
 devel/
+live/
 
 # Python compiled binaries
 *.pyc

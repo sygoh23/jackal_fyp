@@ -4,4 +4,4 @@ sudo killall gzserver
 sudo killall gzclient
 source /opt/ros/melodic/setup.bash
 source ../devel/setup.bash
-roslaunch development s1_simulation.launch
+roslaunch development simulation_samuel.launch

@@ -26,7 +26,7 @@ Selects a pedestrian to follow when the robot is within the building vicinity
 --> Assumes there is only one doorway in the defined building vicinity
 --> Currently doesn't use pedestrians at all, but kept the name because following pedestrians may be a better option. Depends how well the current idea performs
 """
-chris_path = "/home/chris/Documents/pointcloud.pickle"
+
 def select_ped_within_vicinity():
     # While the goal point is outside the building vicinity
     while not contains_pt(dynamic_params.goal_xy, building_polygon):
@@ -38,7 +38,7 @@ def select_ped_within_vicinity():
     # Calculate next goal point
     pointcloud = get_pointcloud()
 
-    with open(chris_path, 'wb') as f:
+    with open(simulation_setup.pointcloud_pth, 'wb') as f:
         pickle.dump(pointcloud, f)
     sys.exit()
 

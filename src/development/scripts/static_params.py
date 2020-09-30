@@ -7,19 +7,28 @@ Do not change the value of these parameters, only access their value.
 
 import rospy
 import numpy as np
+import simulation_setup
 
 #################### Coordinates ####################
-offset_x = 48 # within building vicinity (eng lectures)
-#offset_x = 63 # sticking point
-#offset_x = 105 # starting point (building 72)
-#offset_x = 117 # starting point (new horizons)
-#offset_x = -10 # starting point (boiler house)
+if simulation_setup.starting_location == 0:
+    offset_x = 48 # within building vicinity (eng lectures)
+    offset_y = 148 # within building vicinity (eng lectures)
 
-offset_y = 148 # within building vicinity (eng lectures)
-#offset_y = 74 # sticking point
-#offset_y = 10 # starting point (building 72)
-#offset_y = -130 # starting point (new horizons)
-#offset_y = -76 # starting point (boiler house)
+elif simulation_setup.starting_location == 1:
+    offset_x = 63 # sticking point
+    offset_y = 74 # sticking point
+
+elif simulation_setup.starting_location == 2:
+    offset_x = 105 # starting point (building 72)
+    offset_y = 10 # starting point (building 72)
+
+elif simulation_setup.starting_location == 3:
+    offset_x = 117 # starting point (new horizons)
+    offset_y = -130 # starting point (new horizons)
+
+elif simulation_setup.starting_location == 4:
+    offset_x = -10 # starting point (boiler house)
+    offset_y = -76 # starting point (boiler house)
 
 building_centers = [
     # Index 0: Eng Faculty
@@ -106,14 +115,13 @@ building_bounding_polygons = [
 ]
 
 #################### Set Targets ####################
-target = 4  # 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
+target = simulation_setup.target_location
+# 0 = eng faculty, 1 = NH, 2 = HAL, 3 = MMS, 4 = lecture theatres
 building_center_xy = building_entrances[target]         # Do not need to change (was set to building_centers[target])
 building_entrance_xy = building_entrances[target]       # Do not need to change
 building_polygon = building_bounding_polygons[target]   # Do not need to change
 
 #################### Object Detection ####################
-model_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/Models/ssd300_epoch6.pth.tar"     # Full path to model
-font_pth = "/home/chris/Documents/jackal_fyp/src/development/resources/obj_detection/OpenSans-Regular.ttf"              # Full path to font file
 use_webcam = rospy.get_param("/move_base/webcam")           # Do not need to change
 process_img = rospy.get_param("/move_base/img_process")     # Do not need to change
 
@@ -121,8 +129,7 @@ process_img = rospy.get_param("/move_base/img_process")     # Do not need to cha
 t_delay = 1                 # Seconds between iterations (lower = more responsive)
 target_threshold = 1        # Radius threshold to determine when the robot has reached a given target point
 straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point
-#movement_pause = 8          # Seconds that the robot should wait in between movements
-movement_pause = 1          # Seconds that the robot should wait in between movements
+movement_pause = 2          # Seconds that the robot should wait in between movements
 phase3_dist = 10            # Distance that the robot should follow a pedestrian for in phase 3
 zone_length = 5             # Side length of a generated square, which is currently used as a no-go zone
 

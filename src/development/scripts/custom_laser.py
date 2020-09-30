@@ -7,6 +7,7 @@ import numpy as np
 import math
 import time
 import pickle
+import simulation_setup
 
 rospy.init_node('laser_scan_publisher')
 scan_pub = rospy.Publisher('custom/scan', LaserScan, queue_size=50)
@@ -34,8 +35,8 @@ while not rospy.is_shutdown():
     else:
         robot_angle = Y
 
-    remove_X = pickle.load(open("/home/ubuntu/x.pkl", "rb"))
-    remove_Y = pickle.load(open("/home/ubuntu/y.pkl", "rb"))
+    remove_X = pickle.load(open(simulation_setup.remove_x_pth, "rb"))
+    remove_Y = pickle.load(open(simulation_setup.remove_y_pth, "rb"))
 
     # Translate cartesian coordinates:
     delta_X = [A-msg.pose.pose.position.x for A in remove_X]

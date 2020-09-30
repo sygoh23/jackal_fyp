@@ -56,12 +56,9 @@ def movebase_client():
     start_point = get_robot_xy()
     dynamic_params.exclusion_zones.append(generate_zone(start_point, zone_length))
 
-    #pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
-    #pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
+    pickle.dump(dynamic_params.remove_x, open(simulation_setup.remove_x_pth,"w"))
+    pickle.dump(dynamic_params.remove_y, open(simulation_setup.remove_y_pth,"w"))
 
-    #pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
-    #pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
-    
     # Axes to plot wall detection
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
@@ -108,8 +105,6 @@ def movebase_client():
                 #print(rot); print('')
                 #print(original_pt); print('')
                 #print(transformed_pt); print('')
-
-                
 
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 print('Transform failed')
@@ -205,8 +200,8 @@ def movebase_client():
                     client.send_goal(setup_goal(rec_goal_x, rec_goal_y))
                     robot_xy = get_robot_xy(); time.sleep(1)
                 # Send removed points to custom laserscan plugin:
-                pickle.dump(dynamic_params.remove_x, open("/home/ubuntu/x.pkl","w"))
-                pickle.dump(dynamic_params.remove_y, open("/home/ubuntu/y.pkl","w"))
+                pickle.dump(dynamic_params.remove_x, open(simulation_setup.remove_x_pth, "w"))
+                pickle.dump(dynamic_params.remove_y, open(simulation_setup.remove_y_pth, "w"))
 
                 # Reset pedestrian following logic:
                 dynamic_params.ped_last = []; dynamic_params.following_ped = 0;
@@ -224,7 +219,6 @@ def movebase_client():
         if dynamic_params.reached_target == 1:
             print("-- Robot navigation complete!")
             break
-        dynamic_params.debug_please = []
         print("\n----------------------------------------------------------")
         i += 1
         time.sleep(t_delay)
@@ -235,9 +229,7 @@ if __name__ == '__main__':
         rospy.init_node('movebase_client_py')
         listener = tf.TransformListener()
         result = movebase_client()
-        
 
-        
         """
         rospy.init_node('transform_listener')
 
@@ -255,12 +247,9 @@ if __name__ == '__main__':
         #listener.waitForTransform("/frame1", "/frame2", rospy.Time(), rospy.Duration(4.0))
         #(trans, rot) = listener.lookupTransform("/frame1", "/frame2", rospy.Time(0))
         #rospy.spin()
-        """    
-
+        """
         #rospy.init_node('transform_listener')
-        
 
-        
         """
         for i in range(100):
             print("Before transform")
@@ -269,8 +258,6 @@ if __name__ == '__main__':
 
             time.sleep(1)
         """
-        
-
 
     except rospy.ROSInterruptException:
         print("Algorithm finished!")

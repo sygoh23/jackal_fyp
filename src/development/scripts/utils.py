@@ -33,7 +33,7 @@ def update_map():
     plt.xlim((dynamic_params.robot_xy[0]-dynamic_params.map_range, dynamic_params.robot_xy[0]+dynamic_params.map_range))
     plt.ylim((dynamic_params.robot_xy[1]-dynamic_params.map_range, dynamic_params.robot_xy[1]+dynamic_params.map_range))
     plt.gca().set_aspect('equal', adjustable='box')
-    plt.savefig("/home/ubuntu/Map.png")
+    plt.savefig(simulation_setup.map_pth)
 
 
 # Sets up a move base goal object to be sent to client

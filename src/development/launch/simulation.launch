@@ -1,4 +1,11 @@
 <launch>
+  <!-- ******************** AVAILABLE STARTING LOCATIONS ********************  -->
+  <!-- start_at_b72.world/xml: ENG Faculty (B72) -->
+  <!-- start_at_boiler_house.world/xml: Boiler House -->
+  <!-- start_at_new_horizons.world/xml: New Horizons -->
+  <!-- start_at_sticking_point.world/xml: Sticking Point-->
+  <!-- start_within_vicinity.world/xml: Within Vicinity (ENG Lecture Theatres)-->
+
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!-- RVIZ CONFIG -->
   <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_mapping.rviz"/>
