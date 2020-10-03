@@ -126,6 +126,7 @@ use_webcam = rospy.get_param("/move_base/webcam")           # Do not need to cha
 process_img = rospy.get_param("/move_base/img_process")     # Do not need to change
 
 #################### Algorithm ####################
+manual_navigation = False   # True enables control of robot directly in rviz
 t_delay = 1                 # Seconds between iterations (lower = more responsive)
 target_threshold = 1        # Radius threshold to determine when the robot has reached a given target point
 straight_line_dist = 2      # Distance that the robot should move in a straight line towards a given target point

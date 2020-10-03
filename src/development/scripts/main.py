@@ -88,15 +88,19 @@ def movebase_client():
                 transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
 
                 # Get wall following goal point in base_link (robot) frame
-                goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=True)   # this either needs to be returned as a PointStamped(), or converted here
-
-                
-
-                time.sleep(5) # Slow things down to debug!
+                goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=True)
+                #time.sleep(5) # Slow things down to debug!
 
                 ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
-                #original_pt = listener.transformPoint('odom', goal_xy_robot_frame)
-                #dynamic_params.goal_xy = [original_pt.point.x, original_pt.point.y]
+                base_link_pt = PointStamped()
+                base_link_pt.header.frame_id = 'base_link'
+                base_link_pt.header.stamp = rospy.Time(0)
+                base_link_pt.point.x = goal_xy_robot_frame[0]
+                base_link_pt.point.y = goal_xy_robot_frame[1]
+                base_link_pt.point.z = 0.0
+                
+                odom_pt = listener.transformPoint('odom', base_link_pt)
+                dynamic_params.goal_xy = [odom_pt.point.x, odom_pt.point.y]
 
                 #print(trans); print('')
                 #print(rot); print('')
@@ -145,8 +149,7 @@ def movebase_client():
                     dynamic_params.out_of_range = 0
 
         # Send navigation goal to navigation stack:
-        manual_navigation = True # Use to control robot directly in RViz
-        if manual_navigation == False:
+        if not manual_navigation:
             client.send_goal(setup_goal(dynamic_params.goal_xy[0], dynamic_params.goal_xy[1]))
 
         # Recovery behaviour:
@@ -183,11 +186,11 @@ def movebase_client():
             if (rec_score < rec_threshold) and (i-rec_last_i > rec_smooth_filter):
                 # Engage recovery behaviour, send robot to last POI:
                 print("--- Robot movement failure! Recovery #%d initiated..." % (rec_attempts))
-                remove_points(rec_attempts); rec_last_i = i;
+                remove_points(rec_attempts); rec_last_i = i
                 dynamic_params.recovery_override = 1; robot_xy = get_robot_xy()
                 rec_poi = select_rec_poi(rec_attempts)
-                rec_x = dynamic_params.poi_x[rec_poi];
-                rec_y = dynamic_params.poi_y[rec_poi];
+                rec_x = dynamic_params.poi_x[rec_poi]
+                rec_y = dynamic_params.poi_y[rec_poi]
                 print("--- Last point of interest: " + str([rec_x, rec_y]))
                 print("--- Robot position: " + str([robot_xy[0], robot_xy[1]]))
                 while inside_radius(rec_x, rec_y, 3, robot_xy[0], robot_xy[1]) == False:
