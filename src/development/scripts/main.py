@@ -13,8 +13,6 @@ from std_msgs.msg import String
 import matplotlib
 import matplotlib.pyplot as plt
 import pickle
-#matplotlib.use('Agg')
-
 import tf
 from geometry_msgs.msg import PointStamped
 listener = 0
@@ -220,7 +218,7 @@ def movebase_client():
             print("- Recovery Score: Unavailable")
 
         find_poi()
-        update_map()
+        #update_map()
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:
@@ -236,35 +234,5 @@ if __name__ == '__main__':
         rospy.init_node('movebase_client_py')
         listener = tf.TransformListener()
         result = movebase_client()
-
-        """
-        rospy.init_node('transform_listener')
-
-        tfBuffer = tf2_ros.Buffer()
-        listener = tf2_ros.TransformListener(tfBuffer)
-
-        try:
-            # Transform from odom to base_link
-            trans = tfBuffer.lookup_transform('velodyne2_base_link', 'front_mount', rospy.Time())
-            print(trans)
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            print('failed')
-            time.sleep(1)
-
-        #listener.waitForTransform("/frame1", "/frame2", rospy.Time(), rospy.Duration(4.0))
-        #(trans, rot) = listener.lookupTransform("/frame1", "/frame2", rospy.Time(0))
-        #rospy.spin()
-        """
-        #rospy.init_node('transform_listener')
-
-        """
-        for i in range(100):
-            print("Before transform")
-            transform = rospy.wait_for_message("/tf", tfMessage)
-            print(transform)
-
-            time.sleep(1)
-        """
-
     except rospy.ROSInterruptException:
         print("Algorithm finished!")

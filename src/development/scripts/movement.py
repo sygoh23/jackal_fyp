@@ -304,7 +304,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
     unit_x = (end_x - start_x)/line_dist
     unit_y = (end_y - start_y)/line_dist
 
-    # Calculate potential goal points
+    # Calculate potential goal points in each direction of unit vectors
     robot_xy = get_robot_xy()
 
     goal_x_1 = robot_xy[0] + movement_dist*unit_x
@@ -315,6 +315,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
     goal_y_2 = robot_xy[1] - movement_dist*unit_y
     target_dist_2 = get_distance(goal_x_2, target_xy[0], goal_y_2, target_xy[1])
 
+    # Select point closest to target
     if target_dist_1 >= target_dist_2:
         goal_x = goal_x_2
         goal_y = goal_y_2
@@ -322,7 +323,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
         goal_x = goal_x_1
         goal_y = goal_y_1
 
-    print('dist from robot to wall follow goal point = %.2f' % get_distance(robot_xy[0], goal_x, robot_xy[1], goal_y))
+    #print('dist from robot to wall follow goal point = %.2f' % get_distance(robot_xy[0], goal_x, robot_xy[1], goal_y))
 
     goal_xy_robot_frame = [goal_x, goal_y]
     return goal_xy_robot_frame
