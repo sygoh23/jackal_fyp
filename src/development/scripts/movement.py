@@ -269,15 +269,62 @@ def move_within_vicinity(target_xy, ax, plot_results):
         ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
 
         plt.pause(0.1)
-        #plt.show()
 
 
     ##########################################################################
     # Wall following
     ##########################################################################
 
+    # Init
+    movement_dist = 2               # How far ahead of the robot the goal point should be set parallel to the selected wall
+    too_close_threshold = 4         # Distance below which the robot is too close to the wall
+    too_far_threshold = 6           # Distance above which the robot is too far from the wall
+    ideal_dist = 5                  # Desired distance from the wall that the robot should try to stay while wall-following. Must be between the above two parameters
+    test_pts = 1000                 # Number of points to break the line into when testing for shortest distance
 
-    goal_xy_robot_frame = [0, 0]
+    # Start/endpoint config for selected line
+    start_x = best_line[0][0]
+    start_y = best_line[0][1]
+    end_x = best_line[1][0]
+    end_y = best_line[1][1]
+
+    dist_start_target = get_distance(start_x, target_xy[0], start_y, target_xy[1])
+    dist_end_target = get_distance(end_x, target_xy[0], end_y, target_xy[1])
+
+    """
+    if dist_end_target < dist_start_target:
+        start_x = best_line[1][0]
+        start_y = best_line[1][1]
+        end_x = best_line[0][0]
+        end_y = best_line[0][1]
+    """
+
+    # Component unit vectors (could be either direction)
+    line_dist = get_distance(start_x, end_x, start_y, end_y)
+    unit_x = (end_x - start_x)/line_dist
+    unit_y = (end_y - start_y)/line_dist
+
+    # Calculate potential goal points
+    robot_xy = get_robot_xy()
+
+    goal_x_1 = robot_xy[0] + movement_dist*unit_x
+    goal_y_1 = robot_xy[1] + movement_dist*unit_y
+    target_dist_1 = get_distance(goal_x_1, target_xy[0], goal_y_1, target_xy[1])
+
+    goal_x_2 = robot_xy[0] - movement_dist*unit_x
+    goal_y_2 = robot_xy[1] - movement_dist*unit_y
+    target_dist_2 = get_distance(goal_x_2, target_xy[0], goal_y_2, target_xy[1])
+
+    if target_dist_1 >= target_dist_2:
+        goal_x = goal_x_2
+        goal_y = goal_y_2
+    else:
+        goal_x = goal_x_1
+        goal_y = goal_y_1
+
+    print('dist from robot to wall follow goal point = %.2f' % get_distance(robot_xy[0], goal_x, robot_xy[1], goal_y))
+
+    goal_xy_robot_frame = [goal_x, goal_y]
     return goal_xy_robot_frame
 
 """

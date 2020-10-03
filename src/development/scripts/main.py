@@ -89,6 +89,9 @@ def movebase_client():
 
                 # Get wall following goal point in base_link (robot) frame
                 goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=True)   # this either needs to be returned as a PointStamped(), or converted here
+
+                
+
                 time.sleep(5) # Slow things down to debug!
 
                 ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
