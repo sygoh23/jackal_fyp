@@ -29,9 +29,7 @@ Movement logic when the robot is within the building vicinity
 --> Assumes there is only one doorway in the defined building vicinity
 """
 def move_within_vicinity(target_xy, ax, plot_results):
-
-    # Graphs should cascade throughout the function
-
+fu
     ##########################################################################
     # Point cloud filtering
     ##########################################################################
@@ -46,15 +44,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
         if point[2] > 0.5:
             x.append(point[0])
             y.append(point[1])
-
-    """
-    # Display points in robot frame
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
-    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
-    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
-    plt.show()
-    """
 
 
     ##########################################################################
@@ -165,22 +154,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
 
     #print("\nLines in robot frame:\n{}\n".format(lines_tuples))
 
-    """
-    # Display transformed lines in robot frame
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
-    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
-    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
-
-    # Detected lines (contains duplicates at this point)
-    for endpoints in lines_tuples:
-        x_pts = [endpoints[0][0], endpoints[1][0]]
-        y_pts = [endpoints[0][1], endpoints[1][1]]
-        ax.plot(x_pts, y_pts, linewidth=2)
-
-    plt.show()
-    """
-
 
     ##########################################################################
     # Duplicate removal
@@ -229,22 +202,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
         del lines_tuples[idx]
 
     #print('\nAfter duplicate removal:\n{}\n'.format(lines_tuples))
-
-    """
-    # Display transformed lines with removed duplicates in robot frame
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
-    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
-    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
-
-    # Detected lines without duplicates
-    for endpoints in lines_tuples:
-        x_pts = [endpoints[0][0], endpoints[1][0]]
-        y_pts = [endpoints[0][1], endpoints[1][1]]
-        ax.plot(x_pts, y_pts, linewidth=2)
-
-    plt.show()
-    """
 
 
     ##########################################################################
@@ -296,8 +253,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
             current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
 
     # Display selected line in robot frame
-    #fig = plt.figure()
-    #ax = fig.add_subplot(1, 1, 1)                               # nrows, ncols, index
     if plot_results:
         ax.clear()
         ax.scatter(x, y, color='b', s=10)                           # Pointcloud
@@ -321,15 +276,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
     # Wall following
     ##########################################################################
 
-    # Return a coordinate close to best wall and in direction of target
-
-    # If this goal point is outside the building vicinity, generate another point
-    #while not contains_pt(dynamic_params.goal_xy, building_polygon):
-        #print("--> Current goal is outside vicinity, generating new goal...")
-
-
-    with open(simulation_setup.pointcloud2_pth, 'wb') as f:
-        pickle.dump(pointcloud, f)
 
     goal_xy_robot_frame = [0, 0]
     return goal_xy_robot_frame

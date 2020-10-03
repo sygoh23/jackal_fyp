@@ -17,10 +17,6 @@ import pickle
 
 import tf
 from geometry_msgs.msg import PointStamped
-#import tf2_ros
-#from tf2_msgs.msg import TFMessage
-#from tf.msg import tfMessage
-#from tf2_msgs.msg import tfMessage
 listener = 0
 
 """
@@ -98,11 +94,6 @@ def movebase_client():
                 ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
                 #original_pt = listener.transformPoint('odom', goal_xy_robot_frame)
                 #dynamic_params.goal_xy = [original_pt.point.x, original_pt.point.y]
-
-                """
-                with open('/home/chris/Documents/tf_point.pickle', 'wb') as f:
-                    pickle.dump(transformed_pt_xy, f)
-                """
 
                 #print(trans); print('')
                 #print(rot); print('')
