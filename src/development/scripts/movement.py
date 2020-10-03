@@ -29,7 +29,7 @@ Movement logic when the robot is within the building vicinity
 --> Assumes there is only one doorway in the defined building vicinity
 """
 def move_within_vicinity(target_xy, ax, plot_results):
-fu
+
     ##########################################################################
     # Point cloud filtering
     ##########################################################################

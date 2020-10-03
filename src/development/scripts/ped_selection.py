@@ -264,6 +264,7 @@ def select_ped_outside_vicinity(phase, i):
 
                 if (ped_not_recent_hist == False):
                     #print("--- Ped %d is in recent history. Skipped!" % idx)
+                    pass
 
                 if (ped_not_excl_zone_0 == True) and (ped_not_remove_zone == True) and (ped_not_recent_hist == True):
 
