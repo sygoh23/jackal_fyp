@@ -69,7 +69,7 @@ def movebase_client():
             rec_enable = 0
 
             try:
-                ##### Transform building entrance FROM odom (world frame) TO base_link (robot frame) #####
+                # Transform building entrance FROM odom (world frame) TO base_link (robot frame)
                 # In terminal: rosrun tf tf_echo base_link odom
                 #(trans, rot) = listener.lookupTransform('base_link', 'odom', rospy.Time(0))
 
@@ -86,10 +86,9 @@ def movebase_client():
                 transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
 
                 # Get wall following goal point in base_link (robot) frame
-                goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=False)
-                #time.sleep(5) # Slow things down to debug!
+                goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=True)
 
-                ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
+                # Transform goal point FROM base_link (robot frame) BACK TO odom (world frame)
                 base_link_pt = PointStamped()
                 base_link_pt.header.frame_id = 'base_link'
                 base_link_pt.header.stamp = rospy.Time(0)
@@ -97,8 +96,11 @@ def movebase_client():
                 base_link_pt.point.y = goal_xy_robot_frame[1]
                 base_link_pt.point.z = 0.0
                 
+                # Goal point in odom (world) frame
                 odom_pt = listener.transformPoint('odom', base_link_pt)
-                #dynamic_params.goal_xy = [odom_pt.point.x, odom_pt.point.y]
+
+                # Set goal
+                dynamic_params.goal_xy = [odom_pt.point.x, odom_pt.point.y]
 
                 #print(trans); print('')
                 #print(rot); print('')

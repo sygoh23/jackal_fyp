@@ -252,6 +252,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
             # Generate next point
             current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
 
+    """
     # Display selected line in robot frame
     if plot_results:
         ax.clear()
@@ -269,7 +270,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
         ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
 
         plt.pause(0.1)
-
+    """
 
     ##########################################################################
     # Wall following
@@ -287,9 +288,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
     start_y = best_line[0][1]
     end_x = best_line[1][0]
     end_y = best_line[1][1]
-
-    dist_start_target = get_distance(start_x, target_xy[0], start_y, target_xy[1])
-    dist_end_target = get_distance(end_x, target_xy[0], end_y, target_xy[1])
 
     # Component unit vectors (could be either direction)
     line_dist = get_distance(start_x, end_x, start_y, end_y)
@@ -328,7 +326,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
         # Get distance from current point on line to selected parallel goal point
         target_dist = get_distance(current_pt[0], goal_x, current_pt[1], goal_y)
 
-        # Check if this point is the new closest point to the target
+        # Check if this point is the new closest point
         if target_dist < min_dist:
             min_dist = target_dist
             perpendicular_pt = current_pt
@@ -336,26 +334,47 @@ def move_within_vicinity(target_xy, ax, plot_results):
         # Generate next point
         current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
 
+    # Determine if selected parallel point is too close or far from the wall
+    if min_dist > too_far_threshold:
+        step = min_dist - ideal_dist
+
+        line_dist = get_distance(goal_x, perpendicular_pt[0], goal_y, perpendicular_pt[1])
+        unit_x = (perpendicular_pt[0] - goal_x)/line_dist
+        unit_y = (perpendicular_pt[1] - goal_y)/line_dist
+
+        goal_x = goal_x + step*unit_x
+        goal_y = goal_y + step*unit_y
+
+    elif min_dist < too_close_threshold:
+        step = ideal_dist - min_dist
+
+        line_dist = get_distance(goal_x, perpendicular_pt[0], goal_y, perpendicular_pt[1])
+        unit_x = (perpendicular_pt[0] - goal_x)/line_dist
+        unit_y = (perpendicular_pt[1] - goal_y)/line_dist
+
+        goal_x = goal_x - step*unit_x
+        goal_y = goal_y - step*unit_y
+
+    # Display selected line in robot frame
+    if plot_results:
+        ax.clear()
+        ax.scatter(x, y, color='b', s=10)                                       # Pointcloud
+        ax.scatter(target_xy[0], target_xy[1], color='g', s=100)                # Target point
+        ax.scatter(0, 0, color='r', s=100)                                      # Robot
+        ax.scatter(goal_x, goal_y, color='y', s=100)                            # Wall-following goal point
+        ax.scatter(perpendicular_pt[0], perpendicular_pt[1], color='k', s=100)  # Perpendicular intersector point
+
+        # Detected lines without duplicates
+        for endpoints in lines_tuples:
+            x_pts = [endpoints[0][0], endpoints[1][0]]
+            y_pts = [endpoints[0][1], endpoints[1][1]]
+            ax.plot(x_pts, y_pts, linewidth=2)
+
+        # Best line
+        ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
+
+        plt.pause(0.1)
     
-    ax.clear()
-    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
-    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
-    ax.scatter(0, 0, color='r', s=100)                          # Robot
-    ax.scatter(goal_x, goal_y, color='y', s=100)                # Parallel point
-    ax.scatter(perpendicular_pt[0], perpendicular_pt[1], color='k', s=100)        # Perpendicular intersector point
-
-    # Detected lines without duplicates
-    for endpoints in lines_tuples:
-        x_pts = [endpoints[0][0], endpoints[1][0]]
-        y_pts = [endpoints[0][1], endpoints[1][1]]
-        ax.plot(x_pts, y_pts, linewidth=2)
-
-    # Best line
-    ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
-
-    plt.pause(0.1)
-    
-
     #print('dist from robot to wall follow goal point = %.2f' % get_distance(robot_xy[0], goal_x, robot_xy[1], goal_y))
 
     goal_xy_robot_frame = [goal_x, goal_y]
