@@ -111,7 +111,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
 
     else:
         print("No lines found")
-        return get_robot_xy()
+        return [0, 0]
 
     #print('\nDetected lines:\n{}\n'.format(lines_list))
 
@@ -281,7 +281,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
     too_close_threshold = 4         # Distance below which the robot is too close to the wall
     too_far_threshold = 6           # Distance above which the robot is too far from the wall
     ideal_dist = 5                  # Desired distance from the wall that the robot should try to stay while wall-following. Must be between the above two parameters
-    test_pts = 1000                 # Number of points to break the line into when testing for shortest distance
 
     # Start/endpoint config for selected line
     start_x = best_line[0][0]
@@ -295,7 +294,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
     unit_y = (end_y - start_y)/line_dist
 
     # Calculate potential goal points in each direction of unit vectors
-    robot_xy = get_robot_xy()
+    robot_xy = [0, 0]
 
     goal_x_1 = robot_xy[0] + movement_dist*unit_x
     goal_y_1 = robot_xy[1] + movement_dist*unit_y
@@ -312,6 +311,28 @@ def move_within_vicinity(target_xy, ax, plot_results):
     else:
         goal_x = goal_x_1
         goal_y = goal_y_1
+
+    """
+    # Display selected line in robot frame
+    if plot_results:
+        ax.clear()
+        ax.scatter(x, y, color='b', s=10)                                       # Pointcloud
+        ax.scatter(target_xy[0], target_xy[1], color='g', s=100)                # Target point
+        ax.scatter(0, 0, color='r', s=100)                                      # Robot
+        ax.scatter(goal_x_1, goal_y_1, color='y', s=100)                            # Parallel point 1
+        ax.scatter(goal_x_2, goal_y_2, color='k', s=100)  # Parallel point 2
+
+        # Detected lines without duplicates
+        for endpoints in lines_tuples:
+            x_pts = [endpoints[0][0], endpoints[1][0]]
+            y_pts = [endpoints[0][1], endpoints[1][1]]
+            ax.plot(x_pts, y_pts, linewidth=2)
+
+        # Best line
+        ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
+
+        plt.pause(0.1)
+    """
 
     # Find point on wall that is shortest distance from selected parallel goal point above
     step = 1                                    # The interval along the line for which distance to target should be calculated
@@ -336,24 +357,63 @@ def move_within_vicinity(target_xy, ax, plot_results):
 
     # Determine if selected parallel point is too close or far from the wall
     if min_dist > too_far_threshold:
+        print("%.2fm from wall, too far" % min_dist)
+
+        # Calculate required movement distance along perpendicular line
         step = min_dist - ideal_dist
 
+        # Calculate unit vectors
         line_dist = get_distance(goal_x, perpendicular_pt[0], goal_y, perpendicular_pt[1])
         unit_x = (perpendicular_pt[0] - goal_x)/line_dist
         unit_y = (perpendicular_pt[1] - goal_y)/line_dist
 
-        goal_x = goal_x + step*unit_x
-        goal_y = goal_y + step*unit_y
+        # Calculate goal points in both directions
+        goal_x_1 = goal_x + step*unit_x
+        goal_y_1 = goal_y + step*unit_y
+        target_dist_1 = get_distance(goal_x_1, target_xy[0], goal_y_1, target_xy[1])
+
+        goal_x_2 = goal_x - step*unit_x
+        goal_y_2 = goal_y - step*unit_y
+        target_dist_2 = get_distance(goal_x_2, target_xy[0], goal_y_2, target_xy[1])
+
+        # Select point closest to target
+        if target_dist_1 >= target_dist_2:
+            goal_x = goal_x_2
+            goal_y = goal_y_2
+        else:
+            goal_x = goal_x_1
+            goal_y = goal_y_1
 
     elif min_dist < too_close_threshold:
+        print("%.2fm from wall, too close" % min_dist)
+
+        # Calculate required movement distance along perpendicular line
         step = ideal_dist - min_dist
 
+        # Calculate unit vectors
         line_dist = get_distance(goal_x, perpendicular_pt[0], goal_y, perpendicular_pt[1])
         unit_x = (perpendicular_pt[0] - goal_x)/line_dist
         unit_y = (perpendicular_pt[1] - goal_y)/line_dist
 
-        goal_x = goal_x - step*unit_x
-        goal_y = goal_y - step*unit_y
+        # Calculate goal points in both directions
+        goal_x_1 = goal_x + step*unit_x
+        goal_y_1 = goal_y + step*unit_y
+        target_dist_1 = get_distance(goal_x_1, target_xy[0], goal_y_1, target_xy[1])
+
+        goal_x_2 = goal_x - step*unit_x
+        goal_y_2 = goal_y - step*unit_y
+        target_dist_2 = get_distance(goal_x_2, target_xy[0], goal_y_2, target_xy[1])
+
+        # Select point closest to target
+        if target_dist_1 >= target_dist_2:
+            goal_x = goal_x_2
+            goal_y = goal_y_2
+        else:
+            goal_x = goal_x_1
+            goal_y = goal_y_1
+    
+    else:
+        print("%.2fm from wall, ideal" % min_dist)
 
     # Display selected line in robot frame
     if plot_results:
@@ -375,8 +435,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
 
         plt.pause(0.1)
     
-    #print('dist from robot to wall follow goal point = %.2f' % get_distance(robot_xy[0], goal_x, robot_xy[1], goal_y))
-
     goal_xy_robot_frame = [goal_x, goal_y]
     return goal_xy_robot_frame
 
