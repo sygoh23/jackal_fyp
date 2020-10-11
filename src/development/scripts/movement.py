@@ -291,14 +291,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
     dist_start_target = get_distance(start_x, target_xy[0], start_y, target_xy[1])
     dist_end_target = get_distance(end_x, target_xy[0], end_y, target_xy[1])
 
-    """
-    if dist_end_target < dist_start_target:
-        start_x = best_line[1][0]
-        start_y = best_line[1][1]
-        end_x = best_line[0][0]
-        end_y = best_line[0][1]
-    """
-
     # Component unit vectors (could be either direction)
     line_dist = get_distance(start_x, end_x, start_y, end_y)
     unit_x = (end_x - start_x)/line_dist
@@ -322,6 +314,47 @@ def move_within_vicinity(target_xy, ax, plot_results):
     else:
         goal_x = goal_x_1
         goal_y = goal_y_1
+
+    # Find point on wall that is shortest distance from selected parallel goal point above
+    step = 1                                    # The interval along the line for which distance to target should be calculated
+    endpoint_threshold = 0.6                    # How close to the endpoint for the iteration to stop. Should be > step/2
+    min_dist = float('inf')                     # Init to large number
+    perpendicular_pt = [8725, 8725]             # Init to anything, values will be replaced in first iteration
+    current_pt = [start_x, start_y]             # Init to start point of wall
+    end_pt = [end_x, end_y]                     # End point of wall
+
+    while get_distance(current_pt[0], end_pt[0], current_pt[1], end_pt[1]) > endpoint_threshold:
+
+        # Get distance from current point on line to selected parallel goal point
+        target_dist = get_distance(current_pt[0], goal_x, current_pt[1], goal_y)
+
+        # Check if this point is the new closest point to the target
+        if target_dist < min_dist:
+            min_dist = target_dist
+            perpendicular_pt = current_pt
+
+        # Generate next point
+        current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
+
+    
+    ax.clear()
+    ax.scatter(x, y, color='b', s=10)                           # Pointcloud
+    ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
+    ax.scatter(0, 0, color='r', s=100)                          # Robot
+    ax.scatter(goal_x, goal_y, color='y', s=100)                # Parallel point
+    ax.scatter(perpendicular_pt[0], perpendicular_pt[1], color='k', s=100)        # Perpendicular intersector point
+
+    # Detected lines without duplicates
+    for endpoints in lines_tuples:
+        x_pts = [endpoints[0][0], endpoints[1][0]]
+        y_pts = [endpoints[0][1], endpoints[1][1]]
+        ax.plot(x_pts, y_pts, linewidth=2)
+
+    # Best line
+    ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
+
+    plt.pause(0.1)
+    
 
     #print('dist from robot to wall follow goal point = %.2f' % get_distance(robot_xy[0], goal_x, robot_xy[1], goal_y))
 

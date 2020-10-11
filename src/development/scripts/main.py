@@ -86,7 +86,7 @@ def movebase_client():
                 transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
 
                 # Get wall following goal point in base_link (robot) frame
-                goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=True)
+                goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=False)
                 #time.sleep(5) # Slow things down to debug!
 
                 ##### Transform goal point FROM base_link (robot frame) BACK TO odom (world frame) #####
@@ -98,7 +98,7 @@ def movebase_client():
                 base_link_pt.point.z = 0.0
                 
                 odom_pt = listener.transformPoint('odom', base_link_pt)
-                dynamic_params.goal_xy = [odom_pt.point.x, odom_pt.point.y]
+                #dynamic_params.goal_xy = [odom_pt.point.x, odom_pt.point.y]
 
                 #print(trans); print('')
                 #print(rot); print('')
