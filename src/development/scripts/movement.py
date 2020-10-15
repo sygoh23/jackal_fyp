@@ -342,6 +342,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
     current_pt = [start_x, start_y]             # Init to start point of wall
     end_pt = [end_x, end_y]                     # End point of wall
 
+    # Loop through to find min dist rather than calculating perpendicular dist
     while get_distance(current_pt[0], end_pt[0], current_pt[1], end_pt[1]) > endpoint_threshold:
 
         # Get distance from current point on line to selected parallel goal point
