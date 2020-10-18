@@ -252,25 +252,6 @@ def move_within_vicinity(target_xy, ax, plot_results):
             # Generate next point
             current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
 
-    """
-    # Display selected line in robot frame
-    if plot_results:
-        ax.clear()
-        ax.scatter(x, y, color='b', s=10)                           # Pointcloud
-        ax.scatter(target_xy[0], target_xy[1], color='g', s=100)    # Target point
-        ax.scatter(0, 0, color='r', s=100)                          # Robot
-
-        # Detected lines without duplicates
-        for endpoints in lines_tuples:
-            x_pts = [endpoints[0][0], endpoints[1][0]]
-            y_pts = [endpoints[0][1], endpoints[1][1]]
-            ax.plot(x_pts, y_pts, linewidth=2)
-
-        # Best line
-        ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
-
-        plt.pause(0.1)
-    """
 
     ##########################################################################
     # Wall following
