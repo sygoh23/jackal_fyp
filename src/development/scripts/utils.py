@@ -35,7 +35,6 @@ def update_map():
     plt.gca().set_aspect('equal', adjustable='box')
     plt.savefig(simulation_setup.map_pth)
 
-
 # Sets up a move base goal object to be sent to client
 def setup_goal(x,y):
     goal = MoveBaseGoal()

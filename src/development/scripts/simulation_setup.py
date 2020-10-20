@@ -15,7 +15,7 @@ target_location = 4
 # 4: ENG Lecture Theatres
 
 # STEP 3: CHOOSE SIMULATION COMPUTER:
-system_directories = 1
+system_directories = 0
 # 0: Samuel's Computer
 # 1: Chris's Computer
 
@@ -38,6 +38,7 @@ remove_x_ext = "/live/remove_x.pkl"
 remove_y_ext = "/live/remove_y.pkl"
 map_ext = "/live/map.png"
 hough_ext = "/live/hough.jpg"
+wall_ext = "/live/hough.jpg"
 pointcloud_ext = "/live/pointcloud.pickle"
 pointcloud2_ext = "/live/pointcloud2.pickle"
 
@@ -47,6 +48,7 @@ font_pth = base_pth + font_ext
 remove_x_pth = base_pth + remove_x_ext
 remove_y_pth = base_pth + remove_y_ext
 map_pth = base_pth + map_ext
+wall_pth = base_pth + wall_ext
 hough_pth = base_pth + hough_ext
 pointcloud_pth = base_pth + pointcloud_ext
 pointcloud2_pth = base_pth + pointcloud2_ext

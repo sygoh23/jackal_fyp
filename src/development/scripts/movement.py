@@ -28,7 +28,7 @@ def move_to_doorway():
 Movement logic when the robot is within the building vicinity
 --> Assumes there is only one doorway in the defined building vicinity
 """
-def move_within_vicinity(target_xy, ax, plot_results):
+def move_within_vicinity(target_xy, plot_results):
 
     ##########################################################################
     # Point cloud filtering
@@ -56,8 +56,8 @@ def move_within_vicinity(target_xy, ax, plot_results):
     w = int(max(x) - x_min) + 2     # max x = 61.5
     h = int(max(y) - y_min) + 2     # max y = 95.7
     c = 3
-
-    print('\nMin x: {}\nMin y: {}\nMax x: {}\nMax y: {}\nWidth: {}\nHeight: {}\n'.format(
+    print("- Wall Following:")
+    print('--- Min x: {}\n--- Min y: {}\n--- Max x: {}\n--- Max y: {}\n--- Width: {}\n--- Height: {}'.format(
         x_min,
         y_min,
         max(x),
@@ -110,7 +110,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
         #cv2.waitKey()
 
     else:
-        print("No lines found")
+        print("--- No lines found")
         return [0, 0]
 
     #print('\nDetected lines:\n{}\n'.format(lines_list))
@@ -339,7 +339,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
 
     # Determine if selected parallel point is too close or far from the wall
     if min_dist > too_far_threshold:
-        print("%.2fm from wall, too far" % min_dist)
+        print("--- Result: %.2fm from wall, too far!" % min_dist)
 
         # Calculate required movement distance along perpendicular line
         step = min_dist - ideal_dist
@@ -367,7 +367,7 @@ def move_within_vicinity(target_xy, ax, plot_results):
             goal_y = goal_y_1
 
     elif min_dist < too_close_threshold:
-        print("%.2fm from wall, too close" % min_dist)
+        print("--- Result: %.2fm from wall, too close!" % min_dist)
 
         # Calculate required movement distance along perpendicular line
         step = ideal_dist - min_dist
@@ -393,12 +393,14 @@ def move_within_vicinity(target_xy, ax, plot_results):
         else:
             goal_x = goal_x_1
             goal_y = goal_y_1
-    
+
     else:
-        print("%.2fm from wall, ideal" % min_dist)
+        print("--- Result: %.2fm from wall, ideal!" % min_dist)
 
     # Display selected line in robot frame
     if plot_results:
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
         ax.clear()
         ax.scatter(x, y, color='b', s=10)                                       # Pointcloud
         ax.scatter(target_xy[0], target_xy[1], color='g', s=100)                # Target point
@@ -414,9 +416,13 @@ def move_within_vicinity(target_xy, ax, plot_results):
 
         # Best line
         ax.plot([best_line[0][0], best_line[1][0]], [best_line[0][1], best_line[1][1]], linewidth=4, color='#48f542')
+        plt.savefig(simulation_setup.wall_pth)
+        plt.close()
+        fig.clf()
+    else:
+        update_map()
+        print("Plot Map")
 
-        plt.pause(0.1)
-    
     goal_xy_robot_frame = [goal_x, goal_y]
     return goal_xy_robot_frame
 

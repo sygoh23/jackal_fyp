@@ -54,10 +54,7 @@ def movebase_client():
     pickle.dump(dynamic_params.remove_y, open(simulation_setup.remove_y_pth,"w"))
     dynamic_params.robot_xy = get_robot_xy()
     dynamic_params.map_range = 50
-
-    # Axes to plot wall detection
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1) # nrows, ncols, index
+    map_counter = 0
 
     # Begin navigation algorithm
     while True:
@@ -86,7 +83,12 @@ def movebase_client():
                 transformed_pt_xy = [transformed_pt.point.x, transformed_pt.point.y]
 
                 # Get wall following goal point in base_link (robot) frame
-                goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, ax=ax, plot_results=True)
+                if map_counter < 5: # Within vicinity, plot wall following results most of the time
+                    goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, plot_results=True)
+                    map_counter = map_counter + 1
+                elif map_counter == 5: # Within vicinity, plot the map results sometimes
+                    goal_xy_robot_frame = move_within_vicinity(target_xy=transformed_pt_xy, plot_results=False)
+                    map_counter = 0
 
                 # Transform goal point FROM base_link (robot frame) BACK TO odom (world frame)
                 base_link_pt = PointStamped()
@@ -95,7 +97,7 @@ def movebase_client():
                 base_link_pt.point.x = goal_xy_robot_frame[0]
                 base_link_pt.point.y = goal_xy_robot_frame[1]
                 base_link_pt.point.z = 0.0
-                
+
                 # Goal point in odom (world) frame
                 odom_pt = listener.transformPoint('odom', base_link_pt)
 
