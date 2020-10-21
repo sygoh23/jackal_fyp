@@ -42,7 +42,7 @@ def movebase_client():
     rec_enable = 1 # Enable recovery
     rec_last_i = 0 # Last time recovery was initiated
     rec_smooth_filter = 10; # Amount of mean smoothing for recovery scores
-    rec_threshold = 30; # Score threshold to activate recovery behaviour
+    rec_threshold = 10; # Score threshold to activate recovery behaviour
     last_building_vel = []
 
     # Set exclusion zone around starting point
@@ -222,7 +222,7 @@ def movebase_client():
             print("- Recovery Score: Unavailable")
 
         find_poi()
-        #update_map()
+        update_map()
 
         # Exit program if target is reached
         if dynamic_params.reached_target == 1:

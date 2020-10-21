@@ -1,5 +1,5 @@
 # STEP 1: CHOOSE ROBOT STARTING LOCATION:
-starting_location = 0
+starting_location = 4
 # 0: Within Vicinity (ENG Lecture Theatres)
 # 1: Sticking Point
 # 2: ENG Faculty (B72)

@@ -421,7 +421,6 @@ def move_within_vicinity(target_xy, plot_results):
         fig.clf()
     else:
         update_map()
-        print("Plot Map")
 
     goal_xy_robot_frame = [goal_x, goal_y]
     return goal_xy_robot_frame
