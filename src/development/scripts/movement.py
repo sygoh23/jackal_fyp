@@ -91,7 +91,7 @@ def move_within_vicinity(target_xy, plot_results):
     edges = cv2.Canny(gray, 50, 200)
 
     # Run the Hough transform
-    lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=40, minLineLength=20, maxLineGap=70)
+    lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=30, minLineLength=10, maxLineGap=70)
 
     # Save lines
     if lines is not None:
