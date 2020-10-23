@@ -337,7 +337,7 @@ def move_within_vicinity(target_xy, plot_results):
         # Generate next point
         current_pt = (current_pt[0] + step*unit_x, current_pt[1] + step*unit_y)
 
-    # Determine if selected parallel point is too close or far from the wall
+    # Determine if perpendicular distance is too close or far from the wall
     if min_dist > too_far_threshold:
         print("--- Result: %.2fm from wall, too far!" % min_dist)
 
@@ -352,13 +352,13 @@ def move_within_vicinity(target_xy, plot_results):
         # Calculate goal points in both directions
         goal_x_1 = goal_x + step*unit_x
         goal_y_1 = goal_y + step*unit_y
-        target_dist_1 = get_distance(goal_x_1, target_xy[0], goal_y_1, target_xy[1])
+        target_dist_1 = get_distance(goal_x_1, perpendicular_pt[0], goal_y_1, perpendicular_pt[1])
 
         goal_x_2 = goal_x - step*unit_x
         goal_y_2 = goal_y - step*unit_y
-        target_dist_2 = get_distance(goal_x_2, target_xy[0], goal_y_2, target_xy[1])
+        target_dist_2 = get_distance(goal_x_2, perpendicular_pt[0], goal_y_2, perpendicular_pt[1])
 
-        # Select point closest to target
+        # Select point closest to perpendicular point on wall
         if target_dist_1 >= target_dist_2:
             goal_x = goal_x_2
             goal_y = goal_y_2
@@ -380,14 +380,14 @@ def move_within_vicinity(target_xy, plot_results):
         # Calculate goal points in both directions
         goal_x_1 = goal_x + step*unit_x
         goal_y_1 = goal_y + step*unit_y
-        target_dist_1 = get_distance(goal_x_1, target_xy[0], goal_y_1, target_xy[1])
+        target_dist_1 = get_distance(goal_x_1, perpendicular_pt[0], goal_y_1, perpendicular_pt[1])
 
         goal_x_2 = goal_x - step*unit_x
         goal_y_2 = goal_y - step*unit_y
-        target_dist_2 = get_distance(goal_x_2, target_xy[0], goal_y_2, target_xy[1])
+        target_dist_2 = get_distance(goal_x_2, perpendicular_pt[0], goal_y_2, perpendicular_pt[1])
 
-        # Select point closest to target
-        if target_dist_1 >= target_dist_2:
+        # Select point furthest away from perpendicular point on wall
+        if target_dist_1 <= target_dist_2:
             goal_x = goal_x_2
             goal_y = goal_y_2
         else:
