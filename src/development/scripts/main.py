@@ -109,10 +109,13 @@ def movebase_client():
                 #print(original_pt); print('')
                 #print(transformed_pt); print('')
 
+
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 print('Transform failed')
 
             # Read object detection results
+            robot_xy = get_robot_xy()
+            dist_doorway = get_distance(doorway_detected_xy[0], robot_xy[0], doorway_detected_xy[1], robot_xy[1])
             if process_img:
                 is_door = rospy.wait_for_message("/detected_objects", String)
                 print("--- Door detected: %s" % is_door.data)
@@ -122,6 +125,10 @@ def movebase_client():
                     print("--- Moving to doorway")
                     dynamic_params.entrance_found = True
                     move_to_doorway()
+            if dist_doorway < 10:
+                print("- Object Detection: Entrance detected!")
+                print("\n------------------ ALGORITHM FINISHED -------------------")
+                time.sleep(500)
 
         elif not dynamic_params.entrance_found:
             print("- Status: Outside building vicinity...")

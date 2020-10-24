@@ -15,7 +15,7 @@ target_location = 4
 # 4: ENG Lecture Theatres
 
 # STEP 3: CHOOSE SIMULATION COMPUTER:
-system_directories = 1
+system_directories = 0
 # 0: Samuel's Computer
 # 1: Chris's Computer
 

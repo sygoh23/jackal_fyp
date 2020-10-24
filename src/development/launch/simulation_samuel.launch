@@ -8,7 +8,7 @@
 
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!--  GAZEBO CONFIG -->
-  <arg name="world_name" default="$(find development)/resources/gazebo/start_at_boiler_house.world"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/engineering_original.world"/>
   <arg name="enable_gazebo_gui" default="false"/>
 
   <!-- PEDSIM CONFIG -->

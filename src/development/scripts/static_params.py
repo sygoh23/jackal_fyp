@@ -64,6 +64,8 @@ building_entrances = [
     [25+offset_x, -140+offset_y]
 ]
 
+doorway_detected_xy = [20+offset_x, -135+offset_y]
+
 building_bounding_polygons = [
     # Index 0: Eng Faculty
     np.array([
