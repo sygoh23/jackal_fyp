@@ -29,9 +29,16 @@ The Jackal sensor configuration can be adjusted by changing the configuration ar
 
 ### Simulation Instructions:
 1. Source Required Files: Change directory to `jackal_fyp` and source the ROS installation and package files by running `setup.sh`.
-2. Launch Simulation: Change directory to `jackal_fyp/start` and run the following script: `simulation.sh`. Alternatively, the simulation can be launched directly using `roslaunch development simulation.launch`.
-
-3. Navigation & Pedestrian Following: To initiate the navigation stack, run `navigation.sh`. If the argument `ped_follow` inside `navigation.launch` is set to true, the script will automatically start the pedestrian following algorithm. The navigation stack can also be launched directly using `roslaunch development navigation.launch`.
+2. Setup ROS Launch File: Choose simulation parameters inside of `development/launch/simulation.launch`. Select the world file by changing the "world_name" argument in Gazebo config. Select the corresponding PEDSIM scenario file by changing the "scene_file" argument in the PEDSIM config. 
+* The available options are:
+  * `start_at_b72.world/xml`: Start robot at Faculty of Engineering (Building 72)
+  * `start_at_boiler_house.world/xml`: Start robot at Boiler House
+  * `start_at_new_horizons.world/xml`: Start Jackal at New Horizons
+  * `start_at_sticking_point.world/xml`: Start Jackal at Sticking Point
+  * `start_within_vicinity.world/xml`: Start Jackal within Building Vicinity (Engineering Lecture Theatres)
+3. Setup Python Launch File: Choose simulation parameters inside of `development/scripts/simulation_setup.py`. Select the same robot starting location used in the previous step. Select the robot target location and ensure you set the simulation computer so that the directories are correct. Edit `base_pth` if necessary to match your Ubuntu directories.
+4. Launch Simulation: Change directory to `jackal_fyp/start` and run the following script: `simulation.sh`. Alternatively, the simulation can be launched directly using `roslaunch development simulation.launch`.
+5. Launch Algorithm: To initiate the entire algorithm, run `algorithm.sh`. During the algorithm runtime, the algorithm map will be updated in the `/live/map.png` file during Stage 1 of the algorithm, and the wall following output will be updated in the `/live/hough.jpg` file during Stage 2 of the algorithm.
 
 ### Other Dependencies:
 * The Jackal robot requires the Intel Realsense SDK for the D435 Depth Cameras.
