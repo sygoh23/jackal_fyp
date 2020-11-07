@@ -1,4 +1,4 @@
-# ECSE Final Year Project
+# ECSE Final Year Project 2020
 
 <img src="https://github.com/sygoh23/jackal_fyp/blob/master/.images/04-poster.png" width="600">
 
@@ -19,9 +19,9 @@ Change directory to `jackal_fyp` and run one of the following scripts:
  * `reset.sh`: Kills all ROS processes.
  * `setup.sh`: Sources the ROS installation.
  * `reconfigure.sh`: Launches dynamic reconfigure.
- 
+
 ### Jackal Configuration:
-The Jackal sensor configuration can be adjusted by changing the configuration argument in the simulation launch files. The following configurations are available:
+The Jackal sensor configuration can be adjusted by changing the configuration argument in the simulation launch file: `/development/launch/simulation.launch`. The following configurations are available:
  * `base`: Generates Jackal model only (fastest).
  * `fyp_laser`: Generates Jackal model with 2D laser scanner (fast).
  * `fyp_velodyne`: Generates Jackal model with 3D Velodyne Lidar at low resolution (slow).
@@ -29,16 +29,16 @@ The Jackal sensor configuration can be adjusted by changing the configuration ar
 
 ### Simulation Instructions:
 1. Source Required Files: Change directory to `jackal_fyp` and source the ROS installation and package files by running `setup.sh`.
-2. Setup ROS Launch File: Choose simulation parameters inside of `development/launch/simulation.launch`. Select the world file by changing the "world_name" argument in Gazebo config. Select the corresponding PEDSIM scenario file by changing the "scene_file" argument in the PEDSIM config. 
-* The available options are:
-  * `start_at_b72.world/xml`: Start robot at Faculty of Engineering (Building 72)
-  * `start_at_boiler_house.world/xml`: Start robot at Boiler House
+2. Setup ROS Launch File: Choose simulation parameters inside of `development/launch/simulation.launch`. Select the world file by changing the `world_name` argument in Gazebo config section. Select the corresponding PEDSIM scenario file by changing the `scene_file` argument in the PEDSIM config section.
+* The available starting locations are:
+  * `start_at_b72.world/xml`: Start Jackal at Faculty of Engineering (Building 72)
+  * `start_at_boiler_house.world/xml`: Start Jackal at Boiler House
   * `start_at_new_horizons.world/xml`: Start Jackal at New Horizons
   * `start_at_sticking_point.world/xml`: Start Jackal at Sticking Point
   * `start_within_vicinity.world/xml`: Start Jackal within Building Vicinity (Engineering Lecture Theatres)
-3. Setup Python Launch File: Choose simulation parameters inside of `development/scripts/simulation_setup.py`. Select the same robot starting location used in the previous step. Select the robot target location and ensure you set the simulation computer so that the directories are correct. Edit `base_pth` if necessary to match your Ubuntu directories.
+3. Setup Python Launch File: Choose simulation parameters inside of `development/scripts/simulation_setup.py`. Select the same robot starting location used in the previous step. Select the robot target location. Ensure you set the simulation computer so that the file directories are correct. Adjust the strings in `base_pth` if necessary to match your Ubuntu installation.
 4. Launch Simulation: Change directory to `jackal_fyp/start` and run the following script: `simulation.sh`. Alternatively, the simulation can be launched directly using `roslaunch development simulation.launch`.
-5. Launch Algorithm: To initiate the entire algorithm, run `algorithm.sh`. During the algorithm runtime, the algorithm map will be updated in the `/live/map.png` file during Stage 1 of the algorithm, and the wall following output will be updated in the `/live/hough.jpg` file during Stage 2 of the algorithm.
+5. Launch Algorithm: From the same directory `jackal_fyp/start`, run the following script: `algorithm.sh`. While the algorithm is running, the algorithm map will be updated in the `live/map.png` file during Stage 1, and the wall following output will be updated in the `live/hough.png` file during Stage 2.
 
 ### Other Dependencies:
 * The Jackal robot requires the Intel Realsense SDK for the D435 Depth Cameras.

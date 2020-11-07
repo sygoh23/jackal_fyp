@@ -1,25 +1,25 @@
 <launch>
   <!-- ******************** AVAILABLE STARTING LOCATIONS ********************  -->
-  <!-- start_at_b72.world/xml: ENG Faculty (B72) -->
+  <!-- start_at_b72.world/xml: Faculty of Engineering (Building 72) -->
   <!-- start_at_boiler_house.world/xml: Boiler House -->
   <!-- start_at_new_horizons.world/xml: New Horizons -->
   <!-- start_at_sticking_point.world/xml: Sticking Point-->
-  <!-- start_within_vicinity.world/xml: Within Vicinity (ENG Lecture Theatres)-->
+  <!-- start_within_vicinity.world/xml: Within Vicinity (Engineering Lecture Theatres)-->
 
   <!--  ******************** COMMON LAUNCH SETTINGS  ********************  -->
   <!--  GAZEBO CONFIG -->
-  <arg name="world_name" default="$(find development)/resources/gazebo/start_within_vicinity.world"/>
+  <arg name="world_name" default="$(find development)/resources/gazebo/start_at_b72.world"/>
   <arg name="enable_gazebo_gui" default="false"/>
 
   <!-- PEDSIM CONFIG -->
-  <arg name="scene_file" value="$(find development)resources/pedsim/start_within_vicinity.xml"/>
-  <arg name="simulation_factor" default="7"/> <!-- Simulation rate -->
+  <arg name="scene_file" value="$(find development)resources/pedsim/start_at_b72.xml"/>
+  <arg name="simulation_factor" default="1.5"/> <!-- Simulation rate - DEFAULT: 1.5 -->
   <arg name="update_rate" default="25.0"/> <!-- Hz -->
-  <arg name="ped_gazebo_plugin" default="true"/>
+  <arg name="ped_gazebo_plugin" default="false"/>
   <arg name="enable_pedsim" default="true"/>
 
   <!-- RVIZ CONFIG -->
-  <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_mapping.rviz"/>
+  <arg name="rviz_config" default="$(find development)/resources/rviz/jackal_video.rviz"/>
   <arg name="enable_rviz" default="true"/>
 
   <!-- JACKAL CONFIG -->

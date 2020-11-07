@@ -1,5 +1,5 @@
 # STEP 1: CHOOSE ROBOT STARTING LOCATION:
-starting_location = 0
+starting_location = 2
 # 0: Within Vicinity (ENG Lecture Theatres)
 # 1: Sticking Point
 # 2: ENG Faculty (B72)
@@ -30,6 +30,8 @@ if system_directories == 0:
     base_pth = "/home/ubuntu/ws/jackal_fyp"
 elif system_directories == 1:
     base_pth = "/home/chris/Documents/jackal_fyp"
+# elif system_directories == X:
+#    base_pth = "XXX"
 
 # Specify file locations:
 model_ext = "/src/development/resources/obj_detection/Models/ssd300_epoch6.pth.tar"
@@ -37,8 +39,8 @@ font_ext = "/src/development/resources/obj_detection/OpenSans-Regular.ttf"
 remove_x_ext = "/live/remove_x.pkl"
 remove_y_ext = "/live/remove_y.pkl"
 map_ext = "/live/map.png"
-hough_ext = "/live/hough.jpg"
-wall_ext = "/live/hough.jpg"
+hough_ext = "/live/hough.png"
+wall_ext = "/live/hough.png"
 pointcloud_ext = "/live/pointcloud.pickle"
 pointcloud2_ext = "/live/pointcloud2.pickle"
 
