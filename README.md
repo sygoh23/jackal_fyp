@@ -1,7 +1,6 @@
 # ECSE Final Year Project
 
-#### Last Major Update: 2nd September 2020
-<img src="https://github.com/sygoh23/jackal_fyp/blob/master/.images/03-engineering-sim.png" height="350">
+<img src="https://github.com/sygoh23/jackal_fyp/blob/master/.images/04-poster.png" width="600">
 
 ### Source Code Structure:
 ```
